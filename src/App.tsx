@@ -302,7 +302,7 @@ function TopNav({
           <div className="leading-tight">
             <div className="text-sm font-extrabold">William J. White</div>
             <div className="text-xs text-muted-foreground">
-              Full Stack • Systems • Docs
+              Portfolio • Projects • Docs
             </div>
           </div>
         </button>

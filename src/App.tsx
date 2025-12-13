@@ -52,11 +52,34 @@ function useThemeToggle() {
     return getThemeCookie() === "dark";
   });
 
+  // Apply to DOM + persist cookie
   React.useEffect(() => {
     const theme = isDark ? "dark" : "light";
     document.documentElement.classList.toggle("dark", isDark);
     setThemeCookie(theme);
   }, [isDark]);
+
+  // Re-sync from cookie when user comes back to this tab
+  React.useEffect(() => {
+    function syncFromCookie() {
+      const cookie = getThemeCookie();
+      if (!cookie) return;
+      setIsDark(cookie === "dark");
+    }
+
+    // When the tab becomes active again (most reliable cross-site signal)
+    function onVisibility() {
+      if (document.visibilityState === "visible") syncFromCookie();
+    }
+
+    window.addEventListener("focus", syncFromCookie);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.removeEventListener("focus", syncFromCookie);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
 
   return { isDark, toggle: () => setIsDark((v) => !v) };
 }

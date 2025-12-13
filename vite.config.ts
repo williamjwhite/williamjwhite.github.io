@@ -3,20 +3,22 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-// https://vite.dev/config/
 export default defineConfig({
+  base: "/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+  },
   server: {
-    host: true, // same as 0.0.0.0
+    host: true, // LAN + mobile access
     port: 5173,
     strictPort: true,
-    // If you proxy APIs locally, add proxy here
-    // proxy: { "/api": "http://localhost:3000" },
     open: true,
   },
 });

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { getThemeCookie, setThemeCookie } from "@/lib/theme-cookie";
 import {
   ArrowRight,
   BookOpen,
@@ -48,30 +49,13 @@ const LINKS = {
 
 function useThemeToggle() {
   const [isDark, setIsDark] = React.useState<boolean>(() => {
-    const saved = localStorage.getItem("wjjw_theme");
-    if (saved === "dark") return true;
-    if (saved === "light") return false;
-    return (
-      window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false
-    );
+    return getThemeCookie() === "dark";
   });
 
   React.useEffect(() => {
-    const root = document.documentElement;
-
-    // Add a temporary transition class for smoother theme toggles
-    root.classList.add("theme-transition");
-
-    if (isDark) root.classList.add("dark");
-    else root.classList.remove("dark");
-
-    localStorage.setItem("wjjw_theme", isDark ? "dark" : "light");
-
-    const timeout = window.setTimeout(() => {
-      root.classList.remove("theme-transition");
-    }, 450);
-
-    return () => window.clearTimeout(timeout);
+    const theme = isDark ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", isDark);
+    setThemeCookie(theme);
   }, [isDark]);
 
   return { isDark, toggle: () => setIsDark((v) => !v) };

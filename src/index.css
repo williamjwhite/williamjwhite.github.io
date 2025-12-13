@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+/* Tailwind v4 directive — editor may warn, Tailwind will compile it. */
+@custom-variant dark (&:is(.dark *));
+
+/* -------------------------------------------------
+   1) Design Tokens (tweakcn-style)
+   - Keep your actual colors here (these are examples)
+-------------------------------------------------- */
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+
+  --primary: #57c4dc;
+  --primary-foreground: #171717;
+
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+
+  --accent: #70cde1;
+  --accent-foreground: #145c6d;
+
+  --destructive: #f80505;
+  --destructive-foreground: #ffffff;
+
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #94a3b8;
+
+  /* Optional extras if you want them later */
+  --chart-1: #57c4dc;
+  --chart-2: #70cde1;
+  --chart-3: #22c55e;
+  --chart-4: #f97316;
+  --chart-5: #f59e0b;
+
+  /* Optional sidebar token set (tweakcn generates these) */
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #57c4dc;
+  --sidebar-primary-foreground: #171717;
+  --sidebar-accent: #70cde1;
+  --sidebar-accent-foreground: #145c6d;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #94a3b8;
+
+  /* Typography / sizing */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Arial, sans-serif;
+  --font-serif: ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  --radius: 0.75rem;
+
+  /* Optional shadow tokens */
+  --shadow-opacity: 0.12;
+  --shadow-color: hsl(220 15% 15%);
+  --shadow-sm: 0 1px 2px hsl(220 15% 15% / 0.12);
+  --shadow: 0 10px 30px hsl(220 15% 15% / 0.12);
+
+  --tracking-normal: 0em;
+}
+
+/* Dark theme tokens */
+.dark {
+  --background: #23272f;
+  --foreground: #fafafa;
+
+  --card: #2a2f38;
+  --card-foreground: #fafafa;
+
+  --popover: #2a2f38;
+  --popover-foreground: #fafafa;
+
+  --primary: #57c4dc;
+  --primary-foreground: #171717;
+
+  --secondary: #1c1f26;
+  --secondary-foreground: #fafafa;
+
+  --muted: #2a2f38;
+  --muted-foreground: #c0c0c0;
+
+  --accent: #70cde1;
+  --accent-foreground: #145c6d;
+
+  --destructive: #ff6b6b;
+  --destructive-foreground: #171717;
+
+  --border: #343434;
+  --input: #343434;
+  --ring: #737373;
+
+  --sidebar: #1c1f26;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #57c4dc;
+  --sidebar-primary-foreground: #171717;
+  --sidebar-accent: #70cde1;
+  --sidebar-accent-foreground: #145c6d;
+  --sidebar-border: #343434;
+  --sidebar-ring: #737373;
+}
+
+/* -------------------------------------------------
+   2) Tailwind v4 “theme inline” mappings
+   This is what makes classes like:
+   bg-background, text-foreground, border-border, ring-ring
+   work correctly in shadcn components.
+-------------------------------------------------- */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Optional */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+}
+
+/* -------------------------------------------------
+   3) Base layer (critical for shadcn)
+   This is what prevents:
+   - “unknown utility class border-border”
+   - missing border colors
+   - inconsistent body background/text
+-------------------------------------------------- */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Smooth theme toggle */
+.theme-transition,
+.theme-transition * {
+  transition-property: background-color, border-color, color, fill, stroke,
+    box-shadow;
+  transition-duration: 420ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}

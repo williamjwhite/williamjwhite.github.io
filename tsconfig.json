@@ -1,0 +1,21 @@
+{
+  "files": [],
+  "exclude": [
+    "src/components/ui/chart.tsx",
+    "src/components/ui/pagination.tsx"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}

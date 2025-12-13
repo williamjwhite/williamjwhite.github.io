@@ -211,3 +211,43 @@
   transition-duration: 420ms;
   transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* Added to improve responsive design*/
+/* =========================================================
+   MOBILE OVERFLOW FIX (prevents page panning)
+   ========================================================= */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#root,
+#__next,
+main {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Flex/grid children can force overflow unless they can shrink */
+.flex,
+[class*="flex"],
+.grid,
+[class*="grid"] {
+  min-width: 0;
+}
+
+/* =========================================================
+   SHADCN TABS: scrollable rail on small screens
+   Apply via className="tab-rail" on TabsList
+   ========================================================= */
+.tab-rail {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 0.25rem;
+}

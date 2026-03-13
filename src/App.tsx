@@ -18,6 +18,11 @@ import {
   Terminal,
   MessageCircleQuestionMark,
   Search,
+  ShieldCheck,
+  Clock,
+  Cloud,
+  CheckCircle,
+  Zap,
 } from "lucide-react";
 
 import { LinkedinIcon } from "@/components/icons/linkedin-icon";
@@ -169,8 +174,21 @@ export default function App() {
               >
                 <Mail className="w-4 h-4" /> Connect
               </TabsTrigger>
-              <TabsTrigger className="shrink-0 whitespace-nowrap" value="resume">
-                <FileText className="w-4 h-4" /> Resume
+              {/* New Tabs */}
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="services">
+                <Layers3 className="w-4 h-4" /> Services
+              </TabsTrigger>
+
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="case-study">
+                <FileText className="w-4 h-4" /> Case Study
+              </TabsTrigger>
+
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="cloud">
+                <Globe className="w-4 h-4" /> Cloud Architecture
+              </TabsTrigger>
+
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="ai">
+                <Code2 className="w-4 h-4" /> AI Automation
               </TabsTrigger>
 
             </TabsList>
@@ -266,6 +284,34 @@ export default function App() {
           <TabsContent value="projects">
             <div className="grid gap-4 md:grid-cols-2">
               <ProjectCard
+  title="Digital Mortgage Workflow"
+  desc="DocuSign + eOriginal integration with automated routing, eVaulting, and audit‑grade lifecycle tracking."
+  href={`${LINKS.docs}/projects/digital-mortgage`}
+  tags={["DocuSign", "eOriginal", "AWS", "Automation"]}
+/>
+
+<ProjectCard
+  title="AI Document Processing"
+  desc="LLM‑powered classification, extraction, and workflow routing for enterprise document pipelines."
+  href={`${LINKS.docs}/projects/ai-docs`}
+  tags={["AI/ML", "Python", "FastAPI", "OpenAI"]}
+/>
+
+<ProjectCard
+  title="Cloud‑Native Platform"
+  desc="Multi‑service architecture deployed on AWS with Docker, ECS, CI/CD, and observability."
+  href={`${LINKS.docs}/projects/cloud-platform`}
+  tags={["AWS", "Docker", "CI/CD", "Architecture"]}
+/>
+
+<ProjectCard
+  title="Workflow Automation Suite"
+  desc="Full‑stack automation tools for internal operations, approvals, and document lifecycle management."
+  href={`${LINKS.docs}/projects/workflow-automation`}
+  tags={["React", "Node", "Automation", "DX"]}
+/>
+
+              <ProjectCard
                 title="TrakTeam"
                 desc="Multi-platform operational tooling for crew workflows and commissary ordering."
                 href={`${LINKS.docs}/projects/trakteam/overview`}
@@ -322,195 +368,6 @@ export default function App() {
               <ConnectSection />
             </div>
           </TabsContent>
-          <TabsContent value="resume">
-            <div id="resume" className="scroll-mt-24 space-y-6">
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Résumé</CardTitle>
-                  <CardDescription>
-                    Two‑page professional résumé — print‑friendly and PDF‑ready.
-                  </CardDescription>
-                </CardHeader>
-
-                <CardContent className="space-y-6 text-sm text-muted-foreground">
-
-                  {/* Header */}
-                  <div>
-                    <h2 className="text-xl font-black text-foreground">William J. White</h2>
-                    <div className="mt-1">Albany, NY • 518‑810‑1657 • williamjwhiteme@gmail.com</div>
-                    <div className="mt-1">
-                      <a href="https://williamjwhite.me" className="underline">williamjwhite.me</a> •
-                      <a href="https://linkedin.com/in/william-j-white-ny" className="underline ml-1">LinkedIn</a>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Summary */}
-                  <section>
-                    <h3 className="font-bold text-foreground">Professional Summary</h3>
-                    <p className="mt-2">
-                      Technical Solutions Architect and Information Technology Specialist with 15+ years of
-                      experience supporting enterprise systems, digital transformation initiatives, and
-                      cross‑functional technical operations. Skilled in requirements analysis, workflow
-                      optimization, system configuration, troubleshooting, and customer success across
-                      complex, regulated environments. Adept at translating business needs into technical
-                      solutions, improving operational efficiency, and ensuring system reliability and user
-                      satisfaction.
-                    </p>
-                  </section>
-
-                  <Separator />
-
-                  {/* Core Competencies */}
-                  <section>
-                    <h3 className="font-bold text-foreground">Core Competencies</h3>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <Badge>Enterprise System Support</Badge>
-                      <Badge>Technical Troubleshooting</Badge>
-                      <Badge>Requirements Analysis</Badge>
-                      <Badge>Workflow Optimization</Badge>
-                      <Badge>Digital Transformation</Badge>
-                      <Badge>Documentation</Badge>
-                      <Badge>QA Collaboration</Badge>
-                      <Badge>Release Management</Badge>
-                      <Badge>Training & Enablement</Badge>
-                      <Badge>Cross‑Functional Collaboration</Badge>
-                    </div>
-                  </section>
-
-                  <Separator />
-
-                  {/* Technical Skills */}
-                  <section>
-                    <h3 className="font-bold text-foreground">Technical Skills</h3>
-                    <ul className="mt-2 list-disc pl-5">
-                      <li>Enterprise SaaS Platforms</li>
-                      <li>Requirements Documentation</li>
-                      <li>Workflow Automation</li>
-                      <li>CRM & Case Management Systems</li>
-                      <li>Salesforce</li>
-                      <li>System Configuration & Administration</li>
-                      <li>Multi‑OS Environments (Mac, Windows, Linux)</li>
-                    </ul>
-                  </section>
-
-                  <Separator />
-
-                  {/* Experience */}
-                  <section>
-                    <h3 className="font-bold text-foreground">Professional Experience</h3>
-
-                    <div className="mt-4 space-y-4">
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Senior Consultant | Digital Solutions
-                        </div>
-                        <div className="text-xs text-muted-foreground">2019 – Present • Remote</div>
-                        <ul className="mt-2 list-disc pl-5">
-                          <li>Lead implementation and support of enterprise software solutions.</li>
-                          <li>Translate business needs into technical requirements and user stories.</li>
-                          <li>Provide troubleshooting, configuration, and optimization.</li>
-                          <li>Manage full lifecycle of in‑house applications.</li>
-                          <li>Deliver best‑practice guidance for digital transformation.</li>
-                        </ul>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Independent Senior Consultant | Coleman Research
-                        </div>
-                        <div className="text-xs text-muted-foreground">2019 – Present • Remote</div>
-                        <ul className="mt-2 list-disc pl-5">
-                          <li>Serve as SME for digital transformation and enterprise system implementations.</li>
-                          <li>Advise on software selection, integration strategy, and readiness.</li>
-                          <li>Provide assessments of enterprise solutions and workflows.</li>
-                        </ul>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">Solutions Architect | eOriginal</div>
-                        <div className="text-xs text-muted-foreground">2019 • Baltimore, MD</div>
-                        <ul className="mt-2 list-disc pl-5">
-                          <li>Gathered requirements and aligned business objectives with technical design.</li>
-                          <li>Developed user stories, acceptance criteria, and design documentation.</li>
-                          <li>Collaborated with development and QA teams.</li>
-                        </ul>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Project Manager, Professional Services | eOriginal
-                        </div>
-                        <div className="text-xs text-muted-foreground">2017 – 2018 • Baltimore, MD</div>
-                        <ul className="mt-2 list-disc pl-5">
-                          <li>Led enterprise implementations and managed scope and timelines.</li>
-                          <li>Served as SME for DocuSign and eOriginal integrations.</li>
-                          <li>Managed change control and requirements documentation.</li>
-                        </ul>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Technical Customer Success Manager | DocuSign
-                        </div>
-                        <div className="text-xs text-muted-foreground">2013 – 2017 • Seattle, WA</div>
-                        <ul className="mt-2 list-disc pl-5">
-                          <li>Primary technical advisor for enterprise clients.</li>
-                          <li>Trained administrators and end‑users.</li>
-                          <li>Ensured scalable, compliant digital workflows.</li>
-                        </ul>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Customer Success Manager | OnSolve
-                        </div>
-                        <div className="text-xs text-muted-foreground">2011 – 2013 • Schenectady, NY</div>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Senior Technical Support Specialist | Time Warner Cable
-                        </div>
-                        <div className="text-xs text-muted-foreground">2009 – 2011 • Schenectady, NY</div>
-                      </div>
-
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Business Systems Analyst | OPEN Solutions
-                        </div>
-                        <div className="text-xs text-muted-foreground">2006 – 2009 • Colonie, NY</div>
-                      </div>
-
-                    </div>
-                  </section>
-
-                  <Separator />
-
-                  {/* Education */}
-                  <section>
-                    <h3 className="font-bold text-foreground">Education</h3>
-                    <ul className="mt-2 list-disc pl-5">
-                      <li>Rochester Institute of Technology — Professional & Technical Communications, Psychology (Coursework)</li>
-                      <li>Herkimer County Community College — Professional & Technical Communications</li>
-                    </ul>
-                  </section>
-
-                </CardContent>
-              </Card>
-
-              {/* Download Button */}
-              <Button onClick={() => setShowResumeModal(true)}>
-                Download PDF Résumé
-              </Button>
-
-            </div>
-          </TabsContent>
-
-
         </Tabs>
 
         {/* Human Verification Modal */}
@@ -826,7 +683,7 @@ function IntroHeader() {
             />
             <div>
               <div className="text-sm font-semibold text-muted-foreground">
-                Full Stack Developer
+                Technical Solutions Architect & Full‑Stack Engineer
               </div>
               <h1 className="text-2xl font-black tracking-tight md:text-3xl">
                 William J. White
@@ -835,11 +692,10 @@ function IntroHeader() {
           </div>
 
           <p className="mt-4 text-base text-muted-foreground">
-            I enjoy Architecting Scalable Solutions, Empowering Teams, and
-            Elevating Customer Success
-            {/* I build maintainable full-stack systems with strong
-            developer experience: design systems, documentation, automation, and
-            pragmatic architecture. */}
+            I design and build scalable software systems, modernize digital workflows,
+            and help organizations ship reliable, secure, and maintainable products.
+            My work blends engineering depth with architecture clarity and a strong
+            focus on developer experience.
           </p>
 
           <div className="flex flex-wrap gap-2 mt-5">
@@ -865,10 +721,10 @@ function IntroHeader() {
           </div>
 
           <div className="flex flex-wrap gap-2 mt-4">
-            <Badge>React</Badge>
-            <Badge>Laravel</Badge>
-            <Badge>SwiftUI</Badge>
-            <Badge>Docs-as-Product</Badge>
+            <Badge>Full‑Stack</Badge>
+            <Badge>Cloud Architecture</Badge>
+            <Badge>Workflow Automation</Badge>
+            <Badge>eSignature Systems</Badge>
           </div>
         </div>
 
@@ -889,24 +745,32 @@ function IntroHeader() {
               </div>
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 text-primary">
+                  <Terminal className="w-4 h-4" />
+                </span>
+                <div>Updating williamjwhite.me with new content and case studies.</div>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <span className="mt-0.5 text-primary">
                   <Truck className="w-4 h-4" />
                 </span>
-                <div>Relocating back to New York from Seattle.</div>
+                <div>Recently relocated to New York from Seattle and exploring new opportunities.</div>
               </div>
+
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 text-primary">
                   <Search className="w-4 h-4" />
                 </span>
-                <div>
-                  Reviewing fulltime opportunities in the New York area.
-                </div>
+                <div>Open to full‑time roles and consulting engagements.</div>
               </div>
+
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 text-primary">
                   <MessageCircleQuestionMark className="w-4 h-4" />
                 </span>
-                <div>Client consultaitons.</div>
+                <div>Client consultations and architecture reviews.</div>
               </div>
+
             </CardContent>
           </Card>
         </div>
@@ -961,41 +825,33 @@ function AboutSection() {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          With over two decades of experience spanning software development, IT,
-          customer success, and enterprise architecture, I specialize in
-          bridging technical execution with business strategy. My career has
-          evolved from Tier III technical support and full stack development to
-          leading roles in customer success, project management, and solutions
-          architecture. I thrive at designing scalable systems, guiding teams
-          through complex transformations, and ensuring technology delivers
-          measurable business outcomes. Whether architecting cloud-native
-          solutions, driving customer adoption, or mentoring technical teams, I
-          bring a proven ability to align innovation with impact.
+          I’m a technical solutions architect and full‑stack engineer with deep
+          experience across software development, cloud architecture, workflow
+          automation, and enterprise eSignature systems. My background spans
+          engineering, customer success, and IT operations — giving me a unique
+          ability to bridge business needs with technical execution.
+          <br /><br />
+          I specialize in designing scalable systems, modernizing legacy workflows,
+          and delivering solutions that are secure, maintainable, and built for
+          long‑term success. Whether I’m building full‑stack applications, integrating
+          DocuSign and eOriginal, or architecting cloud‑native platforms, I focus on
+          clarity, reliability, and developer experience.
         </p>
 
+
         <div className="grid gap-4 md:grid-cols-3">
-          <Stat
-            label="Focus"
-            value="Full Stack"
-            icon={<Terminal className="w-4 h-4" />}
-          />
-          <Stat
-            label="Primary stack"
-            value="React • Laravel • SwiftUI"
-            icon={<Code2 className="w-4 h-4" />}
-          />
-          <Stat
-            label="Strength"
-            value="DX + Docs"
-            icon={<BookOpen className="w-4 h-4" />}
-          />
+          <Stat label="Focus" value="Architecture + Engineering" icon={<Terminal className="w-4 h-4" />} />
+          <Stat label="Primary Stack" value="React • Node • AWS" icon={<Code2 className="w-4 h-4" />} />
+          <Stat label="Strength" value="DX + Automation" icon={<BookOpen className="w-4 h-4" />} />
+
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Badge>Systems Thinking</Badge>
-          <Badge>Design Systems</Badge>
-          <Badge>Automation</Badge>
-          <Badge>Observability</Badge>
+          <Badge>Cloud</Badge>
+          <Badge>Workflow Automation</Badge>
+          <Badge>eSignature</Badge>
+          <Badge>Systems Design</Badge>
+
         </div>
       </CardContent>
     </Card>
@@ -1008,27 +864,18 @@ function ExperienceSection() {
       <CardHeader>
         <CardTitle>Professional Experience</CardTitle>
         <CardDescription>
-          From Full Stack to Enterprise Strategy: 20+ Years of Building,
-          Leading, and Transforming Technology
+          Engineering, architecture, and workflow automation across SaaS, financial
+          services, digital mortgage, and enterprise platforms. I build systems that
+          scale, teams that deliver, and processes that reduce operational friction.
         </CardDescription>
+
       </CardHeader>
       <CardContent>
         <div className="grid gap-4 md:grid-cols-3">
-          <Stat
-            label="Delivery"
-            value="Product-grade"
-            icon={<Layers3 className="w-4 h-4" />}
-          />
-          <Stat
-            label="Bias"
-            value="Maintainability"
-            icon={<FileText className="w-4 h-4" />}
-          />
-          <Stat
-            label="Ops"
-            value="Practical"
-            icon={<Terminal className="w-4 h-4" />}
-          />
+          <Stat label="Delivery" value="Production‑grade" icon={<Layers3 className="w-4 h-4" />} />
+          <Stat label="Bias" value="Simplicity + Maintainability" icon={<FileText className="w-4 h-4" />} />
+          <Stat label="Ops" value="Secure + Observable" icon={<Terminal className="w-4 h-4" />} />
+
         </div>
 
         <div className="mt-6">
@@ -1037,17 +884,13 @@ function ExperienceSection() {
               <AccordionTrigger>Highlights</AccordionTrigger>
               <AccordionContent>
                 <ul className="pl-5 list-disc">
-                  <li>
-                    Builds developer-first systems: tooling, docs, automation.
-                  </li>
-                  <li>
-                    Strong UI systems: shadcn/Tailwind, design tokens,
-                    consistent navigation.
-                  </li>
-                  <li>
-                    Operational focus: deployment, performance, maintainability.
-                  </li>
+                  <li>Architected cloud‑native systems with strong security and observability.</li>
+                  <li>Integrated DocuSign + eOriginal for regulated digital workflows.</li>
+                  <li>Built full‑stack applications with React, Node, Python, and SwiftUI.</li>
+                  <li>Designed developer‑first tooling, documentation, and automation.</li>
+                  <li>Led technical delivery across cross‑functional teams.</li>
                 </ul>
+
               </AccordionContent>
             </AccordionItem>
 

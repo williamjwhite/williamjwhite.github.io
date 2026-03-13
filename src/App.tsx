@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { getThemeCookie, setThemeCookie } from "@/lib/theme-cookie";
 import {
   ArrowRight,
@@ -39,12 +40,14 @@ import {
   AccordionTrigger,
 } from "./components/ui/accordion";
 import { IconLink } from "./components/icon-link";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { DialogHeader } from "./components/ui/dialog";
 
 const LINKS = {
   docs: "https://docs.williamjwhite.me",
   github: "https://github.com/williamjwhite",
   linkedin: "https://www.linkedin.com/in/william-j-white-ny",
-  email: "mailto:hello@williamjwhite.me",
+  email: "mailto:williamjwhite@gmail.com",
 };
 
 function useThemeToggle() {
@@ -94,8 +97,23 @@ function scrollToId(id: string) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+
+
 export default function App() {
   const { isDark, toggle } = useThemeToggle();
+
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showCaseStudyModal, setShowCaseStudyModal] = useState(false);
+
+  const [showResumeModal, setShowResumeModal] = useState(false);
+  const [answer, setAnswer] = useState("");
+
+  function handleVerify() {
+    if (answer.trim() === "7") {
+      window.open("/resume.pdf", "_blank", "noopener,noreferrer");
+      setShowResumeModal(false);
+    }
+  }
 
   return (
     <div className="min-h-dvh">
@@ -151,6 +169,10 @@ export default function App() {
               >
                 <Mail className="w-4 h-4" /> Connect
               </TabsTrigger>
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="resume">
+                <FileText className="w-4 h-4" /> Resume
+              </TabsTrigger>
+
             </TabsList>
           </div>
 
@@ -300,7 +322,223 @@ export default function App() {
               <ConnectSection />
             </div>
           </TabsContent>
+          <TabsContent value="resume">
+            <div id="resume" className="scroll-mt-24 space-y-6">
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Résumé</CardTitle>
+                  <CardDescription>
+                    Two‑page professional résumé — print‑friendly and PDF‑ready.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-6 text-sm text-muted-foreground">
+
+                  {/* Header */}
+                  <div>
+                    <h2 className="text-xl font-black text-foreground">William J. White</h2>
+                    <div className="mt-1">Albany, NY • 518‑810‑1657 • williamjwhiteme@gmail.com</div>
+                    <div className="mt-1">
+                      <a href="https://williamjwhite.me" className="underline">williamjwhite.me</a> •
+                      <a href="https://linkedin.com/in/william-j-white-ny" className="underline ml-1">LinkedIn</a>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Summary */}
+                  <section>
+                    <h3 className="font-bold text-foreground">Professional Summary</h3>
+                    <p className="mt-2">
+                      Technical Solutions Architect and Information Technology Specialist with 15+ years of
+                      experience supporting enterprise systems, digital transformation initiatives, and
+                      cross‑functional technical operations. Skilled in requirements analysis, workflow
+                      optimization, system configuration, troubleshooting, and customer success across
+                      complex, regulated environments. Adept at translating business needs into technical
+                      solutions, improving operational efficiency, and ensuring system reliability and user
+                      satisfaction.
+                    </p>
+                  </section>
+
+                  <Separator />
+
+                  {/* Core Competencies */}
+                  <section>
+                    <h3 className="font-bold text-foreground">Core Competencies</h3>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <Badge>Enterprise System Support</Badge>
+                      <Badge>Technical Troubleshooting</Badge>
+                      <Badge>Requirements Analysis</Badge>
+                      <Badge>Workflow Optimization</Badge>
+                      <Badge>Digital Transformation</Badge>
+                      <Badge>Documentation</Badge>
+                      <Badge>QA Collaboration</Badge>
+                      <Badge>Release Management</Badge>
+                      <Badge>Training & Enablement</Badge>
+                      <Badge>Cross‑Functional Collaboration</Badge>
+                    </div>
+                  </section>
+
+                  <Separator />
+
+                  {/* Technical Skills */}
+                  <section>
+                    <h3 className="font-bold text-foreground">Technical Skills</h3>
+                    <ul className="mt-2 list-disc pl-5">
+                      <li>Enterprise SaaS Platforms</li>
+                      <li>Requirements Documentation</li>
+                      <li>Workflow Automation</li>
+                      <li>CRM & Case Management Systems</li>
+                      <li>Salesforce</li>
+                      <li>System Configuration & Administration</li>
+                      <li>Multi‑OS Environments (Mac, Windows, Linux)</li>
+                    </ul>
+                  </section>
+
+                  <Separator />
+
+                  {/* Experience */}
+                  <section>
+                    <h3 className="font-bold text-foreground">Professional Experience</h3>
+
+                    <div className="mt-4 space-y-4">
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Senior Consultant | Digital Solutions
+                        </div>
+                        <div className="text-xs text-muted-foreground">2019 – Present • Remote</div>
+                        <ul className="mt-2 list-disc pl-5">
+                          <li>Lead implementation and support of enterprise software solutions.</li>
+                          <li>Translate business needs into technical requirements and user stories.</li>
+                          <li>Provide troubleshooting, configuration, and optimization.</li>
+                          <li>Manage full lifecycle of in‑house applications.</li>
+                          <li>Deliver best‑practice guidance for digital transformation.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Independent Senior Consultant | Coleman Research
+                        </div>
+                        <div className="text-xs text-muted-foreground">2019 – Present • Remote</div>
+                        <ul className="mt-2 list-disc pl-5">
+                          <li>Serve as SME for digital transformation and enterprise system implementations.</li>
+                          <li>Advise on software selection, integration strategy, and readiness.</li>
+                          <li>Provide assessments of enterprise solutions and workflows.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">Solutions Architect | eOriginal</div>
+                        <div className="text-xs text-muted-foreground">2019 • Baltimore, MD</div>
+                        <ul className="mt-2 list-disc pl-5">
+                          <li>Gathered requirements and aligned business objectives with technical design.</li>
+                          <li>Developed user stories, acceptance criteria, and design documentation.</li>
+                          <li>Collaborated with development and QA teams.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Project Manager, Professional Services | eOriginal
+                        </div>
+                        <div className="text-xs text-muted-foreground">2017 – 2018 • Baltimore, MD</div>
+                        <ul className="mt-2 list-disc pl-5">
+                          <li>Led enterprise implementations and managed scope and timelines.</li>
+                          <li>Served as SME for DocuSign and eOriginal integrations.</li>
+                          <li>Managed change control and requirements documentation.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Technical Customer Success Manager | DocuSign
+                        </div>
+                        <div className="text-xs text-muted-foreground">2013 – 2017 • Seattle, WA</div>
+                        <ul className="mt-2 list-disc pl-5">
+                          <li>Primary technical advisor for enterprise clients.</li>
+                          <li>Trained administrators and end‑users.</li>
+                          <li>Ensured scalable, compliant digital workflows.</li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Customer Success Manager | OnSolve
+                        </div>
+                        <div className="text-xs text-muted-foreground">2011 – 2013 • Schenectady, NY</div>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Senior Technical Support Specialist | Time Warner Cable
+                        </div>
+                        <div className="text-xs text-muted-foreground">2009 – 2011 • Schenectady, NY</div>
+                      </div>
+
+                      <div>
+                        <div className="font-semibold text-foreground">
+                          Business Systems Analyst | OPEN Solutions
+                        </div>
+                        <div className="text-xs text-muted-foreground">2006 – 2009 • Colonie, NY</div>
+                      </div>
+
+                    </div>
+                  </section>
+
+                  <Separator />
+
+                  {/* Education */}
+                  <section>
+                    <h3 className="font-bold text-foreground">Education</h3>
+                    <ul className="mt-2 list-disc pl-5">
+                      <li>Rochester Institute of Technology — Professional & Technical Communications, Psychology (Coursework)</li>
+                      <li>Herkimer County Community College — Professional & Technical Communications</li>
+                    </ul>
+                  </section>
+
+                </CardContent>
+              </Card>
+
+              {/* Download Button */}
+              <Button onClick={() => setShowResumeModal(true)}>
+                Download PDF Résumé
+              </Button>
+
+            </div>
+          </TabsContent>
+
+
         </Tabs>
+
+        {/* Human Verification Modal */}
+        <Dialog open={showResumeModal} onOpenChange={setShowResumeModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Human Verification</DialogTitle>
+              <DialogDescription>
+                To protect against bots, please answer this simple question.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3">
+              <label className="text-sm font-medium">What is 3 + 4?</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-md bg-background"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+              />
+            </div>
+
+            <div className="flex justify-end mt-4">
+              <Button onClick={handleVerify}>Verify & Download</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
 
         {/* Tabs moved up: directly below intro + avatar
         <Tabs defaultValue="overview" className="mt-6">

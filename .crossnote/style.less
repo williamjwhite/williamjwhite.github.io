@@ -1,0 +1,244 @@
+
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+.markdown-preview.markdown-preview {
+  // modify your style here
+  // eg: background-color: blue;
+  /* ---------------------------------------------------------
+   1. Design Tokens (derived from your Tailwind config)
+--------------------------------------------------------- */
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+
+  --primary: #57c4dc;
+  --primary-soft: #70cde1;
+  --brand: #d110e7;
+
+  --accent: #70cde1;
+  --accent-strong: #145c6d;
+
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+
+  --border: #e5e7eb;
+
+  --font-sans: "SF Pro Text", "SF Pro Display", "SF Compact",
+               -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --radius: 8px;
+}
+
+
+/* ---------------------------------------------------------
+   2. Base Layout
+--------------------------------------------------------- */
+
+body {
+  font-family: var(--font-sans);
+  font-size: 11.5pt;
+  line-height: 1.55;
+
+  color: var(--foreground);
+  background: var(--background);
+
+  padding: 0 30px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* ---------------------------------------------------------
+   3. Header Block
+--------------------------------------------------------- */
+
+.resume-header {
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+
+.resume-header h1 {
+  font-size: 28pt;
+  font-weight: 800;
+  margin: 0;
+
+  color: var(--brand);
+  letter-spacing: -0.02em;
+}
+
+// .resume-header.brand h1 {
+//   color: var(--primary);
+// }
+
+.resume-header h1 {
+  color: #545254; /* your --accent color */
+}
+.resume-header .subtitle {
+  font-size: 12pt;
+  font-weight: 600;
+
+  color: var(--primary);
+  margin-top: 4px;
+}
+
+.resume-header .contact {
+  font-size: 10.8pt;
+  margin-top: 12px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.resume-header .contact div {
+  margin-bottom: 2px;
+}
+
+/* ---------------------------------------------------------
+   4. Links
+--------------------------------------------------------- */
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   5. Section Headings
+--------------------------------------------------------- */
+
+h2 {
+  font-size: 17pt;
+  font-weight: 700;
+
+  color: var(--primary);
+
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+
+  margin-top: 1.7em;
+}
+
+h3 {
+  font-size: 13.5pt;
+  font-weight: 600;
+
+  color: var(--accent-strong);
+  margin-top: 1.2em;
+}
+
+/* ---------------------------------------------------------
+   6. Paragraphs & Lists
+--------------------------------------------------------- */
+
+p {
+  margin: 0.35em 0 0.9em 0;
+}
+
+ul {
+  margin: 0.4em 0 1em 1.2em;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 0.35em;
+}
+
+/* ---------------------------------------------------------
+   7. Subtle Skill / Tag Styling
+--------------------------------------------------------- */
+
+.skill-tag {
+  display: inline-block;
+
+  background: var(--muted);
+  color: var(--accent-strong);
+
+  padding: 3px 8px;
+  margin: 2px 4px 2px 0;
+
+  font-size: 9.5pt;
+  border-radius: var(--radius);
+}
+
+/* ---------------------------------------------------------
+   8. Horizontal Rule
+--------------------------------------------------------- */
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.8em 0;
+}
+
+/* ---------------------------------------------------------
+   9. Page Layout for PDF
+--------------------------------------------------------- */
+
+@page {
+  margin: 18mm 15mm;
+}
+
+/* Avoid page breaks in key areas */
+
+h2,
+h3 {
+  page-break-after: avoid;
+}
+
+ul,
+p {
+  page-break-inside: avoid;
+}
+
+.resume-header {
+  page-break-inside: avoid;
+}
+
+/* ---------------------------------------------------------
+   10. Page Break Utility
+--------------------------------------------------------- */
+
+.page-break {
+  page-break-after: always;
+}
+
+/* ---------------------------------------------------------
+   11. Print Optimization
+--------------------------------------------------------- */
+
+@media print {
+
+  body {
+    font-size: 11pt;
+  }
+
+  h1 {
+    font-size: 26pt;
+  }
+
+  h2 {
+    font-size: 16pt;
+  }
+
+  h3 {
+    font-size: 13pt;
+  }
+
+}
+.resume-header::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--primary);
+  margin-top: 10px;
+  border-radius: 2px;
+}
+}

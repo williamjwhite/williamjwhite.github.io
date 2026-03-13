@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>resume.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file:///Users/williamjwhite/Documents/GitHub/williamjwhite.github.io/file%3A/Users/williamjwhite/vscode/markdownpdf/custom.css" type="text/css">
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="william-j-white"><strong>WILLIAM J. WHITE</strong></h1>
+<p><strong>Technical Solutions Architect • Information Technology Specialist</strong><br>
+Albany, NY • 518‑810‑1657 • williamjwhiteme@gmail.com<br>
+Website: https://williamjwhite.me<br>
+LinkedIn: https://linkedin.com/in/william-j-white-ny</p>
+<hr>
+<h2 id="professional-summary"><strong>PROFESSIONAL SUMMARY</strong></h2>
+<p>Technical Solutions Architect and Information Technology Specialist with 15+ years of experience supporting enterprise systems, digital transformation initiatives, and cross‑functional technical operations. Skilled in requirements analysis, workflow optimization, system configuration, troubleshooting, and customer success across complex, regulated environments. Adept at translating business needs into technical solutions, improving operational efficiency, and ensuring system reliability and user satisfaction.</p>
+<hr>
+<h2 id="core-competencies"><strong>CORE COMPETENCIES</strong></h2>
+<ul>
+<li>Enterprise System Support</li>
+<li>Technical Troubleshooting &amp; Root‑Cause Analysis</li>
+<li>Requirements Gathering &amp; Systems Analysis</li>
+<li>Workflow Optimization &amp; Digital Transformation</li>
+<li>Customer Success &amp; Stakeholder Engagement</li>
+<li>Documentation &amp; Technical Writing</li>
+<li>QA &amp; Testing Support</li>
+<li>Release Management</li>
+<li>Training &amp; User Enablement</li>
+<li>Cross‑Functional Collaboration</li>
+<li>CRM &amp; Case Management Systems</li>
+<li>Multi‑OS Environments (Mac, Windows, Linux)</li>
+</ul>
+<hr>
+<h2 id="technical-skills"><strong>TECHNICAL SKILLS</strong></h2>
+<ul>
+<li>Enterprise SaaS Platforms</li>
+<li>Requirements Documentation</li>
+<li>Workflow Automation</li>
+<li>CRM &amp; Case Management Systems</li>
+<li>Salesforce</li>
+<li>System Configuration &amp; Administration</li>
+<li>Multi‑OS Environments (Mac, Windows, Linux)</li>
+</ul>
+<hr>
+<h1 id="professional-experience"><strong>PROFESSIONAL EXPERIENCE</strong></h1>
+<h2 id="senior-consultant--digital-solutions"><strong>Senior Consultant | Digital Solutions</strong></h2>
+<p><strong>2019 – Present | Remote</strong></p>
+<ul>
+<li>Lead implementation and support of enterprise software solutions across multiple industries.</li>
+<li>Translate business needs into technical requirements, user stories, and acceptance criteria.</li>
+<li>Provide ongoing troubleshooting, configuration, and optimization for enterprise systems.</li>
+<li>Manage full lifecycle of in‑house applications, including planning, development, testing, and support.</li>
+<li>Deliver best‑practice guidance for digital transformation and process improvement.</li>
+<li>Produce documentation, training materials, and operational playbooks to improve team efficiency.</li>
+</ul>
+<hr>
+<h2 id="independent-senior-consultant--coleman-research"><strong>Independent Senior Consultant | Coleman Research</strong></h2>
+<p><strong>2019 – Present | Remote</strong></p>
+<ul>
+<li>Serve as SME for digital transformation, eSignature, and enterprise system implementations.</li>
+<li>Advise clients on software selection, integration strategy, and operational readiness.</li>
+<li>Provide unbiased assessments of enterprise solutions and process improvement opportunities.</li>
+<li>Support clients with workflow modernization and technical evaluation of SaaS platforms.</li>
+</ul>
+<hr>
+<h2 id="solutions-architect--eoriginal"><strong>Solutions Architect | eOriginal</strong></h2>
+<p><strong>2019 | Baltimore, MD</strong></p>
+<ul>
+<li>Conducted stakeholder meetings to gather requirements and align business objectives with technical design.</li>
+<li>Developed user stories, acceptance criteria, and detailed design documentation.</li>
+<li>Collaborated with development and QA teams to ensure accurate implementation.</li>
+<li>Performed post‑implementation reviews and recommended improvements to enhance system reliability.</li>
+</ul>
+<hr>
+<h2 id="project-manager-professional-services--eoriginal"><strong>Project Manager, Professional Services | eOriginal</strong></h2>
+<p><strong>2017 – 2018 | Baltimore, MD</strong></p>
+<ul>
+<li>Led enterprise implementations, ensuring scope, timelines, and responsibilities were clearly defined.</li>
+<li>Served as SME for DocuSign and eOriginal integrations.</li>
+<li>Facilitated alignment across Sales, Professional Services, and Development teams.</li>
+<li>Managed change control processes and documented requirements.</li>
+<li>Participated in a steering committee to implement Salesforce and improve operational efficiency.</li>
+</ul>
+<hr>
+<h2 id="technical-customer-success-manager--docusign"><strong>Technical Customer Success Manager | DocuSign</strong></h2>
+<p><strong>2013 – 2017 | Seattle, WA</strong></p>
+<ul>
+<li>Primary technical advisor and escalation point for high‑value enterprise clients.</li>
+<li>Trained administrators and end‑users on configuration, reporting, release management, and integrations.</li>
+<li>Ensured clients maintained scalable, compliant, and well‑documented digital transaction workflows.</li>
+<li>Coordinated testing for upcoming releases and communicated product updates.</li>
+<li>Supported enterprise adoption and long‑term customer success.</li>
+</ul>
+<hr>
+<h2 id="customer-success-manager--onsolve"><strong>Customer Success Manager | OnSolve</strong></h2>
+<p><strong>2011 – 2013 | Schenectady, NY</strong></p>
+<ul>
+<li>Designed and implemented emergency notification and critical event management systems.</li>
+<li>Advised clients on business continuity planning and operational readiness.</li>
+<li>Ensured successful adoption by aligning customer needs with product capabilities.</li>
+</ul>
+<hr>
+<h2 id="senior-technical-support-specialist--time-warner-cable"><strong>Senior Technical Support Specialist | Time Warner Cable</strong></h2>
+<p><strong>2009 – 2011 | Schenectady, NY</strong></p>
+<ul>
+<li>Provided advanced troubleshooting for escalated technical issues across data, phone, and cable services.</li>
+<li>Delivered technical training and documentation for internal teams and customers.</li>
+<li>Supported network, security, and multi‑OS configuration needs.</li>
+</ul>
+<hr>
+<h2 id="business-systems-analyst--open-solutions"><strong>Business Systems Analyst | OPEN Solutions</strong></h2>
+<p><strong>2006 – 2009 | Colonie, NY</strong></p>
+<ul>
+<li>Translated business requirements into technical specifications for development teams.</li>
+<li>Conducted stakeholder meetings and documented objectives.</li>
+<li>Supported QA, development, and project teams throughout the SDLC.</li>
+<li>Managed scope changes and maintained detailed user stories and acceptance criteria.</li>
+<li>Conducted post‑implementation reviews and recommended improvements.</li>
+</ul>
+<hr>
+<h1 id="education"><strong>EDUCATION</strong></h1>
+<p><strong>Rochester Institute of Technology</strong><br>
+Professional &amp; Technical Communications, Psychology (Coursework)</p>
+<p><strong>Herkimer County Community College</strong><br>
+Professional &amp; Technical Communications</p>
+<hr>
+<h1 id="certifications--training"><strong>CERTIFICATIONS &amp; TRAINING</strong></h1>
+<ul>
+<li>ITIL Foundations (earlier career)</li>
+<li>Salesforce (implementation &amp; administration experience)</li>
+<li>Ongoing professional development in enterprise SaaS, workflow automation, and digital transformation</li>
+</ul>
+<hr>
+<h1 id="additional-information"><strong>ADDITIONAL INFORMATION</strong></h1>
+<ul>
+<li>Comfortable working across Mac, Windows, and Linux environments.</li>
+<li>Experienced in remote collaboration, distributed teams, and asynchronous communication.</li>
+<li>Strong focus on documentation, repeatable processes, and long‑term maintainability.</li>
+</ul>
+
+</body>
+</html>

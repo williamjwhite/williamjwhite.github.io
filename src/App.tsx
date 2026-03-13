@@ -106,15 +106,16 @@ function scrollToId(id: string) {
 export default function App() {
   const { isDark, toggle } = useThemeToggle();
 
-  const [showResumeModal, setShowResumeModal] = useState(false);
-  const [answer, setAnswer] = useState("");
+const [showResumeModal, setShowResumeModal] = useState(false);
+const [answer, setAnswer] = useState("");
 
-  function handleVerify() {
-    if (answer.trim() === "7") {
-      window.open("/resume.pdf", "_blank", "noopener,noreferrer");
-      setShowResumeModal(false);
-    }
+function handleVerify() {
+  if (answer.trim() === "7") {
+    window.open("/resume.pdf", "_blank", "noopener,noreferrer");
+    setShowResumeModal(false);
+    setAnswer("");
   }
+}
 
   return (
     <div className="min-h-dvh">
@@ -938,12 +939,7 @@ function ExperienceSection() {
 
       </CardHeader>
       <CardContent>
-        <Button
-  onClick={() =>
-    window.open("/resume.pdf", "_blank", "noopener,noreferrer")
-  }
->
-  <FileText className="w-4 h-4 mr-2" />
+<Button onClick={() => setShowResumeModal(true)}>
   View Resume
 </Button>
       </CardContent>

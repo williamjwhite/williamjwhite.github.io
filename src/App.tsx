@@ -17,6 +17,11 @@ import {
   Terminal,
   MessageCircleQuestionMark,
   Search,
+  ShieldCheck,
+  Clock,
+  Cloud,
+  CheckCircle,
+  Zap,
 } from "lucide-react";
 
 import { LinkedinIcon } from "@/components/icons/linkedin-icon";
@@ -151,6 +156,23 @@ export default function App() {
               >
                 <Mail className="w-4 h-4" /> Connect
               </TabsTrigger>
+              {/* New Tabs */}
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="services">
+                <Layers3 className="w-4 h-4" /> Services
+              </TabsTrigger>
+
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="case-study">
+                <FileText className="w-4 h-4" /> Case Study
+              </TabsTrigger>
+
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="cloud">
+                <Globe className="w-4 h-4" /> Cloud Architecture
+              </TabsTrigger>
+
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="ai">
+                <Code2 className="w-4 h-4" /> AI Automation
+              </TabsTrigger>
+
             </TabsList>
           </div>
 
@@ -244,6 +266,34 @@ export default function App() {
           <TabsContent value="projects">
             <div className="grid gap-4 md:grid-cols-2">
               <ProjectCard
+  title="Digital Mortgage Workflow"
+  desc="DocuSign + eOriginal integration with automated routing, eVaulting, and audit‑grade lifecycle tracking."
+  href={`${LINKS.docs}/projects/digital-mortgage`}
+  tags={["DocuSign", "eOriginal", "AWS", "Automation"]}
+/>
+
+<ProjectCard
+  title="AI Document Processing"
+  desc="LLM‑powered classification, extraction, and workflow routing for enterprise document pipelines."
+  href={`${LINKS.docs}/projects/ai-docs`}
+  tags={["AI/ML", "Python", "FastAPI", "OpenAI"]}
+/>
+
+<ProjectCard
+  title="Cloud‑Native Platform"
+  desc="Multi‑service architecture deployed on AWS with Docker, ECS, CI/CD, and observability."
+  href={`${LINKS.docs}/projects/cloud-platform`}
+  tags={["AWS", "Docker", "CI/CD", "Architecture"]}
+/>
+
+<ProjectCard
+  title="Workflow Automation Suite"
+  desc="Full‑stack automation tools for internal operations, approvals, and document lifecycle management."
+  href={`${LINKS.docs}/projects/workflow-automation`}
+  tags={["React", "Node", "Automation", "DX"]}
+/>
+
+              <ProjectCard
                 title="TrakTeam"
                 desc="Multi-platform operational tooling for crew workflows and commissary ordering."
                 href={`${LINKS.docs}/projects/trakteam/overview`}
@@ -300,6 +350,247 @@ export default function App() {
               <ConnectSection />
             </div>
           </TabsContent>
+          {/* New Tabs - Content */}
+          <TabsContent value="services">
+            <div id="services" className="scroll-mt-24">
+              <TwoCol
+                left={
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Services</CardTitle>
+                      <CardDescription>
+                        Full‑stack engineering, architecture, and workflow automation.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-sm text-muted-foreground">
+                      <p>
+                        I help organizations design, build, and scale secure digital
+                        workflows, cloud‑native applications, and enterprise‑grade
+                        eSignature systems. My work blends engineering depth with
+                        solutions‑architecture clarity.
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Badge>Full‑Stack</Badge>
+                        <Badge>Cloud</Badge>
+                        <Badge>DevOps</Badge>
+                        <Badge>DocuSign</Badge>
+                        <Badge>eOriginal</Badge>
+                        <Badge>AI/ML</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+                right={
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>What I Deliver</CardTitle>
+                      <CardDescription>High‑impact technical outcomes.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 text-sm text-muted-foreground">
+                      <ul className="pl-5 list-disc">
+                        <li>Full‑stack application development (React, Node, Python)</li>
+                        <li>Cloud architecture & DevOps (AWS, Docker, CI/CD)</li>
+                        <li>DocuSign API + eOriginal eVaulting integrations</li>
+                        <li>Workflow automation & system modernization</li>
+                        <li>AI‑powered document processing & routing</li>
+                        <li>Technical leadership & digital transformation</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                }
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="case-study">
+            <div id="case-study" className="scroll-mt-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Case Study: Digital Mortgage Workflow</CardTitle>
+                  <CardDescription>
+                    DocuSign + eOriginal eVaulting architecture for regulated lending.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-6 text-sm text-muted-foreground">
+                  <TwoCol
+                    left={
+                      <div className="space-y-3">
+                        <Stat
+                          label="Processing Time"
+                          value="Days → Hours"
+                          icon={<Clock className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Manual Work"
+                          value="−70%"
+                          icon={<Layers3 className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Compliance"
+                          value="Fully Digital"
+                          icon={<ShieldCheck className="w-4 h-4" />}
+                        />
+                      </div>
+                    }
+                    right={
+                      <p>
+                        Architected a fully digital mortgage workflow integrating
+                        DocuSign, eOriginal, and internal LOS systems. Automated envelope
+                        creation, routing, eVaulting, and audit‑grade event processing.
+                      </p>
+                    }
+                  />
+
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="challenge">
+                      <AccordionTrigger>Challenge</AccordionTrigger>
+                      <AccordionContent>
+                        Manual document handling, slow closing cycles, and compliance
+                        friction across multiple systems.
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="solution">
+                      <AccordionTrigger>Solution</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-5 list-disc">
+                          <li>DocuSign API envelope automation</li>
+                          <li>Webhook‑driven event processing</li>
+                          <li>eOriginal eVaulting + secure transfer</li>
+                          <li>Audit‑grade lifecycle tracking</li>
+                          <li>Cloud‑native deployment</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="results">
+                      <AccordionTrigger>Results</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-5 list-disc">
+                          <li>Closing time reduced from days to hours</li>
+                          <li>Eliminated manual document handling</li>
+                          <li>Improved compliance and audit readiness</li>
+                          <li>Better borrower experience</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="cloud">
+            <div id="cloud" className="scroll-mt-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Cloud Architecture</CardTitle>
+                  <CardDescription>
+                    Scalable, secure, cloud‑native deployment patterns.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <TwoCol
+                    left={
+                      <div className="space-y-3">
+                        <Stat
+                          label="Platform"
+                          value="AWS"
+                          icon={<Cloud className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Orchestration"
+                          value="Docker / ECS"
+                          icon={<Layers3 className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Deployments"
+                          value="CI/CD"
+                          icon={<Terminal className="w-4 h-4" />}
+                        />
+                      </div>
+                    }
+                    right={
+                      <p>
+                        Designed and deployed multi‑service cloud architectures using AWS,
+                        Docker, ECS, and GitHub Actions. Focus on security, observability,
+                        and zero‑downtime releases.
+                      </p>
+                    }
+                  />
+
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>AWS</Badge>
+                    <Badge>Docker</Badge>
+                    <Badge>CI/CD</Badge>
+                    <Badge>PostgreSQL</Badge>
+                    <Badge>Redis</Badge>
+                    <Badge>API Gateway</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="ai">
+            <div id="ai" className="scroll-mt-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>AI Workflow Automation</CardTitle>
+                  <CardDescription>
+                    Intelligent document processing and routing.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <TwoCol
+                    left={
+                      <p>
+                        Built AI‑powered systems that classify, extract, and route
+                        documents using LLMs and embeddings. Integrated with existing
+                        workflow systems for real‑time automation.
+                      </p>
+                    }
+                    right={
+                      <div className="space-y-3">
+                        <Stat
+                          label="Manual Review"
+                          value="−85%"
+                          icon={<Search className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Accuracy"
+                          value="High"
+                          icon={<CheckCircle className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Latency"
+                          value="Low"
+                          icon={<Zap className="w-4 h-4" />}
+                        />
+                      </div>
+                    }
+                  />
+
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="features">
+                      <AccordionTrigger>Features</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-5 list-disc">
+                          <li>Document classification via embeddings</li>
+                          <li>Field extraction using LLMs</li>
+                          <li>Smart routing based on business rules</li>
+                          <li>Real‑time audit logging</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+
         </Tabs>
 
         {/* Tabs moved up: directly below intro + avatar
@@ -588,7 +879,7 @@ function IntroHeader() {
             />
             <div>
               <div className="text-sm font-semibold text-muted-foreground">
-                Full Stack Developer
+                Technical Solutions Architect & Full‑Stack Engineer
               </div>
               <h1 className="text-2xl font-black tracking-tight md:text-3xl">
                 William J. White
@@ -597,11 +888,10 @@ function IntroHeader() {
           </div>
 
           <p className="mt-4 text-base text-muted-foreground">
-            I enjoy Architecting Scalable Solutions, Empowering Teams, and
-            Elevating Customer Success
-            {/* I build maintainable full-stack systems with strong
-            developer experience: design systems, documentation, automation, and
-            pragmatic architecture. */}
+            I design and build scalable software systems, modernize digital workflows,
+            and help organizations ship reliable, secure, and maintainable products.
+            My work blends engineering depth with architecture clarity and a strong
+            focus on developer experience.
           </p>
 
           <div className="flex flex-wrap gap-2 mt-5">
@@ -627,10 +917,10 @@ function IntroHeader() {
           </div>
 
           <div className="flex flex-wrap gap-2 mt-4">
-            <Badge>React</Badge>
-            <Badge>Laravel</Badge>
-            <Badge>SwiftUI</Badge>
-            <Badge>Docs-as-Product</Badge>
+            <Badge>Full‑Stack</Badge>
+            <Badge>Cloud Architecture</Badge>
+            <Badge>Workflow Automation</Badge>
+            <Badge>eSignature Systems</Badge>
           </div>
         </div>
 
@@ -651,24 +941,32 @@ function IntroHeader() {
               </div>
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 text-primary">
+                  <Terminal className="w-4 h-4" />
+                </span>
+                <div>Updating williamjwhite.me with new content and case studies.</div>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <span className="mt-0.5 text-primary">
                   <Truck className="w-4 h-4" />
                 </span>
-                <div>Relocating back to New York from Seattle.</div>
+                <div>Recently relocated to New York from Seattle and exploring new opportunities.</div>
               </div>
+
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 text-primary">
                   <Search className="w-4 h-4" />
                 </span>
-                <div>
-                  Reviewing fulltime opportunities in the New York area.
-                </div>
+                <div>Open to full‑time roles and consulting engagements.</div>
               </div>
+
               <div className="flex items-start gap-2">
                 <span className="mt-0.5 text-primary">
                   <MessageCircleQuestionMark className="w-4 h-4" />
                 </span>
-                <div>Client consultaitons.</div>
+                <div>Client consultations and architecture reviews.</div>
               </div>
+
             </CardContent>
           </Card>
         </div>
@@ -723,41 +1021,33 @@ function AboutSection() {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          With over two decades of experience spanning software development, IT,
-          customer success, and enterprise architecture, I specialize in
-          bridging technical execution with business strategy. My career has
-          evolved from Tier III technical support and full stack development to
-          leading roles in customer success, project management, and solutions
-          architecture. I thrive at designing scalable systems, guiding teams
-          through complex transformations, and ensuring technology delivers
-          measurable business outcomes. Whether architecting cloud-native
-          solutions, driving customer adoption, or mentoring technical teams, I
-          bring a proven ability to align innovation with impact.
+          I’m a technical solutions architect and full‑stack engineer with deep
+          experience across software development, cloud architecture, workflow
+          automation, and enterprise eSignature systems. My background spans
+          engineering, customer success, and IT operations — giving me a unique
+          ability to bridge business needs with technical execution.
+          <br /><br />
+          I specialize in designing scalable systems, modernizing legacy workflows,
+          and delivering solutions that are secure, maintainable, and built for
+          long‑term success. Whether I’m building full‑stack applications, integrating
+          DocuSign and eOriginal, or architecting cloud‑native platforms, I focus on
+          clarity, reliability, and developer experience.
         </p>
 
+
         <div className="grid gap-4 md:grid-cols-3">
-          <Stat
-            label="Focus"
-            value="Full Stack"
-            icon={<Terminal className="w-4 h-4" />}
-          />
-          <Stat
-            label="Primary stack"
-            value="React • Laravel • SwiftUI"
-            icon={<Code2 className="w-4 h-4" />}
-          />
-          <Stat
-            label="Strength"
-            value="DX + Docs"
-            icon={<BookOpen className="w-4 h-4" />}
-          />
+          <Stat label="Focus" value="Architecture + Engineering" icon={<Terminal className="w-4 h-4" />} />
+          <Stat label="Primary Stack" value="React • Node • AWS" icon={<Code2 className="w-4 h-4" />} />
+          <Stat label="Strength" value="DX + Automation" icon={<BookOpen className="w-4 h-4" />} />
+
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Badge>Systems Thinking</Badge>
-          <Badge>Design Systems</Badge>
-          <Badge>Automation</Badge>
-          <Badge>Observability</Badge>
+          <Badge>Cloud</Badge>
+          <Badge>Workflow Automation</Badge>
+          <Badge>eSignature</Badge>
+          <Badge>Systems Design</Badge>
+
         </div>
       </CardContent>
     </Card>
@@ -770,27 +1060,18 @@ function ExperienceSection() {
       <CardHeader>
         <CardTitle>Professional Experience</CardTitle>
         <CardDescription>
-          From Full Stack to Enterprise Strategy: 20+ Years of Building,
-          Leading, and Transforming Technology
+          Engineering, architecture, and workflow automation across SaaS, financial
+          services, digital mortgage, and enterprise platforms. I build systems that
+          scale, teams that deliver, and processes that reduce operational friction.
         </CardDescription>
+
       </CardHeader>
       <CardContent>
         <div className="grid gap-4 md:grid-cols-3">
-          <Stat
-            label="Delivery"
-            value="Product-grade"
-            icon={<Layers3 className="w-4 h-4" />}
-          />
-          <Stat
-            label="Bias"
-            value="Maintainability"
-            icon={<FileText className="w-4 h-4" />}
-          />
-          <Stat
-            label="Ops"
-            value="Practical"
-            icon={<Terminal className="w-4 h-4" />}
-          />
+          <Stat label="Delivery" value="Production‑grade" icon={<Layers3 className="w-4 h-4" />} />
+          <Stat label="Bias" value="Simplicity + Maintainability" icon={<FileText className="w-4 h-4" />} />
+          <Stat label="Ops" value="Secure + Observable" icon={<Terminal className="w-4 h-4" />} />
+
         </div>
 
         <div className="mt-6">
@@ -799,17 +1080,13 @@ function ExperienceSection() {
               <AccordionTrigger>Highlights</AccordionTrigger>
               <AccordionContent>
                 <ul className="pl-5 list-disc">
-                  <li>
-                    Builds developer-first systems: tooling, docs, automation.
-                  </li>
-                  <li>
-                    Strong UI systems: shadcn/Tailwind, design tokens,
-                    consistent navigation.
-                  </li>
-                  <li>
-                    Operational focus: deployment, performance, maintainability.
-                  </li>
+                  <li>Architected cloud‑native systems with strong security and observability.</li>
+                  <li>Integrated DocuSign + eOriginal for regulated digital workflows.</li>
+                  <li>Built full‑stack applications with React, Node, Python, and SwiftUI.</li>
+                  <li>Designed developer‑first tooling, documentation, and automation.</li>
+                  <li>Led technical delivery across cross‑functional teams.</li>
                 </ul>
+
               </AccordionContent>
             </AccordionItem>
 

@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useState } from "react";
 import { getThemeCookie, setThemeCookie } from "@/lib/theme-cookie";
@@ -52,7 +53,7 @@ const LINKS = {
   docs: "https://docs.williamjwhite.me",
   github: "https://github.com/williamjwhite",
   linkedin: "https://www.linkedin.com/in/william-j-white-ny",
-  email: "mailto:williamjwhite@gmail.com",
+  email: "mailto:hello@williamjwhite.me",
 };
 
 function useThemeToggle() {
@@ -102,13 +103,8 @@ function scrollToId(id: string) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-
-
 export default function App() {
   const { isDark, toggle } = useThemeToggle();
-
-  const [showConnectModal, setShowConnectModal] = useState(false);
-  const [showCaseStudyModal, setShowCaseStudyModal] = useState(false);
 
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [answer, setAnswer] = useState("");
@@ -368,8 +364,250 @@ export default function App() {
               <ConnectSection />
             </div>
           </TabsContent>
+          {/* New Tabs - Content */}
+          <TabsContent value="services">
+            <div id="services" className="scroll-mt-24">
+              <TwoCol
+                left={
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Services</CardTitle>
+                      <CardDescription>
+                        Full‑stack engineering, architecture, and workflow automation.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-sm text-muted-foreground">
+                      <p>
+                        I help organizations design, build, and scale secure digital
+                        workflows, cloud‑native applications, and enterprise‑grade
+                        eSignature systems. My work blends engineering depth with
+                        solutions‑architecture clarity.
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Badge>Full‑Stack</Badge>
+                        <Badge>Cloud</Badge>
+                        <Badge>DevOps</Badge>
+                        <Badge>DocuSign</Badge>
+                        <Badge>eOriginal</Badge>
+                        <Badge>AI/ML</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+                right={
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>What I Deliver</CardTitle>
+                      <CardDescription>High‑impact technical outcomes.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 text-sm text-muted-foreground">
+                      <ul className="pl-5 list-disc">
+                        <li>Full‑stack application development (React, Node, Python)</li>
+                        <li>Cloud architecture & DevOps (AWS, Docker, CI/CD)</li>
+                        <li>DocuSign API + eOriginal eVaulting integrations</li>
+                        <li>Workflow automation & system modernization</li>
+                        <li>AI‑powered document processing & routing</li>
+                        <li>Technical leadership & digital transformation</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                }
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="case-study">
+            <div id="case-study" className="scroll-mt-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Case Study: Digital Mortgage Workflow</CardTitle>
+                  <CardDescription>
+                    DocuSign + eOriginal eVaulting architecture for regulated lending.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-6 text-sm text-muted-foreground">
+                  <TwoCol
+                    left={
+                      <div className="space-y-3">
+                        <Stat
+                          label="Processing Time"
+                          value="Days → Hours"
+                          icon={<Clock className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Manual Work"
+                          value="−70%"
+                          icon={<Layers3 className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Compliance"
+                          value="Fully Digital"
+                          icon={<ShieldCheck className="w-4 h-4" />}
+                        />
+                      </div>
+                    }
+                    right={
+                      <p>
+                        Architected a fully digital mortgage workflow integrating
+                        DocuSign, eOriginal, and internal LOS systems. Automated envelope
+                        creation, routing, eVaulting, and audit‑grade event processing.
+                      </p>
+                    }
+                  />
+
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="challenge">
+                      <AccordionTrigger>Challenge</AccordionTrigger>
+                      <AccordionContent>
+                        Manual document handling, slow closing cycles, and compliance
+                        friction across multiple systems.
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="solution">
+                      <AccordionTrigger>Solution</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-5 list-disc">
+                          <li>DocuSign API envelope automation</li>
+                          <li>Webhook‑driven event processing</li>
+                          <li>eOriginal eVaulting + secure transfer</li>
+                          <li>Audit‑grade lifecycle tracking</li>
+                          <li>Cloud‑native deployment</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="results">
+                      <AccordionTrigger>Results</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-5 list-disc">
+                          <li>Closing time reduced from days to hours</li>
+                          <li>Eliminated manual document handling</li>
+                          <li>Improved compliance and audit readiness</li>
+                          <li>Better borrower experience</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="cloud">
+            <div id="cloud" className="scroll-mt-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Cloud Architecture</CardTitle>
+                  <CardDescription>
+                    Scalable, secure, cloud‑native deployment patterns.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <TwoCol
+                    left={
+                      <div className="space-y-3">
+                        <Stat
+                          label="Platform"
+                          value="AWS"
+                          icon={<Cloud className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Orchestration"
+                          value="Docker / ECS"
+                          icon={<Layers3 className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Deployments"
+                          value="CI/CD"
+                          icon={<Terminal className="w-4 h-4" />}
+                        />
+                      </div>
+                    }
+                    right={
+                      <p>
+                        Designed and deployed multi‑service cloud architectures using AWS,
+                        Docker, ECS, and GitHub Actions. Focus on security, observability,
+                        and zero‑downtime releases.
+                      </p>
+                    }
+                  />
+
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>AWS</Badge>
+                    <Badge>Docker</Badge>
+                    <Badge>CI/CD</Badge>
+                    <Badge>PostgreSQL</Badge>
+                    <Badge>Redis</Badge>
+                    <Badge>API Gateway</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="ai">
+            <div id="ai" className="scroll-mt-24">
+              <Card>
+                <CardHeader>
+                  <CardTitle>AI Workflow Automation</CardTitle>
+                  <CardDescription>
+                    Intelligent document processing and routing.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <TwoCol
+                    left={
+                      <p>
+                        Built AI‑powered systems that classify, extract, and route
+                        documents using LLMs and embeddings. Integrated with existing
+                        workflow systems for real‑time automation.
+                      </p>
+                    }
+                    right={
+                      <div className="space-y-3">
+                        <Stat
+                          label="Manual Review"
+                          value="−85%"
+                          icon={<Search className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Accuracy"
+                          value="High"
+                          icon={<CheckCircle className="w-4 h-4" />}
+                        />
+                        <Stat
+                          label="Latency"
+                          value="Low"
+                          icon={<Zap className="w-4 h-4" />}
+                        />
+                      </div>
+                    }
+                  />
+
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="features">
+                      <AccordionTrigger>Features</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-5 list-disc">
+                          <li>Document classification via embeddings</li>
+                          <li>Field extraction using LLMs</li>
+                          <li>Smart routing based on business rules</li>
+                          <li>Real‑time audit logging</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+
         </Tabs>
 
+        
         {/* Human Verification Modal */}
         <Dialog open={showResumeModal} onOpenChange={setShowResumeModal}>
           <DialogContent>
@@ -395,177 +633,6 @@ export default function App() {
             </div>
           </DialogContent>
         </Dialog>
-
-
-        {/* Tabs moved up: directly below intro + avatar
-        <Tabs defaultValue="overview" className="mt-6">
-          <TabsList className="justify-start w-full">
-            <TabsTrigger value="overview">
-              <Globe className="w-4 h-4" /> Overview
-            </TabsTrigger>
-            <TabsTrigger value="about">
-              <FileText className="w-4 h-4" /> About
-            </TabsTrigger>
-            <TabsTrigger value="experience">
-              <Briefcase className="w-4 h-4" /> Experience
-            </TabsTrigger>
-            <TabsTrigger value="projects">
-              <Code2 className="w-4 h-4" /> Projects
-            </TabsTrigger>
-            <TabsTrigger value="docs">
-              <BookOpen className="w-4 h-4" /> Docs
-            </TabsTrigger>
-            <TabsTrigger value="connect">
-              <Mail className="w-4 h-4" /> Connect
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview">
-            <TwoCol
-              left={
-                <Card>
-                  <CardHeader>
-                    <CardTitle>What this site is</CardTitle>
-                    <CardDescription>
-                      A combination of my Professional experience, current and
-                      past projects, resouces and tools I use, guides I've
-                      created I hope you find useful.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <ul className="pl-5 text-sm list-disc text-muted-foreground">
-                      <li>
-                        My primary website: <strong>williamjwhite.me</strong>
-                      </li>
-                      <li>
-                        Developer Guides + reference at{" "}
-                        <strong>docs.williamjwhite.me</strong>
-                      </li>
-                      <li>
-                        You'll find About, Experience, and how to contact me in
-                        the Connect section.
-                      </li>
-                    </ul>
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      <Badge>React 19</Badge>
-                      <Badge>Vite</Badge>
-                      <Badge>Tailwind v4</Badge>
-                      <Badge>shadcn/ui</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              }
-              right={
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Fast paths</CardTitle>
-                    <CardDescription>
-                      Where most visitors should go next.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <FastLink
-                      icon={<FileText className="w-4 h-4" />}
-                      title="About"
-                      desc="Quick bio, focus areas, and working style."
-                      href="#about"
-                    />
-                    <FastLink
-                      icon={<Briefcase className="w-4 h-4" />}
-                      title="Experience"
-                      desc="High-signal summary with optional drill-down."
-                      href="#experience"
-                    />
-                    <FastLink
-                      icon={<Mail className="w-4 h-4" />}
-                      title="Connect"
-                      desc="Email + social links; fastest ways to reach me."
-                      href="#connect"
-                    />
-                    <FastLink
-                      icon={<BookOpen className="w-4 h-4" />}
-                      title="Developer Guides"
-                      desc="Guides, standards, tooling, and references."
-                      href={LINKS.docs}
-                    />
-                  </CardContent>
-                </Card>
-              }
-            />
-          </TabsContent>
-
-          <TabsContent value="about">
-            <div id="about" className="scroll-mt-24">
-              <AboutSection />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="experience">
-            <div id="experience" className="scroll-mt-24">
-              <ExperienceSection />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="projects">
-            <div className="grid gap-4 md:grid-cols-2">
-              <ProjectCard
-                title="TrakTeam"
-                desc="Multi-platform operational tooling for crew workflows and commissary ordering."
-                href={`${LINKS.docs}/projects/trakteam/overview`}
-                tags={["SwiftUI", "Operations", "Inventory"]}
-              />
-              <ProjectCard
-                title="CodeVault"
-                desc="Multi-platform snippet management, formatting, and future cloud sync."
-                href={`${LINKS.docs}/projects/codevault/overview`}
-                tags={["SwiftUI", "DevTools", "Productivity"]}
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="docs">
-            <Card>
-              <CardHeader>
-                <CardTitle>Developer Guides (Docs Site)</CardTitle>
-                <CardDescription>
-                  Structured content, searchable, versionable.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-3 md:grid-cols-2">
-                <DocTile
-                  icon={<BookOpen className="w-4 h-4" />}
-                  title="Developer Guides"
-                  href={`${LINKS.docs}/developer-guides`}
-                  items={["Tooling", "Frontend", "Backend"]}
-                />
-                <DocTile
-                  icon={<Layers3 className="w-4 h-4" />}
-                  title="Deep Dives"
-                  href={`${LINKS.docs}/deep-dives`}
-                  items={["Architecture", "Performance"]}
-                />
-                <DocTile
-                  icon={<FileText className="w-4 h-4" />}
-                  title="Cheatsheets"
-                  href={`${LINKS.docs}/cheatsheets`}
-                  items={["Git", "Node", "DNS"]}
-                />
-                <DocTile
-                  icon={<Map className="w-4 h-4" />}
-                  title="General"
-                  href={`${LINKS.docs}/general`}
-                  items={["Notes", "Reference"]}
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="connect">
-            <div id="connect" className="scroll-mt-24">
-              <ConnectSection />
-            </div>
-          </TabsContent>
-        </Tabs> */}
 
         <Separator className="my-10" />
 
@@ -871,7 +938,18 @@ function ExperienceSection() {
 
       </CardHeader>
       <CardContent>
+        <Button
+  onClick={() =>
+    window.open("/resume.pdf", "_blank", "noopener,noreferrer")
+  }
+>
+  <FileText className="w-4 h-4 mr-2" />
+  View Resume
+</Button>
+      </CardContent>
+      <CardContent>
         <div className="grid gap-4 md:grid-cols-3">
+          
           <Stat label="Delivery" value="Production‑grade" icon={<Layers3 className="w-4 h-4" />} />
           <Stat label="Bias" value="Simplicity + Maintainability" icon={<FileText className="w-4 h-4" />} />
           <Stat label="Ops" value="Secure + Observable" icon={<Terminal className="w-4 h-4" />} />
@@ -1243,68 +1321,3 @@ function Footer() {
   );
 }
 
-// function IconLink({
-//   href,
-//   label,
-//   icon,
-// }: {
-//   href: string;
-//   label: string;
-//   icon: React.ReactNode;
-// }) {
-//   return (
-//     <a
-//       href={href}
-//       className="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold transition border rounded-xl border-border bg-card hover:bg-muted/50"
-//     >
-//       <span className="text-primary">{icon}</span>
-//       {label}
-//     </a>
-//   );
-// }
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-// export default function App() {
-//   return (
-//     <div className="min-h-dvh bg-background text-foreground">
-//       <main className="max-w-5xl px-4 py-12 mx-auto">
-//         <div className="grid gap-8 md:grid-cols-2 md:items-center">
-//           <div className="space-y-4">
-//             <div className="inline-flex items-center px-3 py-1 text-xs border rounded-full text-muted-foreground">
-//               GitHub Pages • Vite • Tailwind v4 • shadcn/ui
-//             </div>
-//             <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
-//               William J. White
-//             </h1>
-//             <p className="text-pretty text-muted-foreground">
-//               Shipping maintainable full-stack systems with strong developer experience.
-//             </p>
-//             <div className="flex flex-col gap-2 sm:flex-row">
-//               <Button asChild>
-//                 <a href="mailto:you@williamjwhite.me">Contact</a>
-//               </Button>
-//               <Button variant="outline" asChild>
-//                 <a href="https://github.com/williamjwhite" target="_blank" rel="noreferrer">
-//                   GitHub
-//                 </a>
-//               </Button>
-//             </div>
-//           </div>
-
-//           <Card>
-//             <CardHeader>
-//               <CardTitle>Now</CardTitle>
-//               <CardDescription>Initial landing page is live.</CardDescription>
-//             </CardHeader>
-//             <CardContent className="space-y-2 text-sm text-muted-foreground">
-//               <div>• Hooking up `williamjwhite.me` → GitHub Pages</div>
-//               <div>• Tailwind v4 working without CLI init</div>
-//               <div>• shadcn-style UI components ready</div>
-//             </CardContent>
-//           </Card>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }

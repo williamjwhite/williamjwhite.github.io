@@ -1,9 +1,4 @@
-import * as React from "react";
 import {
-  MessageCircleQuestionMark,
-  Search,
-  Terminal,
-  Truck,
   Rss,
   LogIn,
   Bot,
@@ -18,14 +13,13 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import React from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -365,13 +359,6 @@ function AiBot() {
 
 // ─── Now Items ────────────────────────────────────────────────────────────────
 
-// const NOW_ITEMS = [
-//   { icon: <Terminal className="w-4 h-4" />, text: "This site — it's a work in progress. Started 12/12/2025" },
-//   { icon: <Terminal className="w-4 h-4" />, text: "Updating williamjwhite.me with new content and case studies." },
-//   { icon: <Truck className="w-4 h-4" />, text: "Recently relocated to New York from Seattle and exploring new opportunities." },
-//   { icon: <Search className="w-4 h-4" />, text: "Open to full‑time roles and consulting engagements." },
-//   { icon: <MessageCircleQuestionMark className="w-4 h-4" />, text: "Client consultations and architecture reviews." },
-// ];
 
 // ─── Main SidebarCard ─────────────────────────────────────────────────────────
 

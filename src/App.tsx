@@ -1,5 +1,4 @@
 import { useState } from "react";
-import * as React from "react";
 
 import {
   BookOpen, Briefcase, Code2, FileText, Globe, Layers3, Mail,

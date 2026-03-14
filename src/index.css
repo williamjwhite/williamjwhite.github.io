@@ -252,6 +252,14 @@ main {
   scrollbar-width: thin;
   padding-bottom: 0.25rem;
 }
+.tab-rail {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+
+.tab-rail::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari */
+}
 
 /* PAGE FADE IN/OUT  */
 #root {

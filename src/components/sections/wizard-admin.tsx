@@ -4,8 +4,8 @@
 
 import * as React from "react";
 import {
-  AlertTriangle, Check, ChevronDown, ChevronUp, Edit3, Eye,
-  EyeOff, GripVertical, Loader2, Plus, Save, Trash2, X,
+  AlertTriangle, Check, ChevronDown, ChevronUp, Eye,
+  EyeOff, GripVertical, Plus, Save, Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -240,8 +240,7 @@ function StepEditor({
 function WizardEditor({ wizardId }: { wizardId: string }) {
   const [config, setConfig]       = React.useState<WizardConfig>(() => getWizardConfig(wizardId));
   const [saved,  setSaved]        = React.useState(false);
-  const [preview, setPreview]     = React.useState(false);
-
+  
   function updateConfig(partial: Partial<WizardConfig>) {
     setConfig(prev => ({ ...prev, ...partial }));
   }

@@ -1,7 +1,8 @@
 import * as React from "react";
+// fixed — X added back:
 import {
-  Rss, LogIn, Bot, Send, ExternalLink, X, Loader2,
-  FileUp, CalendarDays, CheckCircle, Server,
+  Rss, LogIn, Bot, Send, ExternalLink, Loader2,
+  FileUp, CalendarDays, Server, X,
 } from "lucide-react";
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
@@ -13,10 +14,9 @@ import { Separator } from "@/components/ui/separator";
 import { useServerStatus } from "@/hooks/use-server-status";
 import { StatusDot } from "@/components/sections/status-dot";
 
-import { DocumentWizard }      from "@/components/wizards/document-wizard";
-import { ConsultationWizard }  from "@/components/wizards/consultation-wizard";
-import { ClientPortalModal }   from "@/components/wizards/client-portal-modal";
-
+import { DocumentWizard } from "@/components/wizards/document-wizard";
+import { ConsultationWizard } from "@/components/wizards/consultation-wizard";
+import { ClientPortalModal } from "@/components/wizards/client-portal-modal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -24,23 +24,18 @@ interface RssItem { title: string; url: string; source: string; }
 
 // ─── RSS: My Posts (static, editable from Admin) ──────────────────────────────
 
-const RSS_URLS_KEY = "wjw_rss_urls";
-
-interface RssConfig { label: string; url: string; active: boolean; }
-
 function getMyPosts(): RssItem[] {
-  // My posts are hardcoded here — Admin can add/remove via RSS config
   return [
-    { title: "Setting up Tailwind v4 in an Nx Monorepo",   url: "https://docs.williamjwhite.me/blog/tailwind-v4-nx",          source: "Me" },
-    { title: "DocuSign + eOriginal: A Field Guide",         url: "https://docs.williamjwhite.me/blog/docusign-eoriginal",       source: "Me" },
-    { title: "Cloud‑Native Patterns for Small Teams",       url: "https://docs.williamjwhite.me/blog/cloud-native-small-teams", source: "Me" },
+    { title: "Setting up Tailwind v4 in an Nx Monorepo", url: "https://docs.williamjwhite.me/blog/tailwind-v4-nx", source: "Me" },
+    { title: "DocuSign + eOriginal: A Field Guide", url: "https://docs.williamjwhite.me/blog/docusign-eoriginal", source: "Me" },
+    { title: "Cloud‑Native Patterns for Small Teams", url: "https://docs.williamjwhite.me/blog/cloud-native-small-teams", source: "Me" },
   ];
 }
 
 // ─── RSS: Hacker News ─────────────────────────────────────────────────────────
 
 function useHackerNews(count = 5): { items: RssItem[]; loading: boolean } {
-  const [items,   setItems]   = React.useState<RssItem[]>([]);
+  const [items, setItems] = React.useState<RssItem[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -61,8 +56,8 @@ function useHackerNews(count = 5): { items: RssItem[]; loading: boolean } {
         if (!cancelled) {
           setItems(
             stories.map((s: { title: string; url?: string; id: number }) => ({
-              title:  s.title,
-              url:    s.url ?? `https://news.ycombinator.com/item?id=${s.id}`,
+              title: s.title,
+              url: s.url ?? `https://news.ycombinator.com/item?id=${s.id}`,
               source: "HN",
             }))
           );
@@ -80,7 +75,7 @@ function useHackerNews(count = 5): { items: RssItem[]; loading: boolean } {
 // ─── RSS: Dev.to ──────────────────────────────────────────────────────────────
 
 function useDevTo(count = 5): { items: RssItem[]; loading: boolean } {
-  const [items,   setItems]   = React.useState<RssItem[]>([]);
+  const [items, setItems] = React.useState<RssItem[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -93,8 +88,8 @@ function useDevTo(count = 5): { items: RssItem[]; loading: boolean } {
         if (!cancelled) {
           setItems(
             data.map(a => ({
-              title:  a.title,
-              url:    a.url ?? a.canonical_url,
+              title: a.title,
+              url: a.url ?? a.canonical_url,
               source: "Dev.to",
             }))
           );
@@ -114,25 +109,25 @@ function useDevTo(count = 5): { items: RssItem[]; loading: boolean } {
 type FeedTab = "mine" | "hn" | "devto";
 
 function RssFeed() {
-  const [tab,      setTab]      = React.useState<FeedTab>("mine");
+  const [tab, setTab] = React.useState<FeedTab>("mine");
   const [expanded, setExpanded] = React.useState(false);
 
-  const { items: hnItems,    loading: hnLoading    } = useHackerNews(6);
+  const { items: hnItems, loading: hnLoading } = useHackerNews(6);
   const { items: devtoItems, loading: devtoLoading } = useDevTo(6);
 
   const sourceMap: Record<FeedTab, { items: RssItem[]; loading: boolean }> = {
-    mine:  { items: getMyPosts(),  loading: false        },
-    hn:    { items: hnItems,       loading: hnLoading    },
-    devto: { items: devtoItems,    loading: devtoLoading },
+    mine: { items: getMyPosts(), loading: false },
+    hn: { items: hnItems, loading: hnLoading },
+    devto: { items: devtoItems, loading: devtoLoading },
   };
 
   const { items, loading } = sourceMap[tab];
   const visible = expanded ? items : items.slice(0, 3);
 
   const tabs: { id: FeedTab; label: string }[] = [
-    { id: "mine",  label: "My Posts" },
-    { id: "hn",    label: "HN"       },
-    { id: "devto", label: "Dev.to"   },
+    { id: "mine", label: "My Posts" },
+    { id: "hn", label: "HN" },
+    { id: "devto", label: "Dev.to" },
   ];
 
   return (
@@ -143,11 +138,10 @@ function RssFeed() {
           <button
             key={t.id}
             onClick={() => { setTab(t.id); setExpanded(false); }}
-            className={`px-2.5 py-1 rounded text-xs transition-colors ${
-              tab === t.id
+            className={`px-2.5 py-1 rounded text-xs transition-colors ${tab === t.id
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/70"
-            }`}
+              }`}
           >
             {t.label}
           </button>
@@ -195,309 +189,6 @@ function RssFeed() {
   );
 }
 
-// ─── Document Submission ──────────────────────────────────────────────────────
-// Sends multipart form to /api/documents/submit
-// Backend should: (1) store record in DB, (2) send email notification to you.
-// See README comment at bottom of this file for the expected API shape.
-
-// function DocumentSubmission() {
-//   const [open,   setOpen]   = React.useState(false);
-//   const [name,   setName]   = React.useState("");
-//   const [email,  setEmail]  = React.useState("");
-//   const [type,   setType]   = React.useState("");
-//   const [note,   setNote]   = React.useState("");
-//   const [file,   setFile]   = React.useState<File | null>(null);
-//   const [status, setStatus] = React.useState<"idle" | "sending" | "sent" | "error">("idle");
-
-//   function reset() {
-//     setOpen(false); setStatus("idle");
-//     setName(""); setEmail(""); setType(""); setNote(""); setFile(null);
-//   }
-
-//   async function handleSubmit(e: React.FormEvent) {
-//     e.preventDefault();
-//     if (!name.trim() || !email.trim()) return;
-//     setStatus("sending");
-
-//     try {
-//       const fd = new FormData();
-//       fd.append("name",         name.trim());
-//       fd.append("email",        email.trim());
-//       fd.append("documentType", type);
-//       fd.append("note",         note.trim());
-//       fd.append("timestamp",    new Date().toISOString());
-//       if (file) fd.append("file", file);
-
-//       // POST to your backend — expects { ok: true, id: string }
-//       // Backend responsibility: store in DB + send email notification
-//       const res = await fetch("/api/documents/submit", { method: "POST", body: fd });
-//       setStatus(res.ok ? "sent" : "error");
-//     } catch {
-//       setStatus("error");
-//     }
-//   }
-
-//   if (!open) {
-//     return (
-//       <Button variant="outline" size="sm" className="w-full gap-2" onClick={() => setOpen(true)}>
-//         <FileUp className="w-3.5 h-3.5 text-primary" /> Document Submission
-//       </Button>
-//     );
-//   }
-
-//   if (status === "sent") {
-//     return (
-//       <div className="flex flex-col items-center gap-2 py-4 text-center">
-//         <CheckCircle className="w-6 h-6 text-primary" />
-//         <p className="text-xs font-medium">Submitted — I'll be in touch shortly.</p>
-//         <p className="text-xs text-muted-foreground">A confirmation has been sent to {email}.</p>
-//         <Button size="sm" variant="outline" onClick={reset}>Done</Button>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-2">
-//       <div className="flex items-center justify-between mb-1">
-//         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-//           Submit Documents
-//         </span>
-//         <button type="button" onClick={() => setOpen(false)}
-//           className="text-muted-foreground hover:text-foreground transition-colors">
-//           <X className="w-3.5 h-3.5" />
-//         </button>
-//       </div>
-
-//       <Input placeholder="Your name *"  className="h-8 text-xs" value={name}
-//         onChange={e => setName(e.target.value)} required />
-//       <Input placeholder="Your email *" className="h-8 text-xs" value={email}
-//         onChange={e => setEmail(e.target.value)} type="email" required />
-
-//       <select
-//         className="w-full h-8 px-3 text-xs border rounded-md bg-background border-input focus:outline-none focus:ring-2 focus:ring-ring text-muted-foreground"
-//         value={type} onChange={e => setType(e.target.value)}
-//       >
-//         <option value="">Document type (optional)</option>
-//         <option value="proposal">Proposal / RFP</option>
-//         <option value="contract">Contract</option>
-//         <option value="brief">Project Brief</option>
-//         <option value="nda">NDA</option>
-//         <option value="other">Other</option>
-//       </select>
-
-//       <textarea
-//         placeholder="Brief note (optional)"
-//         className="w-full px-3 py-1.5 text-xs border rounded-md bg-background border-input focus:outline-none focus:ring-2 focus:ring-ring resize-none h-16"
-//         value={note} onChange={e => setNote(e.target.value)}
-//       />
-
-//       <div className="space-y-1">
-//         <label className="text-xs text-muted-foreground">
-//           Attach file (PDF, DOC, DOCX, PNG, JPG — max 10 MB)
-//         </label>
-//         <input
-//           type="file"
-//           accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
-//           className="w-full text-xs text-muted-foreground file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-muted file:text-foreground hover:file:bg-muted/70"
-//           onChange={e => setFile(e.target.files?.[0] ?? null)}
-//         />
-//       </div>
-
-//       {status === "error" && (
-//         <p className="text-xs text-destructive">
-//           Submission failed. Please email{" "}
-//           <a href="mailto:hello@williamjwhite.me" className="underline">
-//             hello@williamjwhite.me
-//           </a>{" "}
-//           directly.
-//         </p>
-//       )}
-
-//       <Button
-//         type="submit" size="sm" className="w-full gap-2"
-//         disabled={status === "sending" || !name.trim() || !email.trim()}
-//       >
-//         {status === "sending"
-//           ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</>
-//           : <><FileUp  className="w-3.5 h-3.5" /> Submit Securely</>}
-//       </Button>
-
-//       <p className="text-[10px] text-muted-foreground text-center">
-//         Stored securely · notification sent to William
-//       </p>
-//     </form>
-//   );
-// }
-
-// ─── Consultation Request ─────────────────────────────────────────────────────
-
-// function ConsultationRequest() {
-//   const [open,    setOpen]    = React.useState(false);
-//   const [name,    setName]    = React.useState("");
-//   const [email,   setEmail]   = React.useState("");
-//   const [company, setCompany] = React.useState("");
-//   const [project, setProject] = React.useState("");
-//   const [budget,  setBudget]  = React.useState("");
-//   const [status,  setStatus]  = React.useState<"idle" | "sending" | "sent" | "error">("idle");
-
-//   function reset() {
-//     setOpen(false); setStatus("idle");
-//     setName(""); setEmail(""); setCompany(""); setProject(""); setBudget("");
-//   }
-
-//   async function handleSubmit(e: React.FormEvent) {
-//     e.preventDefault();
-//     if (!name.trim() || !email.trim() || !project.trim()) return;
-//     setStatus("sending");
-//     try {
-//       const res = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json", Accept: "application/json" },
-//         body: JSON.stringify({ name, email, company, project, budget }),
-//       });
-//       setStatus(res.ok ? "sent" : "error");
-//     } catch { setStatus("error"); }
-//   }
-
-//   if (!open) {
-//     return (
-//       <Button variant="outline" size="sm" className="w-full gap-2" onClick={() => setOpen(true)}>
-//         <CalendarDays className="w-3.5 h-3.5 text-primary" /> Request a Consultation
-//       </Button>
-//     );
-//   }
-
-//   if (status === "sent") {
-//     return (
-//       <div className="flex flex-col items-center gap-2 py-4 text-center">
-//         <CheckCircle className="w-6 h-6 text-primary" />
-//         <p className="text-xs font-medium">Request received.</p>
-//         <p className="text-xs text-muted-foreground">I'll reach out within 1–2 business days.</p>
-//         <Button size="sm" variant="outline" onClick={reset}>Done</Button>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-2">
-//       <div className="flex items-center justify-between mb-1">
-//         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-//           Request a Consultation
-//         </span>
-//         <button type="button" onClick={() => setOpen(false)}
-//           className="text-muted-foreground hover:text-foreground transition-colors">
-//           <X className="w-3.5 h-3.5" />
-//         </button>
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-2">
-//         <Input placeholder="Name *"  className="h-8 text-xs" value={name}
-//           onChange={e => setName(e.target.value)} required />
-//         <Input placeholder="Email *" className="h-8 text-xs" value={email}
-//           onChange={e => setEmail(e.target.value)} type="email" required />
-//       </div>
-
-//       <Input placeholder="Company (optional)" className="h-8 text-xs" value={company}
-//         onChange={e => setCompany(e.target.value)} />
-
-//       <textarea
-//         placeholder="Tell me about your project *"
-//         className="w-full px-3 py-1.5 text-xs border rounded-md bg-background border-input focus:outline-none focus:ring-2 focus:ring-ring resize-none h-20"
-//         value={project} onChange={e => setProject(e.target.value)} required
-//       />
-
-//       <select
-//         className="w-full h-8 px-3 text-xs border rounded-md bg-background border-input focus:outline-none focus:ring-2 focus:ring-ring text-muted-foreground"
-//         value={budget} onChange={e => setBudget(e.target.value)}
-//       >
-//         <option value="">Budget range (optional)</option>
-//         <option value="<5k">Under $5k</option>
-//         <option value="5-15k">$5k – $15k</option>
-//         <option value="15-50k">$15k – $50k</option>
-//         <option value="50k+">$50k+</option>
-//         <option value="tbd">To be determined</option>
-//       </select>
-
-//       {status === "error" && (
-//         <p className="text-xs text-destructive">
-//           Submission failed. Email{" "}
-//           <a href="mailto:hello@williamjwhite.me" className="underline">
-//             hello@williamjwhite.me
-//           </a>.
-//         </p>
-//       )}
-
-//       <Button
-//         type="submit" size="sm" className="w-full gap-2"
-//         disabled={status === "sending" || !name.trim() || !email.trim() || !project.trim()}
-//       >
-//         {status === "sending"
-//           ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</>
-//           : <><CalendarDays className="w-3.5 h-3.5" /> Request Consultation</>}
-//       </Button>
-//     </form>
-//   );
-// }
-
-// ─── Client Portal ────────────────────────────────────────────────────────────
-
-// function ClientPortal() {
-//   const [open,     setOpen]     = React.useState(false);
-//   const [email,    setEmail]    = React.useState("");
-//   const [password, setPassword] = React.useState("");
-//   const [loading,  setLoading]  = React.useState(false);
-//   const [error,    setError]    = React.useState("");
-
-//   async function handleLogin(e: React.FormEvent) {
-//     e.preventDefault();
-//     if (!email.trim() || !password.trim()) { setError("Please enter your email and password."); return; }
-//     setLoading(true); setError("");
-//     try {
-//       const res = await fetch("/api/client/login", {
-//         method: "POST", headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ email, password }),
-//       });
-//       if (res.ok) {
-//         const { redirectUrl } = await res.json();
-//         window.location.href = redirectUrl ?? "/client/dashboard";
-//       } else { setError("Invalid credentials. Please try again."); }
-//     } catch { setError("Unable to connect. Please try again."); }
-//     finally { setLoading(false); }
-//   }
-
-//   if (!open) {
-//     return (
-//       <Button variant="outline" size="sm" className="w-full gap-2" onClick={() => setOpen(true)}>
-//         <LogIn className="w-3.5 h-3.5" /> Client Portal Login
-//       </Button>
-//     );
-//   }
-
-//   return (
-//     <form onSubmit={handleLogin} className="space-y-2">
-//       <div className="flex items-center justify-between mb-1">
-//         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-//           Client Portal
-//         </span>
-//         <button type="button" onClick={() => { setOpen(false); setError(""); }}
-//           className="text-muted-foreground hover:text-foreground transition-colors">
-//           <X className="w-3.5 h-3.5" />
-//         </button>
-//       </div>
-//       <Input type="email"    placeholder="Email"    className="h-8 text-xs" value={email}
-//         onChange={e => { setEmail(e.target.value);    setError(""); }} disabled={loading} />
-//       <Input type="password" placeholder="Password" className="h-8 text-xs" value={password}
-//         onChange={e => { setPassword(e.target.value); setError(""); }} disabled={loading} />
-//       {error && <p className="text-xs text-destructive">{error}</p>}
-//       <Button type="submit" size="sm" className="w-full gap-2" disabled={loading}>
-//         {loading
-//           ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Signing in…</>
-//           : <><LogIn   className="w-3.5 h-3.5" /> Sign In</>}
-//       </Button>
-//     </form>
-//   );
-// }
-
 // ─── AI Bot ───────────────────────────────────────────────────────────────────
 
 interface ChatMessage { role: "user" | "bot"; text: string; }
@@ -507,10 +198,10 @@ const BOT_INTRO: ChatMessage = {
 };
 
 function AiBot() {
-  const [open,     setOpen]     = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const [messages, setMessages] = React.useState<ChatMessage[]>([BOT_INTRO]);
-  const [input,    setInput]    = React.useState("");
-  const [loading,  setLoading]  = React.useState(false);
+  const [input, setInput] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const bottomRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -524,7 +215,7 @@ function AiBot() {
     setMessages(m => [...m, { role: "user", text }]);
     setLoading(true);
     try {
-      const res  = await fetch("/api/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
@@ -565,11 +256,10 @@ function AiBot() {
       <div className="h-48 overflow-y-auto p-3 space-y-2 bg-background text-xs">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[85%] px-2.5 py-1.5 rounded-xl leading-relaxed ${
-              msg.role === "user"
+            <div className={`max-w-[85%] px-2.5 py-1.5 rounded-xl leading-relaxed ${msg.role === "user"
                 ? "bg-primary text-primary-foreground rounded-br-sm"
                 : "bg-muted text-foreground rounded-bl-sm"
-            }`}>{msg.text}</div>
+              }`}>{msg.text}</div>
           </div>
         ))}
         {loading && (
@@ -644,21 +334,10 @@ export function SidebarCard() {
           <DocumentWizard />
         </div>
 
-        {/* Document submission */}
-        {/* <div className="space-y-2">
-          <div className="flex items-center gap-1.5 mb-1">
-            <FileUp className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
-              Document Submission
-            </span>
-          </div>
-          <DocumentSubmission />
-        </div> */}
-
         <Separator />
 
         {/* Consultation */}
-                <div className="space-y-2">
+        <div className="space-y-2">
           <div className="flex items-center gap-1.5 mb-1">
             <CalendarDays className="w-3.5 h-3.5 text-primary" />
             <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
@@ -668,20 +347,10 @@ export function SidebarCard() {
           <ConsultationWizard />
         </div>
 
-        {/* <div className="space-y-2">
-          <div className="flex items-center gap-1.5 mb-1">
-            <CalendarDays className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
-              Request a Consultation
-            </span>
-          </div>
-          <ConsultationRequest />
-        </div> */}
-
         <Separator />
 
         {/* Client portal */}
-                <div className="space-y-2">
+        <div className="space-y-2">
           <div className="flex items-center gap-1.5 mb-1">
             <LogIn className="w-3.5 h-3.5 text-primary" />
             <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
@@ -690,15 +359,6 @@ export function SidebarCard() {
           </div>
           <ClientPortalModal />
         </div>
-        {/* <div className="space-y-2">
-          <div className="flex items-center gap-1.5 mb-1">
-            <LogIn className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
-              Client Access
-            </span>
-          </div>
-          <ClientPortal />
-        </div> */}
 
         <Separator />
 

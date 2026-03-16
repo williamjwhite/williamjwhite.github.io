@@ -4,7 +4,7 @@
 
 import * as React from "react";
 import { Wizard, useWizard } from "react-use-wizard";
-import { Check, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,

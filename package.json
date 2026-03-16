@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build bash scripts/mamp-postbuild.sh",
+    "build": "tsc -b && vite build && bash scripts/mamp-postbuild.sh",
     "email": "email dev --dir src/emails --port 3001",
     "lint": "eslint .",
     "preview": "vite preview",

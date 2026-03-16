@@ -326,7 +326,9 @@ export function WizardModal({ config, open, onOpenChange, trigger }: WizardModal
         });
         fd.append("wizardId",  config.id);
         fd.append("timestamp", new Date().toISOString());
-        const res = await fetch(config.submitEndpoint, { method: "POST", body: fd });
+        const res = await fetch(config.submitEndpoint, { method: "POST", body: fd,
+          headers: { Accept: "application/json" },
+          });
         setSubmitStatus(res.ok ? "sent" : "error");
       } else {
         const res = await fetch(config.submitEndpoint, {

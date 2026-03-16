@@ -9,9 +9,23 @@ export type ServerMode   = "live" | "demo";
 
 const MODE_KEY = "wjw_server_mode";
 
+// Default to PRODUCTION
+
+// export function getServerMode(): ServerMode {
+//   try { return localStorage.getItem(MODE_KEY) === "demo" ? "demo" : "live"; }
+//   catch { return "live"; }
+// }
+
+// Default to DEMO 
+
+// fixed — defaults to demo instead of live:
 export function getServerMode(): ServerMode {
-  try { return localStorage.getItem(MODE_KEY) === "demo" ? "demo" : "live"; }
-  catch { return "live"; }
+  try {
+    const stored = localStorage.getItem(MODE_KEY);
+    if (stored === "live") return "live";
+    return "demo"; // default for new visitors
+  }
+  catch { return "demo"; }
 }
 
 export function setServerMode(mode: ServerMode) {

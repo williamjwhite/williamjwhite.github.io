@@ -1,0 +1,34 @@
+
+Client Document Portal — Test File
+This document is auto‑generated for testing purposes only.
+
+SERVICES & EXPERTISE
+I design and automate secure, scalable DocuSign workflows and API integrations for enterprise organizations and high‑volume operational teams.
+
+As a former Partner TCSM at DocuSign, I was responsible for reviewing and advising on new partner integrations including API design, workflow architecture, backup and exception handling, testing, go‑live readiness, user adoption, and ensuring each deployment delivered measurable ROI.
+
+My background includes supporting large‑scale DocuSign implementations used by Fortune‑level brands and nationwide dealer networks across automotive, motorcycle, and heavy equipment industries, as well as national retail, banking, and insurance organizations. This experience comes from contributing to complex, distributed deployments involving hundreds of locations and thousands of end users.
+
+While DocuSign is my primary specialty, I also develop workflows and integrations for Adobe Acrobat Sign, Dropbox Sign, PandaDoc, OneSpan, and other eSignature platforms.
+
+INDUSTRIES SERVED
+
+Enterprise & Regulated Industries
+- Fortune 100/500 organizations
+- Large enterprise and distributed operations
+- Fintech platforms
+- Banking & financial services
+- Digital mortgage & eVaulting
+- Capital markets, chattel, and securitization
+- Compliance‑driven and regulated environments
+
+Small & Mid‑Sized Businesses
+- Real estate teams and brokerages
+- Tax offices and accounting firms
+- Medical practices and clinics
+- Auto, powersports, and RV dealerships
+- Retail, service, and multi‑location businesses
+- SMEs and growing organizations
+
+TEST FILE — NOT FOR PRODUCTION
+Generated for testing purposes only — williamjwhite.me

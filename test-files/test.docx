@@ -1,0 +1,133 @@
+---
+title: WXWUI Portal Upload Test — DOCX Ready
+watermark-header: "PORTAL TEST FILE — DOCX"
+watermark-footer: "Generated for upload pipeline validation — williamjwhite.me"
+---
+
+# WXWUI Portal Upload Test  
+**DOCX‑Ready Markdown Version**
+
+This file is structured specifically for DOCX conversion using tools like:
+
+- Pandoc  
+- WXWUI’s internal DOCX pipeline  
+- Any Markdown‑to‑DOCX converter  
+
+It avoids HTML blocks and uses only DOCX‑safe Markdown.
+
+---
+
+# 1. Basic Text Rendering
+
+This is a paragraph of text intended to confirm that the DOCX conversion pipeline:
+
+- preserves headings  
+- maintains paragraph spacing  
+- handles bold and italic text  
+- keeps YAML front‑matter intact  
+
+---
+
+# 2. Code Blocks (DOCX‑Safe)
+
+### JavaScript Example
+
+```js
+function portalDocxTest() {
+  return "DOCX upload successful";
+}
+```
+
+### JSON Example
+
+```json
+{
+  "status": "ok",
+  "format": "docx-ready",
+  "message": "Portal test file loaded"
+}
+```
+
+### Shell Example
+
+```bash
+echo "Testing DOCX pipeline"
+```
+
+---
+
+# 3. Inline Code
+
+Inline code should appear monospaced in DOCX:  
+`const value = 123;`
+
+---
+
+# 4. Tables (DOCX‑Compatible)
+
+| Field | Value | Notes |
+|-------|--------|--------|
+| A | 1 | Basic numeric test |
+| B | 2 | Ensures table rendering |
+| C | 3 | Confirms border handling |
+
+---
+
+# 5. Lists
+
+### Unordered List
+
+- Item one  
+- Item two  
+- Item three  
+
+### Ordered List
+
+1. First  
+2. Second  
+3. Third  
+
+---
+
+# 6. Horizontal Rules
+
+Above and below this line should appear as DOCX horizontal rules:
+
+---
+
+---
+
+# 7. Blockquotes
+
+> This is a DOCX‑safe blockquote.  
+> It should convert cleanly into a styled paragraph.
+
+---
+
+# 8. Mixed Content
+
+This section mixes:
+
+- Headings  
+- Lists  
+- Code  
+- Tables  
+- Blockquotes  
+
+All of which must survive DOCX conversion without corruption.
+
+---
+
+# 9. Final Validation
+
+If this file:
+
+- uploads successfully  
+- converts to DOCX without errors  
+- preserves formatting  
+- returns cleanly through the portal  
+
+…then DOCX handling is confirmed working.
+
+**End of Document B — DOCX Ready**
+

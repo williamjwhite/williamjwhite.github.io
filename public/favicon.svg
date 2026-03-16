@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="32" fill="#1f2937"/> <!-- dark gray background -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central"
+        font-family="Inter, sans-serif" font-size="28" fill="#ffffff" font-weight="bold">
+    WJ
+  </text>
+</svg>

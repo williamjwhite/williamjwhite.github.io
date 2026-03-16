@@ -270,3 +270,13 @@ main {
   from { opacity: 0; translate: 0 8px; }
   to   { opacity: 1; translate: 0 0; }
 }
+
+/* ── Status dot blink animation ─────────────────────────────────────────────
+   Used by StatusDot in sidebar-card.tsx and admin-page.tsx.
+   checking → fast (0.35s via inline style), online → slow (2.2s via inline style)
+   Both reference this same keyframe.
+──────────────────────────────────────────────────────────────────────────── */
+@keyframes wjw-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}

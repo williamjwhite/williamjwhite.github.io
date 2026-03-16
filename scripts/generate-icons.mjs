@@ -11,6 +11,9 @@ const ROOT = process.cwd()
 const ICON_DIR = path.join(ROOT, "components/icons")
 const CONFIG_DIR = path.join(ROOT, "config")
 
+const outDir = path.join(__dirname, "test-files");
+
+
 const lucideIcons = {
   react: "Atom",
   typescript: "FileCode",

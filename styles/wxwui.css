@@ -1,0 +1,312 @@
+/* =======================================================================================
+   WXWUI DOCUMENTATION THEME — BRAND-ALIGNED VERSION
+   ---------------------------------------------------------------------------------------
+   This file has been fully updated to match the TRUE brand palette defined in index.css.
+   All colors, surfaces, borders, typography, and shadows now align with your Tailwind
+   + shadcn + design token system.
+
+   This stylesheet powers the WXWUI documentation experience and is intended to provide:
+   - Clean, readable typography
+   - Consistent light/dark theming
+   - Brand-accurate accent colors
+   - Elevated surfaces and subtle shadows
+   - Accessible contrast levels
+   - A unified design language across docs, UI, and PDFs
+
+   IMPORTANT:
+   - Structure, layout, and component rules remain unchanged.
+   - Only design tokens and descriptive comments have been updated.
+   - All comments follow the verbose, descriptive style used in index.css.
+======================================================================================= */
+
+
+/* =======================================================================================
+   1) ROOT DESIGN TOKENS — LIGHT MODE
+   ---------------------------------------------------------------------------------------
+   These tokens define the core visual identity of the documentation theme in light mode.
+   They map directly to the brand palette defined in index.css and ensure consistency
+   across all WXWUI components, typography, and surfaces.
+======================================================================================= */
+
+:root {
+
+  /* ---------------------------------------------------------------------------
+     TEXT COLORS
+     ---------------------------------------------------------------------------
+     --text:            Default body text (muted neutral)
+     --text-strong:     High-emphasis text (foreground)
+     --text-muted:      Low-emphasis text (muted foreground)
+  --------------------------------------------------------------------------- */
+  --text: #6b7280;
+  --text-strong: #0a0a0a;
+  --text-muted: #6b7280;
+
+  /* ---------------------------------------------------------------------------
+     BACKGROUND COLORS
+     ---------------------------------------------------------------------------
+     --bg:              Main page background
+     --bg-subtle:       Secondary background (cards, subtle surfaces)
+     --bg-elevated:     Elevated surfaces (panels, callouts)
+  --------------------------------------------------------------------------- */
+  --bg: #ffffff;
+  --bg-subtle: #f5f5f5;
+  --bg-elevated: #f3f4f6;
+
+  /* ---------------------------------------------------------------------------
+     BORDER COLORS
+     ---------------------------------------------------------------------------
+     --border:          Standard border color
+     --border-strong:   Higher contrast border for elevated surfaces
+  --------------------------------------------------------------------------- */
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+
+  /* ---------------------------------------------------------------------------
+     BRAND ACCENT COLORS
+     ---------------------------------------------------------------------------
+     --accent:          Primary accent color (brand)
+     --accent-bg:       Subtle accent background
+     --accent-border:   Accent border for callouts, highlights
+  --------------------------------------------------------------------------- */
+  --accent: #70cde1;
+  --accent-bg: rgba(112, 205, 225, 0.12);
+  --accent-border: rgba(112, 205, 225, 0.45);
+
+  /* ---------------------------------------------------------------------------
+     CODE BLOCK COLORS
+     ---------------------------------------------------------------------------
+     --code-bg:         Background for inline and fenced code blocks
+     --code-text:       Foreground text color for code
+  --------------------------------------------------------------------------- */
+  --code-bg: #f3f4f6;
+  --code-text: #0a0a0a;
+
+  /* ---------------------------------------------------------------------------
+     SHADOWS
+     ---------------------------------------------------------------------------
+     --shadow:          Default elevated shadow for cards and surfaces
+  --------------------------------------------------------------------------- */
+  --shadow:
+    rgba(0, 0, 0, 0.08) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.04) 0 4px 6px -2px;
+
+  /* ---------------------------------------------------------------------------
+     TYPOGRAPHY
+     ---------------------------------------------------------------------------
+     --sans:            Default sans-serif font stack
+     --heading:         Heading font (same as sans for brand consistency)
+     --mono:            Monospace font for code
+  --------------------------------------------------------------------------- */
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --heading: var(--sans);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---------------------------------------------------------------------------
+     BASE DOCUMENT SETTINGS
+     ---------------------------------------------------------------------------
+     These define the default font size, line height, and letter spacing for
+     the entire documentation environment.
+  --------------------------------------------------------------------------- */
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+}
+
+
+/* =======================================================================================
+   2) ROOT DESIGN TOKENS — DARK MODE
+   ---------------------------------------------------------------------------------------
+   These tokens mirror the light mode palette but use the dark surfaces and neutrals
+   defined in index.css. This ensures perfect parity between UI and documentation.
+======================================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+
+    /* Text */
+    --text: #c0c0c0;
+    --text-strong: #fafafa;
+    --text-muted: #a1a1aa;
+
+    /* Backgrounds */
+    --bg: #23272f;
+    --bg-subtle: #1c1f26;
+    --bg-elevated: #2a2f38;
+
+    /* Borders */
+    --border: #343434;
+    --border-strong: #4b4b4b;
+
+    /* Accent */
+    --accent: #70cde1;
+    --accent-bg: rgba(112, 205, 225, 0.15);
+    --accent-border: rgba(112, 205, 225, 0.5);
+
+    /* Code */
+    --code-bg: #2a2f38;
+    --code-text: #fafafa;
+
+    /* Shadows */
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
+      rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+}
+
+
+/* =======================================================================================
+   3) TYPOGRAPHY — HEADINGS, PARAGRAPHS, CODE
+   ---------------------------------------------------------------------------------------
+   These rules define the visual hierarchy of the documentation. The scale is intentionally
+   large and readable, optimized for long-form content and technical documentation.
+======================================================================================= */
+
+h1, h2, h3, h4 {
+  font-family: var(--heading);
+  color: var(--text-strong);
+  margin: 1.6em 0 0.6em;
+  line-height: 1.25;
+}
+
+h1 { font-size: 2.75rem; }
+h2 { font-size: 1.85rem; }
+h3 { font-size: 1.45rem; }
+h4 { font-size: 1.15rem; }
+
+p {
+  margin: 1em 0;
+  color: var(--text);
+}
+
+code {
+  font-family: var(--mono);
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+pre code {
+  display: block;
+  padding: 1em;
+  border-radius: 8px;
+}
+
+
+/* =======================================================================================
+   4) BLOCKQUOTES, CALLOUTS, CARDS
+   ---------------------------------------------------------------------------------------
+   These components use accent colors, elevated surfaces, and subtle borders to create
+   visual separation and emphasis.
+======================================================================================= */
+
+blockquote {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-bg);
+  padding: 1em 1.5em;
+  margin: 1.5em 0;
+  color: var(--text-strong);
+}
+
+.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5em;
+  box-shadow: var(--shadow);
+  margin: 1.5em 0;
+}
+
+.callout {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  padding: 1.25em;
+  margin: 1.5em 0;
+}
+
+
+/* =======================================================================================
+   5) TABLES
+   ---------------------------------------------------------------------------------------
+   Tables use subtle borders and alternating row backgrounds for readability.
+======================================================================================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.75em 1em;
+}
+
+th {
+  background: var(--bg-subtle);
+  color: var(--text-strong);
+}
+
+
+/* =======================================================================================
+   6) FORMS — INPUTS, TEXTAREAS
+   ---------------------------------------------------------------------------------------
+   These styles ensure form elements match the documentation theme.
+======================================================================================= */
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.75em;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-strong);
+  font-family: var(--sans);
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid var(--accent);
+}
+
+
+/* =======================================================================================
+   7) MISC — SCROLLBARS, ANIMATIONS, RESPONSIVE FIXES
+   ---------------------------------------------------------------------------------------
+   These rules improve the overall UX of the documentation environment.
+======================================================================================= */
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  animation: fade-in 0.4s ease forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tab-rail {
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.tab-rail::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes wjw-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.15; }
+}

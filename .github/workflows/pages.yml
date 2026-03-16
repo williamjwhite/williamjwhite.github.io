@@ -35,6 +35,8 @@ jobs:
           npm run build
           touch dist/.nojekyll
           echo williamjwhite.me > dist/CNAME
+        env:
+          VITE_ADMIN_PIN: ${{ secrets.VITE_ADMIN_PIN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

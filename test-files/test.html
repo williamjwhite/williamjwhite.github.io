@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WXWUI Portal Upload Test — HTML</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 24px;
+      line-height: 1.6;
+    }
+    .section {
+      margin-bottom: 32px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 12px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    .html-test-block {
+      padding: 12px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>WXWUI Portal Upload Test (HTML Version)</h1>
+  <p><strong>Watermark Header:</strong> PORTAL TEST FILE — HTML</p>
+  <p><strong>Watermark Footer:</strong> Generated for upload pipeline validation — williamjwhite.me</p>
+</header>
+
+<hr />
+
+<section class="section">
+  <h2>1. Basic HTML Rendering</h2>
+  <p>
+    This HTML file is designed to test the WXWUI portal’s ability to:
+  </p>
+  <ul>
+    <li>Accept HTML uploads</li>
+    <li>Preserve markup</li>
+    <li>Render code blocks</li>
+    <li>Handle tables and mixed content</li>
+    <li>Return the file unmodified through the upload pipeline</li>
+  </ul>
+</section>
+
+<section class="section">
+  <h2>2. Code Blocks</h2>
+
+  <h3>JavaScript Example</h3>
+  <pre><code class="language-js">
+function portalTest() {
+  return "HTML upload successful";
+}
+  </code></pre>
+
+  <h3>HTML Example</h3>
+  <pre><code class="language-html">
+<div class="test-block">Portal HTML block test</div>
+  </code></pre>
+
+  <h3>JSON Example</h3>
+  <pre><code class="language-json">
+{
+  "status": "ok",
+  "message": "Portal test file loaded"
+}
+  </code></pre>
+</section>
+
+<section class="section">
+  <h2>3. Inline Code</h2>
+  <p>Inline code should render correctly: <code>const x = 42;</code></p>
+</section>
+
+<section class="section">
+  <h2>4. Tables</h2>
+  <table>
+    <tr>
+      <th>Column A</th>
+      <th>Column B</th>
+      <th>Column C</th>
+    </tr>
+    <tr>
+      <td>Value 1</td>
+      <td>Value 2</td>
+      <td>Value 3</td>
+    </tr>
+    <tr>
+      <td>Test A</td>
+      <td>Test B</td>
+      <td>Test C</td>
+    </tr>
+  </table>
+</section>
+
+<section class="section">
+  <h2>5. HTML Blocks Inside HTML</h2>
+  <div class="html-test-block">
+    <strong>HTML Test Block</strong><br />
+    This block ensures the portal does not sanitize or strip HTML.
+  </div>
+</section>
+
+<section class="section">
+  <h2>6. Mixed Content</h2>
+  <p>This section mixes:</p>
+  <ul>
+    <li>HTML</li>
+    <li>Code</li>
+    <li>Tables</li>
+    <li>Inline formatting</li>
+  </ul>
+  <p>All in one place to ensure the parser does not break.</p>
+</section>
+
+<section class="section">
+  <h2>7. Final Validation</h2>
+  <p>
+    If this file:
+  </p>
+  <ul>
+    <li>uploads successfully</li>
+    <li>renders correctly</li>
+    <li>preserves all formatting</li>
+    <li>and returns cleanly from the portal API</li>
+  </ul>
+  <p>…then HTML handling is confirmed working.</p>
+</section>
+
+<footer>
+  <p><strong>End of Document B — HTML</strong></p>
+</footer>
+
+</body>
+</html>
+

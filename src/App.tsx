@@ -29,7 +29,14 @@ import { ResumeModal } from "@/components/shared/resume-modal";
 import { ProjectCard } from "@/components/shared/project-docs-modal";
 import { DocTile } from "@/components/shared/doc-tile";
 
+import { AdminPage } from "@/components/sections/admin-page";
+
+
 export default function App() {
+    // Simple client-side route — no React Router needed
+  if (window.location.pathname === "/admin") {
+    return <AdminPage />;
+  }
   const { isDark, toggle } = useThemeToggle();
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");

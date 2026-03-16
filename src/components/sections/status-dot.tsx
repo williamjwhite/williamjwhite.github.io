@@ -32,7 +32,7 @@ export function StatusDot({ status, mode }: { status: ServerStatus; mode: Server
       <Icon className={`w-3 h-3 shrink-0 ${status === "checking" ? "animate-spin" : ""}`} />
       <span>{label}</span>
       <Badge variant="outline" className="ml-0.5 px-1 py-0 text-[10px] leading-4 uppercase tracking-wide">
-        {mode === "demo" ? "Demo" : "Live"}
+        {mode === "demo" ? "Online" : "Live"}
       </Badge>
     </span>
   );

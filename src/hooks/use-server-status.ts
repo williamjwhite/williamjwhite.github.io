@@ -9,6 +9,15 @@ export type ServerMode   = "live" | "demo";
 
 const MODE_KEY = "wjw_server_mode";
 
+
+export function getServerMode(): ServerMode {
+  try {
+    const stored = localStorage.getItem(MODE_KEY);
+    if (stored === "demo") return "demo";
+    return "live";
+  }
+  catch { return "live"; }
+}
 // Default to PRODUCTION
 
 // export function getServerMode(): ServerMode {
@@ -19,14 +28,14 @@ const MODE_KEY = "wjw_server_mode";
 // Default to DEMO 
 
 // fixed — defaults to demo instead of live:
-export function getServerMode(): ServerMode {
-  try {
-    const stored = localStorage.getItem(MODE_KEY);
-    if (stored === "live") return "live";
-    return "demo"; // default for new visitors
-  }
-  catch { return "demo"; }
-}
+// export function getServerMode(): ServerMode {
+//   try {
+//     const stored = localStorage.getItem(MODE_KEY);
+//     if (stored === "live") return "live";
+//     return "demo"; // default for new visitors
+//   }
+//   catch { return "demo"; }
+// }
 
 export function setServerMode(mode: ServerMode) {
   try { localStorage.setItem(MODE_KEY, mode); } catch { /* noop */ }
@@ -57,7 +66,8 @@ export function useServerStatus(): { status: ServerStatus; mode: ServerMode } {
     async function check() {
       if (!cancelled) setStatus("checking");
       try {
-        const res = await fetch("/api/status", { signal: AbortSignal.timeout(5000) });
+        // const res = await fetch("/api/status", { signal: AbortSignal.timeout(5000) });
+        const res = await fetch("/status.json", { signal: AbortSignal.timeout(5000) });
         if (!cancelled) setStatus(res.ok ? "online" : "degraded");
       } catch {
         if (!cancelled) setStatus("offline");

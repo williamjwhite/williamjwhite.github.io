@@ -8,7 +8,8 @@ import { Wifi, WifiOff, AlertTriangle, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { ServerStatus, ServerMode } from "@/hooks/use-server-status";
 
-export function StatusDot({ status, mode }: { status: ServerStatus; mode: ServerMode }) {
+// export function StatusDot({ status, mode }: { status: ServerStatus; mode: ServerMode }) {
+export function StatusDot({ status, _mode }: { status: ServerStatus; _mode?: ServerMode }) {
   const meta: Record<ServerStatus, { label: string; Icon: React.ElementType; dot: string; glow: string }> = {
     checking: { label: "Checking",  Icon: Loader2,       dot: "bg-sky-400",   glow: "0 0 7px 3px rgba(56,189,248,0.6)"  },
     online:   { label: "Online",    Icon: Wifi,          dot: "bg-green-500", glow: "0 0 7px 3px rgba(34,197,94,0.6)"   },

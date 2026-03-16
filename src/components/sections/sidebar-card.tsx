@@ -291,7 +291,7 @@ function AiBot() {
 // ─── Main SidebarCard ─────────────────────────────────────────────────────────
 
 export function SidebarCard() {
-  const { status, mode } = useServerStatus();
+const { status } = useServerStatus();
 
   return (
     <Card className="overflow-hidden">
@@ -304,7 +304,7 @@ export function SidebarCard() {
             </CardTitle>
             <CardDescription>Portal, consultation, and resources.</CardDescription>
           </div>
-          <StatusDot status={status} mode={mode} />
+          <StatusDot status={status} />
         </div>
       </CardHeader>
 

@@ -38,7 +38,7 @@ function LiveClock() {
 // ─── About Section ────────────────────────────────────────────────────────────
 
 export function AboutSection() {
-  const { status, mode } = useServerStatus();
+const { status } = useServerStatus();
 
   return (
     <Card>
@@ -49,7 +49,7 @@ export function AboutSection() {
             <CardDescription>Professional Summary</CardDescription>
           </div>
           {/* Server status moved here from sidebar */}
-          <StatusDot status={status} mode={mode} />
+          <StatusDot status={status} />
         </div>
       </CardHeader>
 

@@ -280,3 +280,16 @@ main {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.15; }
 }
+
+
+/* macOS — wider padding (users tend to have bigger screens, less window chrome) */
+.os-mac main {
+  padding-left: max(4rem, env(safe-area-inset-left));
+  padding-right: max(4rem, env(safe-area-inset-right));
+}
+
+/* Windows — slightly tighter (taskbar/scrollbar takes space) */
+.os-windows main {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}

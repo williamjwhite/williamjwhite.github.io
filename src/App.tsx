@@ -51,6 +51,7 @@ export default function App() {
       <TopNav isDark={isDark} onToggleTheme={toggle} onNavJump={navJump} />
 
       <main className="w-full max-w-6xl px-4 pb-16 mx-auto">
+      <main className="w-full max-w-6xl px-4 sm:px-8 md:px-12 lg:px-16 pb-16 mx-auto">ß
         <IntroHeader />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">

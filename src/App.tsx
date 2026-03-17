@@ -50,8 +50,8 @@ export default function App() {
     <div className="min-h-dvh">
       <TopNav isDark={isDark} onToggleTheme={toggle} onNavJump={navJump} />
 
-      <main className="w-full max-w-6xl px-4 pb-16 mx-auto">
-      <main className="w-full max-w-6xl px-4 sm:px-8 md:px-12 lg:px-16 pb-16 mx-auto">ß
+      {/* <main className="w-full max-w-6xl px-4 pb-16 mx-auto"> */}
+      <main className="w-full max-w-6xl px-4 sm:px-8 md:px-12 lg:px-16 pb-16 mx-auto">
         <IntroHeader />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">

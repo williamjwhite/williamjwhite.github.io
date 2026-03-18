@@ -86,4 +86,3 @@ hydrate().finally(() => {
     </React.StrictMode>
   );
 });
-

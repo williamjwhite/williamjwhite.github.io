@@ -3,7 +3,6 @@ import { WizardAdmin } from "@/components/sections/wizard-admin";
 import { Wand2 } from "lucide-react";
 import {
   Activity, AlertTriangle, ArrowLeft, Bot, CheckCircle, ChevronDown, ChevronUp,
-  Cloud, Database, Edit3, Eye, EyeOff, FileText, Gauge, Globe, Loader2,
   Cloud, Database, Edit3, ExternalLink, Eye, EyeOff, FileText, Gauge, Globe, HardDrive,
   Link, Loader2, LogOut, Mail, MousePointerClick, Plus, RotateCcw, Rss,
   Save, Server, Settings, Shield, ToggleLeft, ToggleRight, Trash2, Type,

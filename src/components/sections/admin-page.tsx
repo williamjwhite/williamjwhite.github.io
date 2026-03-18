@@ -4,9 +4,10 @@ import { Wand2 } from "lucide-react";
 import {
   Activity, AlertTriangle, ArrowLeft, Bot, CheckCircle, ChevronDown, ChevronUp,
   Cloud, Database, Edit3, Eye, EyeOff, FileText, Gauge, Globe, Loader2,
-  LogOut, Mail, Plus, Rss, Save, Server, Settings, Shield,
-  ToggleLeft, ToggleRight, Trash2, UserCheck, UserMinus, UserPlus,
-  Users, Wifi, WifiOff, Wrench, X,
+  Cloud, Database, Edit3, ExternalLink, Eye, EyeOff, FileText, Gauge, Globe, HardDrive,
+  Link, Loader2, LogOut, Mail, MousePointerClick, Plus, RotateCcw, Rss,
+  Save, Server, Settings, Shield, ToggleLeft, ToggleRight, Trash2, Type,
+  UserCheck, UserMinus, UserPlus, Users, Wifi, WifiOff, Wrench, X,
 } from "lucide-react";
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
@@ -14,7 +15,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  Collapsible, CollapsibleContent, CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   type ServerMode, type ServerStatus,
   getServerMode, setServerMode, useServerStatus,
@@ -114,6 +123,874 @@ function PinGate({ onLogin }: { onLogin: (p: string) => boolean }) {
           </form>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+// ─── Storage Engine ───────────────────────────────────────────────────────────
+
+export type StorageBackend = "local" | "gist" | "cloudflare" | "firestore" | "gdrive";
+
+interface StorageConfig {
+  backend: StorageBackend;
+  gistId?: string; gistToken?: string;
+  cfWorkerUrl?: string; cfWorkerToken?: string;
+  fsProjectId?: string; fsApiKey?: string; fsCollection?: string; fsDocId?: string;
+  gdApiKey?: string; gdFileId?: string;
+}
+
+const STORAGE_CONFIG_KEY = "wjw_storage_config";
+const SETTINGS_PAYLOAD_KEY = "wjw_settings_payload";
+
+function getStorageConfig(): StorageConfig {
+  try { const r = localStorage.getItem(STORAGE_CONFIG_KEY); return r ? JSON.parse(r) : { backend: "local" }; }
+  catch { return { backend: "local" }; }
+}
+function saveStorageConfig(cfg: StorageConfig) {
+  try { localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(cfg)); } catch {}
+}
+
+const GIST_FILENAME = "wjw-settings.json";
+async function gistLoad(cfg: StorageConfig): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://api.github.com/gists/${cfg.gistId}`, {
+    headers: { Authorization: `Bearer ${cfg.gistToken}`, Accept: "application/vnd.github+json" },
+  });
+  if (!res.ok) throw new Error(`Gist fetch failed: ${res.status}`);
+  const data = await res.json();
+  const content = data.files?.[GIST_FILENAME]?.content;
+  return content ? JSON.parse(content) : {};
+}
+async function gistSave(cfg: StorageConfig, payload: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`https://api.github.com/gists/${cfg.gistId}`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${cfg.gistToken}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+    body: JSON.stringify({ files: { [GIST_FILENAME]: { content: JSON.stringify(payload, null, 2) } } }),
+  });
+  if (!res.ok) throw new Error(`Gist save failed: ${res.status}`);
+}
+
+async function cfLoad(cfg: StorageConfig): Promise<Record<string, unknown>> {
+  const res = await fetch(`${cfg.cfWorkerUrl}/settings`, { headers: { Authorization: `Bearer ${cfg.cfWorkerToken}` } });
+  if (!res.ok) throw new Error(`CF fetch failed: ${res.status}`);
+  const data = await res.json();
+  return data.value ? JSON.parse(data.value) : {};
+}
+async function cfSave(cfg: StorageConfig, payload: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`${cfg.cfWorkerUrl}/settings`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${cfg.cfWorkerToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ value: JSON.stringify(payload) }),
+  });
+  if (!res.ok) throw new Error(`CF save failed: ${res.status}`);
+}
+
+function fsUrl(cfg: StorageConfig) {
+  return `https://firestore.googleapis.com/v1/projects/${cfg.fsProjectId}/databases/(default)/documents/${cfg.fsCollection}/${cfg.fsDocId}?key=${cfg.fsApiKey}`;
+}
+async function fsLoad(cfg: StorageConfig): Promise<Record<string, unknown>> {
+  const res = await fetch(fsUrl(cfg));
+  if (res.status === 404) return {};
+  if (!res.ok) throw new Error(`Firestore fetch failed: ${res.status}`);
+  const data = await res.json();
+  const raw = data.fields?.payload?.stringValue;
+  return raw ? JSON.parse(raw) : {};
+}
+async function fsSave(cfg: StorageConfig, payload: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`${fsUrl(cfg)}&updateMask.fieldPaths=payload`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fields: { payload: { stringValue: JSON.stringify(payload) } } }),
+  });
+  if (!res.ok) throw new Error(`Firestore save failed: ${res.status}`);
+}
+
+async function gdriveLoad(cfg: StorageConfig): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${cfg.gdFileId}?alt=media&key=${cfg.gdApiKey}`,
+    { headers: { Authorization: `Bearer ${cfg.gdApiKey}` } });
+  if (!res.ok) throw new Error(`Drive fetch failed: ${res.status}`);
+  return res.json();
+}
+async function gdriveSave(cfg: StorageConfig, payload: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${cfg.gdFileId}?uploadType=media&key=${cfg.gdApiKey}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${cfg.gdApiKey}` },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`Drive save failed: ${res.status}`);
+}
+
+export async function storageLoad(): Promise<Record<string, unknown>> {
+  const cfg = getStorageConfig();
+  const localCache = (() => {
+    try { const r = localStorage.getItem(SETTINGS_PAYLOAD_KEY); return r ? JSON.parse(r) : {}; } catch { return {}; }
+  })();
+  if (cfg.backend === "local") return localCache;
+  try {
+    let remote: Record<string, unknown> = {};
+    if (cfg.backend === "gist")       remote = await gistLoad(cfg);
+    if (cfg.backend === "cloudflare") remote = await cfLoad(cfg);
+    if (cfg.backend === "firestore")  remote = await fsLoad(cfg);
+    if (cfg.backend === "gdrive")     remote = await gdriveLoad(cfg);
+    localStorage.setItem(SETTINGS_PAYLOAD_KEY, JSON.stringify(remote));
+    return remote;
+  } catch (e) {
+    console.warn("[storage] remote load failed, using local cache:", e);
+    return localCache;
+  }
+}
+
+export async function storageSave(key: string, value: unknown): Promise<void> {
+  let payload: Record<string, unknown> = {};
+  try { const r = localStorage.getItem(SETTINGS_PAYLOAD_KEY); payload = r ? JSON.parse(r) : {}; } catch {}
+  payload[key] = value;
+  try { localStorage.setItem(SETTINGS_PAYLOAD_KEY, JSON.stringify(payload)); } catch {}
+  const cfg = getStorageConfig();
+  if (cfg.backend === "local") return;
+  try {
+    if (cfg.backend === "gist")       await gistSave(cfg, payload);
+    if (cfg.backend === "cloudflare") await cfSave(cfg, payload);
+    if (cfg.backend === "firestore")  await fsSave(cfg, payload);
+    if (cfg.backend === "gdrive")     await gdriveSave(cfg, payload);
+  } catch (e) {
+    console.warn("[storage] remote save failed (local cache updated):", e);
+    throw e;
+  }
+}
+
+// ── StoragePanel ──────────────────────────────────────────────────────────────
+
+const BACKEND_META: Record<StorageBackend, { label: string; icon: React.ReactNode; color: string; tagline: string }> = {
+  local:      { label: "Local Storage",         icon: <HardDrive className="w-4 h-4" />, color: "text-muted-foreground", tagline: "Browser-only · no setup · resets per device" },
+  gist:       { label: "GitHub Gist",           icon: <Database className="w-4 h-4" />,  color: "text-primary",          tagline: "Private JSON file · GitHub PAT · recommended for GitHub Pages" },
+  cloudflare: { label: "Cloudflare Workers KV", icon: <Cloud className="w-4 h-4" />,     color: "text-orange-400",       tagline: "Free KV store · tiny Worker needed · very fast" },
+  firestore:  { label: "Firebase Firestore",    icon: <Database className="w-4 h-4" />,  color: "text-yellow-400",       tagline: "Free tier · real-time · no server needed" },
+  gdrive:     { label: "Google Drive",          icon: <Globe className="w-4 h-4" />,      color: "text-green-400",        tagline: "JSON file in your Drive · OAuth token required" },
+};
+
+function SetupStep({ n, children }: { n: number; children: React.ReactNode }) {
+  return (
+    <div className="flex gap-2.5 text-xs text-muted-foreground">
+      <span className="shrink-0 w-5 h-5 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold text-foreground">{n}</span>
+      <span className="pt-0.5">{children}</span>
+    </div>
+  );
+}
+
+function CodeSnip({ children }: { children: string }) {
+  const [copied, setCopied] = React.useState(false);
+  return (
+    <div className="relative group mt-1">
+      <pre className="text-[10px] bg-muted rounded-lg px-3 py-2 overflow-x-auto text-muted-foreground leading-relaxed whitespace-pre-wrap">{children}</pre>
+      <button
+        onClick={() => { navigator.clipboard.writeText(children); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+        className="absolute top-1.5 right-1.5 text-[10px] px-1.5 py-0.5 rounded bg-background border border-border text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+      >{copied ? "✓" : "copy"}</button>
+    </div>
+  );
+}
+
+function StoragePanel() {
+  const [cfg, setCfg] = React.useState<StorageConfig>(getStorageConfig);
+  const [status, setStatus] = React.useState<"idle" | "testing" | "ok" | "error">("idle");
+  const [statusMsg, setStatusMsg] = React.useState("");
+  const [saved, setSaved] = React.useState(false);
+
+  function update(patch: Partial<StorageConfig>) { setCfg(prev => ({ ...prev, ...patch })); setStatus("idle"); }
+  function handleBackendChange(b: StorageBackend) { update({ backend: b }); }
+
+  async function testConnection() {
+    setStatus("testing"); setStatusMsg("");
+    try { await storageLoad(); setStatus("ok"); setStatusMsg("Connection successful ✓"); }
+    catch (e: unknown) { setStatus("error"); setStatusMsg(e instanceof Error ? e.message : "Connection failed"); }
+  }
+
+  function save() { saveStorageConfig(cfg); setSaved(true); setTimeout(() => setSaved(false), 2000); }
+
+  const b = cfg.backend;
+
+  return (
+    <div className="space-y-5">
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {(Object.keys(BACKEND_META) as StorageBackend[]).map(key => {
+          const m = BACKEND_META[key];
+          const active = b === key;
+          return (
+            <button key={key} onClick={() => handleBackendChange(key)}
+              className={`flex items-start gap-3 p-3 rounded-xl border text-left transition-all ${active ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:bg-muted/50"}`}>
+              <span className={`mt-0.5 shrink-0 ${active ? "text-primary" : m.color}`}>{m.icon}</span>
+              <div>
+                <p className={`text-xs font-semibold ${active ? "text-foreground" : "text-muted-foreground"}`}>{m.label}</p>
+                <p className="text-[10px] text-muted-foreground leading-snug mt-0.5">{m.tagline}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <Separator />
+
+      {b === "local" && (
+        <div className="rounded-xl bg-muted/40 border border-border p-3 text-xs text-muted-foreground space-y-1.5">
+          <p className="font-medium text-foreground">About Local Storage</p>
+          <p>Settings are stored in this browser only. No setup required — this is the default.</p>
+          <p className="text-amber-400">⚠ Changes made on one machine won't sync to another.</p>
+        </div>
+      )}
+
+      {b === "gist" && (
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Setup Instructions</p>
+            <SetupStep n={1}>
+              Go to{" "}
+              <a href="https://gist.github.com" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-0.5">
+                gist.github.com <ExternalLink className="w-3 h-3" />
+              </a>{" "}
+              and create a <strong>secret</strong> Gist with one file named exactly:
+              <CodeSnip>{"wjw-settings.json"}</CodeSnip>
+              Paste <code className="bg-muted px-1 rounded text-[10px]">{"{}"}</code> as the content and save.
+            </SetupStep>
+            <SetupStep n={2}>
+              Copy the Gist ID from the URL — the long hash after your username:
+              <CodeSnip>{"https://gist.github.com/yourname/<GIST_ID>"}</CodeSnip>
+            </SetupStep>
+            <SetupStep n={3}>
+              Go to{" "}
+              <a href="https://github.com/settings/tokens/new" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-0.5">
+                GitHub → Settings → Developer settings → Personal access tokens (classic) <ExternalLink className="w-3 h-3" />
+              </a>. Create a token with <strong>only the <code className="bg-muted px-1 rounded text-[10px]">gist</code> scope</strong>. Copy it.
+            </SetupStep>
+            <SetupStep n={4}>
+              Optionally add to <code className="bg-muted px-1 rounded text-[10px]">.env.local</code> so they pre-fill on rebuild:
+              <CodeSnip>{"VITE_GIST_ID=your_gist_id_here\nVITE_GIST_TOKEN=ghp_your_token_here"}</CodeSnip>
+            </SetupStep>
+          </div>
+          <Separator />
+          <div className="grid gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Gist ID</Label>
+              <Input className="h-8 text-xs font-mono"
+                placeholder={import.meta.env.VITE_GIST_ID ?? "abc123def456..."}
+                value={cfg.gistId ?? import.meta.env.VITE_GIST_ID ?? ""}
+                onChange={e => update({ gistId: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Personal Access Token (gist scope only)</Label>
+              <Input className="h-8 text-xs font-mono" type="password"
+                placeholder={import.meta.env.VITE_GIST_TOKEN ? "loaded from .env" : "ghp_..."}
+                value={cfg.gistToken ?? import.meta.env.VITE_GIST_TOKEN ?? ""}
+                onChange={e => update({ gistToken: e.target.value })} />
+            </div>
+          </div>
+          <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-400 space-y-1">
+            <p className="font-semibold">Security note</p>
+            <p>The token is stored in localStorage. This is acceptable for a personal admin panel behind a PIN — the token only has <code className="bg-amber-500/10 rounded px-1">gist</code> scope and cannot touch your repos.</p>
+          </div>
+        </div>
+      )}
+
+      {b === "cloudflare" && (
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Setup Instructions</p>
+            <SetupStep n={1}>
+              Create a free{" "}
+              <a href="https://dash.cloudflare.com" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-0.5">
+                Cloudflare account <ExternalLink className="w-3 h-3" />
+              </a>, then go to <strong>Workers & Pages → KV</strong> and create a namespace called <code className="bg-muted px-1 rounded text-[10px]">WJW_SETTINGS</code>.
+            </SetupStep>
+            <SetupStep n={2}>
+              Create a new Worker and paste this script:
+              <CodeSnip>{`// wjw-settings-worker.js
+const TOKEN = "your-secret-token"; // change this
+const KV_KEY = "settings";
+
+export default {
+  async fetch(req, env) {
+    const cors = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,OPTIONS",
+      "Access-Control-Allow-Headers": "Authorization,Content-Type",
+    };
+    if (req.method === "OPTIONS")
+      return new Response(null, { headers: cors });
+    if (req.headers.get("Authorization") !== \`Bearer \${TOKEN}\`)
+      return new Response("Unauthorized", { status: 401, headers: cors });
+    if (req.method === "GET") {
+      const value = await env.WJW_SETTINGS.get(KV_KEY) ?? "{}";
+      return Response.json({ value }, { headers: cors });
+    }
+    if (req.method === "PUT") {
+      const { value } = await req.json();
+      await env.WJW_SETTINGS.put(KV_KEY, value);
+      return Response.json({ ok: true }, { headers: cors });
+    }
+    return new Response("Method not allowed", { status: 405, headers: cors });
+  },
+};`}</CodeSnip>
+            </SetupStep>
+            <SetupStep n={3}>
+              In the Worker's settings, bind the KV namespace: variable name <code className="bg-muted px-1 rounded text-[10px]">WJW_SETTINGS</code> → your namespace. Deploy and copy the Worker URL.
+            </SetupStep>
+            <SetupStep n={4}>Choose a secret token and paste it in the Worker AND the field below.</SetupStep>
+          </div>
+          <Separator />
+          <div className="grid gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Worker URL</Label>
+              <Input className="h-8 text-xs font-mono" placeholder="https://wjw-settings.yourname.workers.dev"
+                value={cfg.cfWorkerUrl ?? ""} onChange={e => update({ cfWorkerUrl: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Bearer Token</Label>
+              <Input className="h-8 text-xs font-mono" type="password" placeholder="your-secret-token"
+                value={cfg.cfWorkerToken ?? ""} onChange={e => update({ cfWorkerToken: e.target.value })} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {b === "firestore" && (
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Setup Instructions</p>
+            <SetupStep n={1}>
+              Go to the{" "}
+              <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-0.5">
+                Firebase Console <ExternalLink className="w-3 h-3" />
+              </a>{" "}
+              → create a project (free Spark plan) → <strong>Firestore Database → Create database</strong> in production mode.
+            </SetupStep>
+            <SetupStep n={2}>
+              Set Firestore security rules:
+              <CodeSnip>{`rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /wjw-admin/{docId} {
+      allow read, write: if true; // PIN-gated by your app
+    }
+  }
+}`}</CodeSnip>
+            </SetupStep>
+            <SetupStep n={3}>
+              Go to <strong>Project Settings → General</strong> and copy your <strong>Project ID</strong> and <strong>Web API key</strong>.
+            </SetupStep>
+            <SetupStep n={4}>Use collection <code className="bg-muted px-1 rounded text-[10px]">wjw-admin</code> and document <code className="bg-muted px-1 rounded text-[10px]">settings</code> (or customise below).</SetupStep>
+          </div>
+          <Separator />
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Label className="text-xs">Project ID</Label>
+              <Input className="h-8 text-xs font-mono" placeholder="your-project-id"
+                value={cfg.fsProjectId ?? ""} onChange={e => update({ fsProjectId: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Web API Key</Label>
+              <Input className="h-8 text-xs font-mono" type="password" placeholder="AIzaSy..."
+                value={cfg.fsApiKey ?? ""} onChange={e => update({ fsApiKey: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Collection</Label>
+              <Input className="h-8 text-xs font-mono" placeholder="wjw-admin"
+                value={cfg.fsCollection ?? "wjw-admin"} onChange={e => update({ fsCollection: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Document ID</Label>
+              <Input className="h-8 text-xs font-mono" placeholder="settings"
+                value={cfg.fsDocId ?? "settings"} onChange={e => update({ fsDocId: e.target.value })} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {b === "gdrive" && (
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Setup Instructions</p>
+            <SetupStep n={1}>
+              Go to{" "}
+              <a href="https://console.cloud.google.com" target="_blank" rel="noreferrer" className="text-primary underline inline-flex items-center gap-0.5">
+                Google Cloud Console <ExternalLink className="w-3 h-3" />
+              </a>{" "}
+              → create a project → enable the <strong>Google Drive API</strong>.
+            </SetupStep>
+            <SetupStep n={2}>
+              Go to <strong>APIs & Services → Credentials → Create credentials → API key</strong>. Restrict it to the Drive API only.
+            </SetupStep>
+            <SetupStep n={3}>
+              Create a JSON file in your Google Drive named <code className="bg-muted px-1 rounded text-[10px]">wjw-settings.json</code> with content <code className="bg-muted px-1 rounded text-[10px]">{"{}"}</code>. Make it accessible via link.
+            </SetupStep>
+            <SetupStep n={4}>
+              Get the File ID from its share URL:
+              <CodeSnip>{"https://drive.google.com/file/d/<FILE_ID>/view"}</CodeSnip>
+            </SetupStep>
+            <SetupStep n={5}>
+              <strong>Important:</strong> Drive write access requires a short-lived OAuth2 token (~1 hour). For a static site, consider <strong>Gist</strong> or <strong>Firestore</strong> instead — they're simpler to maintain.
+            </SetupStep>
+          </div>
+          <Separator />
+          <div className="grid gap-2">
+            <div className="space-y-1">
+              <Label className="text-xs">API Key</Label>
+              <Input className="h-8 text-xs font-mono" type="password" placeholder="AIzaSy..."
+                value={cfg.gdApiKey ?? ""} onChange={e => update({ gdApiKey: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">File ID</Label>
+              <Input className="h-8 text-xs font-mono" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+                value={cfg.gdFileId ?? ""} onChange={e => update({ gdFileId: e.target.value })} />
+            </div>
+          </div>
+          <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-400">
+            <p className="font-semibold mb-1">⚠ Limitation</p>
+            <p>Drive write access requires a short-lived OAuth2 token that expires in ~1 hour. GitHub Gist or Firestore are more practical for a persistent static admin panel.</p>
+          </div>
+        </div>
+      )}
+
+      <Separator />
+      <div className="flex items-center gap-3 flex-wrap">
+        <Button size="sm" variant="outline" onClick={testConnection} disabled={status === "testing"} className="gap-1.5">
+          {status === "testing"
+            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Testing…</>
+            : <><Link className="w-3.5 h-3.5" /> Test Connection</>}
+        </Button>
+        <Button size="sm" onClick={save} className="gap-1.5">
+          {saved ? <><CheckCircle className="w-3.5 h-3.5" /> Saved</> : <><Save className="w-3.5 h-3.5" /> Save Config</>}
+        </Button>
+        {status === "ok"    && <span className="text-xs text-green-400">{statusMsg}</span>}
+        {status === "error" && <span className="text-xs text-destructive">{statusMsg}</span>}
+      </div>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+        <span>Active backend:</span>
+        <Badge variant="outline" className="text-[10px] gap-1">
+          {BACKEND_META[getStorageConfig().backend].icon}
+          {BACKEND_META[getStorageConfig().backend].label}
+        </Badge>
+      </div>
+    </div>
+  );
+}
+
+// ─── Typography Settings ──────────────────────────────────────────────────────
+
+const TYPO_STORAGE_KEY = "wjw-typography";
+
+const FONT_STACKS: Record<string, { label: string; value: string }> = {
+  system:      { label: "System UI (default)", value: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif' },
+  inter:       { label: "Inter",               value: '"Inter", ui-sans-serif, system-ui, sans-serif' },
+  geist:       { label: "Geist",               value: '"Geist", ui-sans-serif, system-ui, sans-serif' },
+  manrope:     { label: "Manrope",             value: '"Manrope", ui-sans-serif, system-ui, sans-serif' },
+  plusJakarta: { label: "Plus Jakarta Sans",   value: '"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif' },
+  dmSans:      { label: "DM Sans",             value: '"DM Sans", ui-sans-serif, system-ui, sans-serif' },
+  nunito:      { label: "Nunito",              value: '"Nunito", ui-sans-serif, system-ui, sans-serif' },
+  raleway:     { label: "Raleway",             value: '"Raleway", ui-sans-serif, system-ui, sans-serif' },
+  outfit:      { label: "Outfit",              value: '"Outfit", ui-sans-serif, system-ui, sans-serif' },
+  serif:       { label: "Georgia (serif)",     value: "ui-serif, Georgia, Cambria, serif" },
+  playfair:    { label: "Playfair Display",    value: '"Playfair Display", ui-serif, Georgia, serif' },
+  mono:        { label: "Monospace",           value: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace' },
+  firaCode:    { label: "Fira Code",           value: '"Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace' },
+  jetbrains:   { label: "JetBrains Mono",      value: '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace' },
+};
+
+interface TypoEl {
+  id: string; label: string; desc: string;
+  sizeVar: string; fontVar: string;
+  defaultSize: number; defaultFont: string;
+  min: number; max: number; step: number;
+  sample: string;
+}
+
+const TYPO_ELEMENTS: TypoEl[] = [
+  { id: "body",  label: "Body",             desc: "Base paragraph text",          sizeVar: "--font-size-body",  fontVar: "--font-body",  defaultSize: 100, defaultFont: "system", min: 75,  max: 130, step: 5,  sample: "The quick brown fox jumps over the lazy dog." },
+  { id: "h1",   label: "H1 — Page Title",  desc: "Hero / largest heading",        sizeVar: "--font-size-h1",   fontVar: "--font-h1",   defaultSize: 300, defaultFont: "system", min: 200, max: 500, step: 10, sample: "Page Title" },
+  { id: "h2",   label: "H2 — Section",     desc: "Section-level headings",        sizeVar: "--font-size-h2",   fontVar: "--font-h2",   defaultSize: 225, defaultFont: "system", min: 150, max: 350, step: 10, sample: "Section Heading" },
+  { id: "h3",   label: "H3 — Sub Heading", desc: "Card titles, sub-sections",     sizeVar: "--font-size-h3",   fontVar: "--font-h3",   defaultSize: 175, defaultFont: "system", min: 125, max: 275, step: 10, sample: "Sub Heading" },
+  { id: "h4",   label: "H4 — Minor",       desc: "Labels, sidebar headings",      sizeVar: "--font-size-h4",   fontVar: "--font-h4",   defaultSize: 125, defaultFont: "system", min: 100, max: 200, step: 5,  sample: "Minor Heading" },
+  { id: "small",label: "Small / Caption",  desc: "Helper text, timestamps",       sizeVar: "--font-size-small",fontVar: "--font-small",defaultSize: 85,  defaultFont: "system", min: 65,  max: 110, step: 5,  sample: "Caption · helper text · timestamp" },
+  { id: "link", label: "Links",            desc: "Anchor / hyperlink text",       sizeVar: "--font-size-link", fontVar: "--font-link", defaultSize: 100, defaultFont: "system", min: 75,  max: 130, step: 5,  sample: "Click here → visit page" },
+  { id: "label",label: "Labels / UI",      desc: "Form labels, nav items",        sizeVar: "--font-size-label",fontVar: "--font-label",defaultSize: 90,  defaultFont: "system", min: 70,  max: 115, step: 5,  sample: "Form Label · Nav Item · Badge" },
+  { id: "code", label: "Code / Mono",      desc: "Inline code, code blocks",      sizeVar: "--font-size-code", fontVar: "--font-code", defaultSize: 90,  defaultFont: "mono",   min: 70,  max: 115, step: 5,  sample: "const x = fn(arg) => result;" },
+  { id: "muted",label: "Muted / Subtext",  desc: "Secondary descriptions",        sizeVar: "--font-size-muted",fontVar: "--font-muted",defaultSize: 90,  defaultFont: "system", min: 70,  max: 115, step: 5,  sample: "Subtitle · description · secondary info" },
+];
+
+type TypoState = Record<string, { size: number; font: string }>;
+
+function loadTypoFromStorage(): TypoState {
+  try { const r = localStorage.getItem(TYPO_STORAGE_KEY); return r ? JSON.parse(r) : {}; } catch { return {}; }
+}
+
+function TypographyPanel() {
+  const [values, setValues] = React.useState<TypoState>(() => {
+    const stored = loadTypoFromStorage();
+    const init: TypoState = {};
+    TYPO_ELEMENTS.forEach(el => { init[el.id] = stored[el.id] ?? { size: el.defaultSize, font: el.defaultFont }; });
+    return init;
+  });
+
+  React.useEffect(() => {
+    TYPO_ELEMENTS.forEach(el => {
+      const v = values[el.id];
+      document.documentElement.style.setProperty(el.sizeVar, `${(v.size / 100).toFixed(2)}rem`);
+      document.documentElement.style.setProperty(el.fontVar, FONT_STACKS[v.font]?.value ?? FONT_STACKS.system.value);
+    });
+    storageSave(TYPO_STORAGE_KEY, values).catch(() => {});
+  }, [values]);
+
+  function setSize(id: string, size: number) { setValues(p => ({ ...p, [id]: { ...p[id], size } })); }
+  function setFont(id: string, font: string) { setValues(p => ({ ...p, [id]: { ...p[id], font } })); }
+  function resetOne(id: string) {
+    const el = TYPO_ELEMENTS.find(e => e.id === id)!;
+    setValues(p => ({ ...p, [id]: { size: el.defaultSize, font: el.defaultFont } }));
+  }
+  function resetAll() {
+    const d: TypoState = {};
+    TYPO_ELEMENTS.forEach(el => { d[el.id] = { size: el.defaultSize, font: el.defaultFont }; });
+    setValues(d);
+  }
+
+  const isDirty = TYPO_ELEMENTS.some(el => {
+    const v = values[el.id];
+    return v.size !== el.defaultSize || v.font !== el.defaultFont;
+  });
+
+  return (
+    <div className="space-y-1">
+      {isDirty && (
+        <div className="flex justify-end mb-2">
+          <Button variant="ghost" size="sm" onClick={resetAll} className="gap-1.5 text-xs text-muted-foreground">
+            <RotateCcw className="w-3 h-3" /> Reset all
+          </Button>
+        </div>
+      )}
+
+      {TYPO_ELEMENTS.map((el, idx) => {
+        const v = values[el.id];
+        const changed = v.size !== el.defaultSize || v.font !== el.defaultFont;
+        const fontLabel = Object.entries(FONT_STACKS).find(([k]) => k === v.font)?.[1].label ?? v.font;
+
+        return (
+          <div key={el.id}>
+            {idx > 0 && <Separator className="my-4" />}
+            <div className="space-y-2">
+              {/* Row header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-medium">{el.label}</span>
+                  {changed && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">modified</Badge>}
+                  <span className="text-xs text-muted-foreground">— {el.desc}</span>
+                </div>
+                {changed && (
+                  <button onClick={() => resetOne(el.id)} title={`Reset ${el.label}`}
+                    className="text-muted-foreground hover:text-foreground transition-colors ml-2 shrink-0">
+                    <RotateCcw className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+
+              {/* Live preview */}
+              <div className="rounded-xl border border-dashed border-border px-3 py-2 text-muted-foreground truncate"
+                style={{ fontSize: `${v.size / 100}rem`, fontFamily: FONT_STACKS[v.font]?.value }}>
+                {el.sample}
+              </div>
+
+              {/* Size slider */}
+              <div className="flex items-center gap-3">
+                <Label className="text-xs w-20 shrink-0 text-muted-foreground">
+                  Size: {(v.size / 100).toFixed(2)}rem
+                </Label>
+                <Slider min={el.min} max={el.max} step={el.step} value={[v.size]}
+                  onValueChange={([val]) => setSize(el.id, val)} className="flex-1" />
+                <span className="text-xs text-muted-foreground w-16 text-right">
+                  {el.min / 100}–{el.max / 100}rem
+                </span>
+              </div>
+
+              {/* Font family */}
+              <div className="flex items-center gap-3">
+                <Label className="text-xs w-20 shrink-0 text-muted-foreground">Family</Label>
+                <Select value={v.font} onValueChange={val => setFont(el.id, val)}>
+                  <SelectTrigger className="h-8 text-xs flex-1">
+                    <SelectValue>{fontLabel}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(FONT_STACKS).map(([key, { label }]) => (
+                      <SelectItem key={key} value={key} className="text-xs">{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* CSS export snippet */}
+      <Separator className="mt-6 mb-3" />
+      <p className="text-xs text-muted-foreground font-medium">Copy to :root in index.css to make permanent</p>
+      <pre className="text-[10px] leading-relaxed text-muted-foreground bg-muted rounded-xl p-3 overflow-x-auto">
+        {TYPO_ELEMENTS.map(el => {
+          const v = values[el.id];
+          return `${el.sizeVar}: ${(v.size / 100).toFixed(2)}rem;\n${el.fontVar}: ${FONT_STACKS[v.font]?.value ?? "..."};`;
+        }).join("\n")}
+      </pre>
+    </div>
+  );
+}
+
+// ─── Button Style Settings ────────────────────────────────────────────────────
+
+const BTN_STORAGE_KEY = "wjw-buttons";
+
+interface BtnSlider {
+  cssVar: string; label: string; desc: string;
+  min: number; max: number; step: number; scale: number; unit: string; defaultVal: number;
+}
+
+const BTN_SLIDERS: BtnSlider[] = [
+  { cssVar: "--btn-radius",         label: "Border Radius",       desc: "0 = square, higher = rounded",          min: 0,   max: 50,  step: 1,   scale: 0.1,    unit: "rem", defaultVal: 8  },
+  { cssVar: "--btn-font-size",      label: "Font Size",           desc: "Text size inside buttons (px)",          min: 10,  max: 20,  step: 1,   scale: 0.0625, unit: "rem", defaultVal: 14 },
+  { cssVar: "--btn-font-weight",    label: "Font Weight",         desc: "300 light · 500 medium · 700 bold",      min: 300, max: 800, step: 100, scale: 1,      unit: "",    defaultVal: 500 },
+  { cssVar: "--btn-px",             label: "Padding X",           desc: "Horizontal padding (px)",                min: 4,   max: 40,  step: 1,   scale: 0.0625, unit: "rem", defaultVal: 16 },
+  { cssVar: "--btn-py",             label: "Padding Y",           desc: "Vertical padding (px)",                  min: 2,   max: 24,  step: 1,   scale: 0.0625, unit: "rem", defaultVal: 8  },
+  { cssVar: "--btn-border-width",   label: "Border Width",        desc: "Border / outline thickness (px)",        min: 0,   max: 4,   step: 1,   scale: 1,      unit: "px",  defaultVal: 1  },
+  { cssVar: "--btn-letter-spacing", label: "Letter Spacing",      desc: "Character spacing (0 = normal)",         min: -2,  max: 10,  step: 1,   scale: 0.01,   unit: "em",  defaultVal: 0  },
+];
+
+interface BtnVariant {
+  id: string; label: string; desc: string;
+  bgVar: string; textVar: string; borderVar: string;
+  defaultBg: string; defaultText: string; defaultBorder: string;
+}
+
+const BTN_VARIANTS: BtnVariant[] = [
+  { id: "default",     label: "Default (Primary)", desc: "Main CTA",            bgVar: "--btn-default-bg",     textVar: "--btn-default-text",     borderVar: "--btn-default-border",     defaultBg: "#57c4dc", defaultText: "#171717", defaultBorder: "#57c4dc" },
+  { id: "secondary",   label: "Secondary",         desc: "Lower-emphasis",      bgVar: "--btn-secondary-bg",   textVar: "--btn-secondary-text",   borderVar: "--btn-secondary-border",   defaultBg: "#f5f5f5", defaultText: "#171717", defaultBorder: "#f5f5f5" },
+  { id: "outline",     label: "Outline",            desc: "Transparent + border",bgVar: "--btn-outline-bg",     textVar: "--btn-outline-text",     borderVar: "--btn-outline-border",     defaultBg: "transparent", defaultText: "#fafafa", defaultBorder: "#343434" },
+  { id: "ghost",       label: "Ghost",              desc: "No bg or border",     bgVar: "--btn-ghost-bg",       textVar: "--btn-ghost-text",       borderVar: "--btn-ghost-border",       defaultBg: "transparent", defaultText: "#fafafa", defaultBorder: "transparent" },
+  { id: "destructive", label: "Destructive",        desc: "Delete / danger",     bgVar: "--btn-destructive-bg", textVar: "--btn-destructive-text", borderVar: "--btn-destructive-border", defaultBg: "#ff6b6b", defaultText: "#171717", defaultBorder: "#ff6b6b" },
+  { id: "link",        label: "Link",               desc: "Inline text-link",    bgVar: "--btn-link-bg",        textVar: "--btn-link-text",        borderVar: "--btn-link-border",        defaultBg: "transparent", defaultText: "#57c4dc", defaultBorder: "transparent" },
+];
+
+interface BtnState {
+  sliders: Record<string, number>;
+  variants: Record<string, { bg: string; text: string; border: string }>;
+}
+
+function buildBtnDefault(): BtnState {
+  const sliders: Record<string, number> = {};
+  BTN_SLIDERS.forEach(s => { sliders[s.cssVar] = s.defaultVal; });
+  const variants: BtnState["variants"] = {};
+  BTN_VARIANTS.forEach(v => { variants[v.id] = { bg: v.defaultBg, text: v.defaultText, border: v.defaultBorder }; });
+  return { sliders, variants };
+}
+
+function loadBtnFromStorage(): BtnState | null {
+  try { const r = localStorage.getItem(BTN_STORAGE_KEY); return r ? JSON.parse(r) : null; } catch { return null; }
+}
+
+function applyBtnState(state: BtnState) {
+  const root = document.documentElement;
+  BTN_SLIDERS.forEach(s => {
+    const val = state.sliders[s.cssVar] ?? s.defaultVal;
+    root.style.setProperty(s.cssVar, s.unit === "" ? `${val}` : `${(val * s.scale).toFixed(3)}${s.unit}`);
+  });
+  BTN_VARIANTS.forEach(v => {
+    const col = state.variants[v.id];
+    if (!col) return;
+    root.style.setProperty(v.bgVar, col.bg);
+    root.style.setProperty(v.textVar, col.text);
+    root.style.setProperty(v.borderVar, col.border);
+  });
+}
+
+function ButtonStylesPanel() {
+  const [state, setState] = React.useState<BtnState>(() => {
+    const stored = loadBtnFromStorage();
+    const def = buildBtnDefault();
+    if (!stored) return def;
+    return { sliders: { ...def.sliders, ...stored.sliders }, variants: { ...def.variants, ...stored.variants } };
+  });
+  const [openVariant, setOpenVariant] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    applyBtnState(state);
+    storageSave(BTN_STORAGE_KEY, state).catch(() => {});
+  }, [state]);
+
+  function setSlider(cssVar: string, val: number) {
+    setState(p => ({ ...p, sliders: { ...p.sliders, [cssVar]: val } }));
+  }
+  function setVariantColor(id: string, field: "bg" | "text" | "border", val: string) {
+    setState(p => ({ ...p, variants: { ...p.variants, [id]: { ...p.variants[id], [field]: val } } }));
+  }
+  function resetAll() { setState(buildBtnDefault()); }
+  function resetVariant(v: BtnVariant) {
+    setState(p => ({ ...p, variants: { ...p.variants, [v.id]: { bg: v.defaultBg, text: v.defaultText, border: v.defaultBorder } } }));
+  }
+
+  const isDirty = BTN_SLIDERS.some(s => state.sliders[s.cssVar] !== s.defaultVal)
+    || BTN_VARIANTS.some(v => {
+      const c = state.variants[v.id];
+      return c?.bg !== v.defaultBg || c?.text !== v.defaultText || c?.border !== v.defaultBorder;
+    });
+
+  // Inline preview style for variant swatch buttons
+  function previewStyle(v: BtnVariant): React.CSSProperties {
+    const s = state.sliders;
+    const col = state.variants[v.id];
+    return {
+      background: col.bg === "transparent" ? "transparent" : col.bg,
+      color: col.text,
+      border: `${s["--btn-border-width"]}px solid ${col.border === "transparent" ? "transparent" : col.border}`,
+      borderRadius: `${(s["--btn-radius"] * 0.1).toFixed(2)}rem`,
+      fontSize: `${(s["--btn-font-size"] * 0.0625).toFixed(3)}rem`,
+      fontWeight: s["--btn-font-weight"],
+      padding: `${(s["--btn-py"] * 0.0625).toFixed(3)}rem ${(s["--btn-px"] * 0.0625).toFixed(3)}rem`,
+      letterSpacing: `${(s["--btn-letter-spacing"] * 0.01).toFixed(3)}em`,
+      cursor: "pointer",
+      display: "inline-flex",
+      alignItems: "center",
+      textDecoration: v.id === "link" ? "underline" : "none",
+      lineHeight: 1.4,
+    };
+  }
+
+  return (
+    <div className="space-y-6">
+      {isDirty && (
+        <div className="flex justify-end">
+          <Button variant="ghost" size="sm" onClick={resetAll} className="gap-1.5 text-xs text-muted-foreground">
+            <RotateCcw className="w-3 h-3" /> Reset all
+          </Button>
+        </div>
+      )}
+
+      {/* Shared sliders */}
+      <div className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Shared Properties</p>
+        {BTN_SLIDERS.map(s => {
+          const val = state.sliders[s.cssVar] ?? s.defaultVal;
+          const display = s.unit === "" ? `${val}` : `${(val * s.scale).toFixed(2)}${s.unit}`;
+          const changed = val !== s.defaultVal;
+          return (
+            <div key={s.cssVar} className="grid grid-cols-[130px_1fr_auto_auto] items-center gap-3">
+              <div>
+                <p className="text-xs font-medium">{s.label}</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">{s.desc}</p>
+              </div>
+              <Slider min={s.min} max={s.max} step={s.step} value={[val]}
+                onValueChange={([v]) => setSlider(s.cssVar, v)} />
+              <span className="text-xs text-muted-foreground w-14 text-right tabular-nums">{display}</span>
+              {changed
+                ? <button onClick={() => setSlider(s.cssVar, s.defaultVal)} className="text-muted-foreground hover:text-foreground transition-colors"><RotateCcw className="w-3 h-3" /></button>
+                : <div className="w-4" />}
+            </div>
+          );
+        })}
+      </div>
+
+      <Separator />
+
+      {/* Live preview strip */}
+      <div className="space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Live Preview</p>
+        <div className="flex flex-wrap gap-3 rounded-xl border border-dashed border-border p-4 bg-muted/20">
+          {BTN_VARIANTS.map(v => (
+            <button key={v.id} style={previewStyle(v)}>{v.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Per-variant color editors */}
+      <div className="space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Variant Colors</p>
+        <p className="text-[10px] text-muted-foreground">Accepts hex, rgb(), hsl(), or CSS variables like <code>var(--primary)</code></p>
+        <div className="space-y-2 mt-2">
+          {BTN_VARIANTS.map(v => {
+            const col = state.variants[v.id];
+            const changed = col?.bg !== v.defaultBg || col?.text !== v.defaultText || col?.border !== v.defaultBorder;
+            const isOpen = openVariant === v.id;
+
+            return (
+              <Collapsible key={v.id} open={isOpen} onOpenChange={open => setOpenVariant(open ? v.id : null)}>
+                <CollapsibleTrigger asChild>
+                  <button className="flex w-full items-center justify-between rounded-xl border border-border px-3 py-2 text-left hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="h-4 w-4 rounded border border-border shrink-0"
+                        style={{
+                          background: col?.bg === "transparent" ? undefined : col?.bg,
+                          backgroundImage: col?.bg === "transparent" ? "repeating-conic-gradient(#aaa 0% 25%, transparent 0% 50%) 0 / 8px 8px" : undefined,
+                        }} />
+                      <span className="text-sm font-medium">{v.label}</span>
+                      <span className="text-xs text-muted-foreground">{v.desc}</span>
+                      {changed && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">modified</Badge>}
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  </button>
+                </CollapsibleTrigger>
+
+                <CollapsibleContent>
+                  <div className="mt-1 rounded-xl border border-border p-3 space-y-2 bg-card">
+                    {(["bg", "text", "border"] as const).map(field => {
+                      const labelMap = { bg: "Background", text: "Text", border: "Border" };
+                      const defMap = { bg: v.defaultBg, text: v.defaultText, border: v.defaultBorder };
+                      const val = col?.[field] ?? defMap[field];
+                      return (
+                        <div key={field} className="flex items-center gap-2">
+                          <input type="color"
+                            value={val.startsWith("#") ? val : "#888888"}
+                            onChange={e => setVariantColor(v.id, field, e.target.value)}
+                            className="h-7 w-7 rounded border border-border cursor-pointer bg-transparent p-0.5 shrink-0" />
+                          <Input value={val} onChange={e => setVariantColor(v.id, field, e.target.value)}
+                            className="h-7 text-xs font-mono flex-1" />
+                          <Label className="text-xs w-20 shrink-0 text-muted-foreground">{labelMap[field]}</Label>
+                          {val !== defMap[field] && (
+                            <button onClick={() => setVariantColor(v.id, field, defMap[field])}
+                              className="text-muted-foreground hover:text-foreground transition-colors shrink-0">
+                              <RotateCcw className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {changed && (
+                      <div className="flex justify-end pt-1">
+                        <Button variant="ghost" size="sm" className="text-xs gap-1.5 text-muted-foreground"
+                          onClick={() => resetVariant(v)}>
+                          <RotateCcw className="w-3 h-3" /> Reset {v.label}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* CSS export */}
+      <Separator />
+      <div className="space-y-1.5">
+        <p className="text-xs text-muted-foreground font-medium">Copy to :root in index.css to make permanent</p>
+        <pre className="text-[10px] leading-relaxed text-muted-foreground bg-muted rounded-xl p-3 overflow-x-auto whitespace-pre-wrap">
+          {[
+            ...BTN_SLIDERS.map(s => {
+              const val = state.sliders[s.cssVar] ?? s.defaultVal;
+              const css = s.unit === "" ? `${val}` : `${(val * s.scale).toFixed(3)}${s.unit}`;
+              return `${s.cssVar}: ${css};`;
+            }),
+            "",
+            ...BTN_VARIANTS.flatMap(v => {
+              const col = state.variants[v.id];
+              return [`${v.bgVar}: ${col.bg};`, `${v.textVar}: ${col.text};`, `${v.borderVar}: ${col.border};`];
+            }),
+          ].join("\n")}
+        </pre>
+      </div>
     </div>
   );
 }
@@ -921,6 +1798,18 @@ export function AdminPage() {
               <ApiConfigPanel />
             </AdminSection>
 
+            <AdminSection title="Typography" description="Font families and sizes for every text element" icon={<Type className="w-4 h-4" />}>
+              <TypographyPanel />
+            </AdminSection>
+
+            <AdminSection title="Button Styles" description="Shared properties and per-variant colors for all buttons" icon={<MousePointerClick className="w-4 h-4" />}>
+              <ButtonStylesPanel />
+            </AdminSection>
+
+            <AdminSection title="Storage Backend" description="Choose where admin settings persist — local, Gist, Cloudflare KV, Firestore, or Google Drive" icon={<Database className="w-4 h-4" />}>
+              <StoragePanel />
+            </AdminSection>
+
             <AdminSection title="Email Templates" description="Preview React Email templates locally" icon={<Mail className="w-4 h-4" />}>
               <EmailTemplatesPanel
                 showPreview={showEmailPreview}
@@ -954,7 +1843,7 @@ export function AdminPage() {
         </div>
 
         <p className="text-xs text-center text-muted-foreground pb-4">
-          williamjwhite.me admin · session auth · changes persist via localStorage
+          williamjwhite.me admin · session auth · storage: {BACKEND_META[getStorageConfig().backend].label}
         </p>
       </main>
     </div>

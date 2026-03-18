@@ -142,9 +142,22 @@ const STORAGE_CONFIG_KEY = "wjw_storage_config";
 const SETTINGS_PAYLOAD_KEY = "wjw_settings_payload";
 
 function getStorageConfig(): StorageConfig {
-  try { const r = localStorage.getItem(STORAGE_CONFIG_KEY); return r ? JSON.parse(r) : { backend: "local" }; }
-  catch { return { backend: "local" }; }
+  try {
+    const stored = localStorage.getItem(STORAGE_CONFIG_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+
+  if (import.meta.env.VITE_GIST_ID && import.meta.env.VITE_GIST_TOKEN) {
+    return {
+      backend:    "gist",
+      gistId:     import.meta.env.VITE_GIST_ID,
+      gistToken:  import.meta.env.VITE_GIST_TOKEN,
+    };
+  }
+
+  return { backend: "local" };
 }
+
 function saveStorageConfig(cfg: StorageConfig) {
   try { localStorage.setItem(STORAGE_CONFIG_KEY, JSON.stringify(cfg)); } catch {}
 }

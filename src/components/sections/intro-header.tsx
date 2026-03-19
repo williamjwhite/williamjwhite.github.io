@@ -38,21 +38,15 @@ export function IntroHeader() {
           </p>
 
           <div className="flex flex-wrap gap-2 mt-5">
-            <Button onClick={() => scrollToId("connect")}>
-              Connect <ArrowRight className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => window.open(LINKS.github, "_blank", "noopener,noreferrer")}
-            >
-              GitHub <Github className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => window.open(LINKS.email, "_blank", "noopener,noreferrer")}
-            >
-              Email <Mail className="w-4 h-4" />
-            </Button>
+<Button variant="outline" className="btn-primary-outline" onClick={() => scrollToId("connect")}>
+  Connect <ArrowRight className="w-4 h-4" />
+</Button>
+<Button variant="outline" className="btn-primary-outline" onClick={() => window.open(LINKS.github, "_blank", "noopener,noreferrer")}>
+  GitHub <Github className="w-4 h-4" />
+</Button>
+<Button variant="outline" className="btn-primary-outline" onClick={() => window.open(LINKS.email, "_blank", "noopener,noreferrer")}>
+  Email <Mail className="w-4 h-4" />
+</Button>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-4">

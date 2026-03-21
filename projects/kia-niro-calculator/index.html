@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025 Kia Niro — EV vs Gas Cost Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181b23;
+    --border: #252933;
+    --accent: #00e5b4;
+    --accent2: #ff6b35;
+    --accent3: #4d9fff;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --danger: #ff4757;
+    --ev-color: #00e5b4;
+    --hybrid-color: #4d9fff;
+    --phev-color: #ff6b35;
+    --gas-color: #f0c040;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,180,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,180,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .brand-block { flex: 1; min-width: 200px; }
+
+  .brand-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 80px);
+    line-height: 0.9;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+    font-weight: 300;
+  }
+
+  .live-badge {
+    background: rgba(0,229,180,0.1);
+    border: 1px solid rgba(0,229,180,0.3);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* LAYOUT */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  /* PANELS */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .panel-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .panel-icon {
+    width: 24px; height: 24px;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .panel-body { padding: 20px; }
+
+  /* INPUT GROUPS */
+  .input-section { margin-bottom: 24px; }
+
+  .input-section:last-child { margin-bottom: 0; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+
+  .input-row:last-child { margin-bottom: 0; }
+
+  .input-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .input-label .unit {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--border);
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  .input-field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    padding: 10px 14px;
+    border-radius: 2px;
+    width: 100%;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .input-field::-webkit-outer-spin-button,
+  .input-field::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .input-field:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(0,229,180,0.03);
+  }
+
+  /* SLIDER */
+  .slider-container { position: relative; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    margin: 8px 0;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,229,180,0.5);
+    transition: transform 0.1s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* RESULTS PANEL */
+  .results-panel { display: flex; flex-direction: column; gap: 20px; }
+
+  /* COST CARDS */
+  .cost-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .cost-cards { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .cost-cards { grid-template-columns: 1fr; }
+  }
+
+  .cost-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .cost-card.ev { border-top: 3px solid var(--ev-color); }
+  .cost-card.hybrid { border-top: 3px solid var(--hybrid-color); }
+  .cost-card.phev { border-top: 3px solid var(--phev-color); }
+  .cost-card.gasonly { border-top: 3px solid var(--gas-color); }
+
+  .cost-card.best-value {
+    background: rgba(0,229,180,0.05);
+  }
+
+  .best-tag {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: var(--accent);
+    color: #000;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 1px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .card-model {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .card-model.ev { color: var(--ev-color); }
+  .card-model.hybrid { color: var(--hybrid-color); }
+  .card-model.phev { color: var(--phev-color); }
+  .card-model.gasonly { color: var(--gas-color); }
+
+  .card-cost {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .card-period {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .card-details { display: flex; flex-direction: column; gap: 5px; }
+
+  .card-detail {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .card-detail .val {
+    font-family: 'DM Mono', monospace;
+    color: var(--text);
+    font-size: 11px;
+  }
+
+  /* COMPARISON TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; }
+
+  .comp-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .comp-table th:not(:first-child) { text-align: right; }
+
+  .comp-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(37,41,51,0.5);
+    transition: background 0.15s;
+  }
+
+  .comp-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .comp-table td:not(:first-child) {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .comp-table .gas-price {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .comp-table .today-row td {
+    background: rgba(0,229,180,0.04);
+    border-bottom: 1px solid rgba(0,229,180,0.15);
+  }
+
+  .comp-table .today-row .gas-price {
+    color: var(--accent);
+  }
+
+  .comp-table td.ev-col { color: var(--ev-color); }
+  .comp-table td.hybrid-col { color: var(--hybrid-color); }
+  .comp-table td.phev-col { color: var(--phev-color); }
+  .comp-table td.gas-col { color: var(--gas-color); }
+  .comp-table td.save-col { color: var(--accent); font-weight: 500; }
+
+  .today-marker {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-size: 8px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    padding: 1px 5px;
+    border-radius: 1px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+
+  /* CHARGING TABLE */
+  .charge-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .charge-badge.l1 { background: rgba(77,159,255,0.15); color: var(--accent3); }
+  .charge-badge.l2 { background: rgba(0,229,180,0.15); color: var(--ev-color); }
+  .charge-badge.l3 { background: rgba(255,107,53,0.15); color: var(--accent2); }
+
+  /* SAVINGS BAR */
+  .savings-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  .savings-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .bar-label {
+    font-size: 12px;
+    width: 80px;
+    text-align: right;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 28px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 60px;
+    white-space: nowrap;
+  }
+
+  .bar-fill.ev { background: linear-gradient(90deg, rgba(0,229,180,0.8), rgba(0,229,180,0.5)); color: #000; }
+  .bar-fill.hybrid { background: linear-gradient(90deg, rgba(77,159,255,0.8), rgba(77,159,255,0.5)); color: #000; }
+  .bar-fill.phev { background: linear-gradient(90deg, rgba(255,107,53,0.8), rgba(255,107,53,0.5)); color: #000; }
+  .bar-fill.gasonly { background: linear-gradient(90deg, rgba(240,192,64,0.8), rgba(240,192,64,0.5)); color: #000; }
+
+  .bar-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    width: 70px;
+    flex-shrink: 0;
+    text-align: left;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 0 30px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 10px;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .footer-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--border);
+    letter-spacing: 0.1em;
+  }
+
+  /* TOGGLE BUTTONS */
+  .toggle-group {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 7px 10px;
+    background: var(--surface2);
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-btn.active {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+
+  /* RECALC BUTTON */
+  .calc-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.1em;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 6px;
+  }
+
+  .calc-btn:hover {
+    background: #00ffcc;
+    box-shadow: 0 0 20px rgba(0,229,180,0.4);
+  }
+
+  .calc-btn:active { transform: scale(0.99); }
+
+  /* INLINE VALUE DISPLAY */
+  .current-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Horizontal separator */
+  .sep { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* Scrollable table wrapper */
+  .table-scroll { overflow-x: auto; }
+
+  .info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(77,159,255,0.1);
+    border: 1px solid rgba(77,159,255,0.2);
+    color: var(--accent3);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-block">
+        <div class="brand-eyebrow">Fuel Cost Calculator</div>
+        <h1>2025 KIA<br><span>NIRO</span></h1>
+        <div class="header-sub">EV · PHEV · Hybrid · Gas — Side-by-Side Cost Analysis</div>
+      </div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Live Calculator
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- LEFT: INPUTS -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon">⚙️</div>
+          <div class="panel-title">Variables</div>
+        </div>
+        <div class="panel-body">
+
+          <!-- DRIVING -->
+          <div class="input-section">
+            <div class="section-label">📍 Driving Habits</div>
+            <div class="input-row">
+              <div class="input-label">
+                Miles per Month
+                <span class="current-val" id="miles-display">1,000</span>
+              </div>
+              <input type="range" id="miles-slider" min="300" max="3000" step="50" value="1000"
+                oninput="document.getElementById('miles-display').textContent=Number(this.value).toLocaleString(); document.getElementById('miles-input').value=this.value; recalc()">
+              <div class="slider-labels"><span>300</span><span>3,000</span></div>
+              <input type="number" id="miles-input" class="input-field" value="1000"
+                oninput="document.getElementById('miles-slider').value=this.value; document.getElementById('miles-display').textContent=Number(this.value).toLocaleString(); recalc()">
+            </div>
+          </div>
+
+          <!-- GAS PRICES -->
+          <div class="input-section">
+            <div class="section-label">⛽ Gas Prices (per gallon)</div>
+            <div class="input-row">
+              <div class="input-label">Regular Unleaded <span class="unit">$/gal</span></div>
+              <input type="number" id="gas-regular" class="input-field" value="3.912" step="0.001" min="1" max="10" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Mid-Grade <span class="unit">$/gal</span></div>
+              <input type="number" id="gas-midgrade" class="input-field" value="4.415" step="0.001" min="1" max="10" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Premium <span class="unit">$/gal</span></div>
+              <input type="number" id="gas-premium" class="input-field" value="4.715" step="0.001" min="1" max="10" oninput="recalc()">
+            </div>
+          </div>
+
+          <!-- ELECTRIC -->
+          <div class="input-section">
+            <div class="section-label">⚡ Electricity Rates</div>
+            <div class="info-chip">ℹ️ National avg: $0.1805/kWh</div>
+            <div class="input-row">
+              <div class="input-label">Home (Level 1 & 2) <span class="unit">$/kWh</span></div>
+              <input type="number" id="elec-home" class="input-field" value="0.1805" step="0.001" min="0.05" max="0.80" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Public DC Fast (L3) <span class="unit">$/kWh</span></div>
+              <input type="number" id="elec-l3" class="input-field" value="0.45" step="0.005" min="0.10" max="1.20" oninput="recalc()">
+            </div>
+          </div>
+
+          <!-- VEHICLE SPECS -->
+          <div class="input-section">
+            <div class="section-label">🚗 Vehicle Specs (EPA)</div>
+
+            <div class="panel-header" style="padding:8px 0; border:none; margin-bottom:4px;">
+              <span class="card-model hybrid" style="font-size:10px;">Hybrid</span>
+            </div>
+            <div class="input-row">
+              <div class="input-label">Fuel Economy <span class="unit">MPG</span></div>
+              <input type="number" id="hybrid-mpg" class="input-field" value="53" step="1" min="10" max="100" oninput="recalc()">
+            </div>
+
+            <div class="panel-header" style="padding:8px 0; border:none; margin-bottom:4px; margin-top:8px;">
+              <span class="card-model phev" style="font-size:10px;">PHEV (gas mode)</span>
+            </div>
+            <div class="input-row">
+              <div class="input-label">Gas-only MPG <span class="unit">MPG</span></div>
+              <input type="number" id="phev-mpg" class="input-field" value="46" step="1" min="10" max="100" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Electric range <span class="unit">miles</span></div>
+              <input type="number" id="phev-ev-range" class="input-field" value="33" step="1" min="5" max="100" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Battery size <span class="unit">kWh</span></div>
+              <input type="number" id="phev-battery" class="input-field" value="11.1" step="0.1" min="5" max="30" oninput="recalc()">
+            </div>
+
+            <div class="panel-header" style="padding:8px 0; border:none; margin-bottom:4px; margin-top:8px;">
+              <span class="card-model ev" style="font-size:10px;">EV</span>
+            </div>
+            <div class="input-row">
+              <div class="input-label">Battery size <span class="unit">kWh</span></div>
+              <input type="number" id="ev-battery" class="input-field" value="64.8" step="0.1" min="20" max="150" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Range <span class="unit">miles</span></div>
+              <input type="number" id="ev-range" class="input-field" value="253" step="1" min="50" max="500" oninput="recalc()">
+            </div>
+          </div>
+
+          <!-- GAS-ONLY VEHICLE -->
+          <div class="input-section">
+            <div class="section-label" style="color:var(--gas-color);">⛽ Gas-Only Vehicle</div>
+            <div class="info-chip" style="background:rgba(240,192,64,0.1); border-color:rgba(240,192,64,0.25); color:var(--gas-color);">
+              🚗 Compare any gas vehicle
+            </div>
+            <div class="input-row">
+              <div class="input-label">Vehicle Name <span class="unit">label</span></div>
+              <input type="text" id="gas-name" class="input-field" value="My Gas Car" oninput="recalc()" style="font-family:'DM Sans',sans-serif; font-size:14px;">
+            </div>
+            <div class="input-row">
+              <div class="input-label">City MPG <span class="unit">MPG</span></div>
+              <input type="number" id="gas-city-mpg" class="input-field" value="28" step="1" min="5" max="100" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">Highway MPG <span class="unit">MPG</span></div>
+              <input type="number" id="gas-hwy-mpg" class="input-field" value="35" step="1" min="5" max="120" oninput="recalc()">
+            </div>
+            <div class="input-row">
+              <div class="input-label">City / Hwy Split <span class="current-val" id="gas-split-display">55/45</span></div>
+              <input type="range" id="gas-split" min="0" max="100" step="5" value="55"
+                oninput="
+                  document.getElementById('gas-split-display').textContent=this.value+'/'+(100-this.value);
+                  recalc()">
+              <div class="slider-labels"><span>100% City</span><span>100% Hwy</span></div>
+            </div>
+            <div class="input-row">
+              <div class="input-label">Gas Grade Used <span class="unit">grade</span></div>
+              <div class="toggle-group" style="margin-bottom:0">
+                <button class="toggle-btn active" id="btn-regular" onclick="setGasGrade('regular')">Regular</button>
+                <button class="toggle-btn" id="btn-midgrade" onclick="setGasGrade('midgrade')">Mid-Grade</button>
+                <button class="toggle-btn" id="btn-premium" onclick="setGasGrade('premium')">Premium</button>
+              </div>
+            </div>
+
+            <!-- Popular presets -->
+            <div style="margin-top:14px;">
+              <div class="input-label" style="margin-bottom:8px;">Quick Presets</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;" id="gas-presets"></div>
+            </div>
+          </div>
+
+          <!-- CHARGER SELECTION -->
+          <div class="input-section">
+            <div class="section-label">🔌 Primary Charger (EV)</div>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="btn-l1" onclick="setCharger('L1')">Level 1</button>
+              <button class="toggle-btn" id="btn-l2" onclick="setCharger('L2')">Level 2</button>
+              <button class="toggle-btn" id="btn-l3" onclick="setCharger('L3')">Level 3 DC</button>
+            </div>
+          </div>
+
+          <!-- TABLE RANGE -->
+          <div class="input-section">
+            <div class="section-label">📊 Comparison Table Range</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div class="input-row">
+                <div class="input-label">Min Gas Price</div>
+                <input type="number" id="table-min" class="input-field" value="2.00" step="0.25" min="1" max="10" oninput="recalc()">
+              </div>
+              <div class="input-row">
+                <div class="input-label">Max Gas Price</div>
+                <input type="number" id="table-max" class="input-field" value="8.00" step="0.25" min="2" max="20" oninput="recalc()">
+              </div>
+            </div>
+          </div>
+
+          <button class="calc-btn" onclick="recalc()">RECALCULATE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="results-panel">
+
+      <!-- COST CARDS -->
+      <div>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">
+          Monthly Cost at Current Gas Price
+        </div>
+        <div class="cost-cards" id="cost-cards"></div>
+      </div>
+
+      <!-- BAR CHART -->
+      <div class="savings-visual">
+        <div class="savings-title">📊 Monthly Cost Comparison</div>
+        <div id="bar-chart"></div>
+      </div>
+
+      <!-- CHARGING TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon">🔌</div>
+          <div class="panel-title">EV Charging Reference</div>
+        </div>
+        <div class="table-scroll">
+          <table class="comp-table" id="charge-table"></table>
+        </div>
+      </div>
+
+      <!-- MAIN COMPARISON TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon">💰</div>
+          <div class="panel-title">Gas Price Comparison Table — All Models</div>
+        </div>
+        <div class="table-scroll">
+          <table class="comp-table" id="main-table"></table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-note">Estimates based on EPA ratings. Actual results vary by driving conditions, temperature, and charging behavior.</div>
+    <div class="footer-mono">2025 KIA NIRO · CALCULATOR v2.0</div>
+  </footer>
+</div>
+
+<script>
+let chargerLevel = 'L2';
+let gasGrade = 'regular';
+
+// Popular gas vehicle presets: [name, city, hwy, grade]
+const GAS_PRESETS = [
+  ['Toyota Camry', 28, 39, 'regular'],
+  ['Honda Accord', 29, 37, 'regular'],
+  ['Toyota Corolla', 31, 40, 'regular'],
+  ['Ford F-150 (V6)', 20, 26, 'regular'],
+  ['Chevy Silverado', 18, 24, 'regular'],
+  ['Honda CR-V', 28, 34, 'regular'],
+  ['Toyota RAV4', 27, 35, 'regular'],
+  ['BMW 3 Series', 26, 36, 'premium'],
+  ['Subaru Outback', 26, 33, 'regular'],
+  ['Jeep Wrangler', 17, 23, 'regular'],
+  ['Dodge Charger V8', 16, 25, 'premium'],
+  ['Tesla Model 3*', 0, 0, 'regular'],
+];
+
+function buildPresets() {
+  const el = document.getElementById('gas-presets');
+  el.innerHTML = GAS_PRESETS.map((p, i) => `
+    <button onclick="applyPreset(${i})" style="
+      background:var(--surface2); border:1px solid var(--border);
+      color:var(--muted); font-family:'DM Mono',monospace; font-size:9px;
+      letter-spacing:0.08em; padding:4px 8px; border-radius:2px; cursor:pointer;
+      transition:all 0.2s; white-space:nowrap;"
+      onmouseover="this.style.borderColor='var(--gas-color)';this.style.color='var(--gas-color)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'"
+    >${p[0]}</button>
+  `).join('');
+}
+
+function applyPreset(i) {
+  const [name, city, hwy, grade] = GAS_PRESETS[i];
+  document.getElementById('gas-name').value = name;
+  document.getElementById('gas-city-mpg').value = city;
+  document.getElementById('gas-hwy-mpg').value = hwy;
+  setGasGrade(grade);
+  recalc();
+}
+
+function setCharger(level) {
+  chargerLevel = level;
+  ['L1','L2','L3'].forEach(l => {
+    document.getElementById('btn-'+l.toLowerCase()).classList.toggle('active', l === level);
+  });
+  recalc();
+}
+
+function setGasGrade(grade) {
+  gasGrade = grade;
+  ['regular','midgrade','premium'].forEach(g => {
+    document.getElementById('btn-'+g).classList.toggle('active', g === grade);
+  });
+  recalc();
+}
+
+function fmt(n, dec=2) {
+  return '$' + n.toFixed(dec);
+}
+
+function getInputs() {
+  const citySplit = parseFloat(document.getElementById('gas-split').value) / 100;
+  const hwySplit  = 1 - citySplit;
+  const cityMpg   = parseFloat(document.getElementById('gas-city-mpg').value) || 28;
+  const hwyMpg    = parseFloat(document.getElementById('gas-hwy-mpg').value) || 35;
+  // Harmonic mean weighted blend
+  const blendMpg  = (cityMpg > 0 && hwyMpg > 0)
+    ? 1 / (citySplit / cityMpg + hwySplit / hwyMpg)
+    : 0;
+
+  return {
+    miles:        parseFloat(document.getElementById('miles-input').value) || 1000,
+    gasRegular:   parseFloat(document.getElementById('gas-regular').value) || 3.912,
+    gasMidgrade:  parseFloat(document.getElementById('gas-midgrade').value) || 4.415,
+    gasPremium:   parseFloat(document.getElementById('gas-premium').value) || 4.715,
+    elecHome:     parseFloat(document.getElementById('elec-home').value) || 0.1805,
+    elecL3:       parseFloat(document.getElementById('elec-l3').value) || 0.45,
+    hybridMpg:    parseFloat(document.getElementById('hybrid-mpg').value) || 53,
+    phevMpg:      parseFloat(document.getElementById('phev-mpg').value) || 46,
+    phevEvRange:  parseFloat(document.getElementById('phev-ev-range').value) || 33,
+    phevBattery:  parseFloat(document.getElementById('phev-battery').value) || 11.1,
+    evBattery:    parseFloat(document.getElementById('ev-battery').value) || 64.8,
+    evRange:      parseFloat(document.getElementById('ev-range').value) || 253,
+    tableMin:     parseFloat(document.getElementById('table-min').value) || 2.00,
+    tableMax:     parseFloat(document.getElementById('table-max').value) || 8.00,
+    gasName:      document.getElementById('gas-name').value || 'My Gas Car',
+    gasCityMpg:   cityMpg,
+    gasHwyMpg:    hwyMpg,
+    gasBlendMpg:  blendMpg,
+    gasCitySplit: citySplit,
+  };
+}
+
+function getGasPrice(d) {
+  if (gasGrade === 'midgrade') return d.gasMidgrade;
+  if (gasGrade === 'premium')  return d.gasPremium;
+  return d.gasRegular;
+}
+
+function calcEV(miles, elecRate, battery, range) {
+  const kwhPerMile = battery / range;
+  return miles * kwhPerMile * elecRate;
+}
+
+function calcHybrid(miles, gasPrice, mpg) {
+  return (miles / mpg) * gasPrice;
+}
+
+function calcPHEV(miles, gasPrice, elecRate, evRange, gasMpg, battery) {
+  const evMiles = Math.min(miles, evRange);
+  const gasMiles = Math.max(0, miles - evRange);
+  const elecCost = evMiles * (battery / evRange) * elecRate;
+  const gasCost = (gasMiles / gasMpg) * gasPrice;
+  return elecCost + gasCost;
+}
+
+function calcGasOnly(miles, gasPrice, blendMpg) {
+  if (blendMpg <= 0) return 0;
+  return (miles / blendMpg) * gasPrice;
+}
+
+function getEVRate() {
+  return chargerLevel === 'L3'
+    ? parseFloat(document.getElementById('elec-l3').value) || 0.45
+    : parseFloat(document.getElementById('elec-home').value) || 0.1805;
+}
+
+function recalc() {
+  const d = getInputs();
+  const evRate   = getEVRate();
+  const gasPrice = getGasPrice(d);
+
+  const evCost     = calcEV(d.miles, evRate, d.evBattery, d.evRange);
+  const hybridCost = calcHybrid(d.miles, d.gasRegular, d.hybridMpg);
+  const phevCost   = calcPHEV(d.miles, d.gasRegular, d.elecHome, d.phevEvRange, d.phevMpg, d.phevBattery);
+  const gasCost    = calcGasOnly(d.miles, gasPrice, d.gasBlendMpg);
+
+  const gradeLabel = gasGrade === 'midgrade' ? 'Mid-Grade' : gasGrade === 'premium' ? 'Premium' : 'Regular';
+
+  const costs = [
+    { id: 'ev',      label: 'Niro EV',     monthly: evCost,     cpm: evRate * d.evBattery / d.evRange, detail1: `${chargerLevel} charging`, detail2: `${(d.evBattery/d.evRange).toFixed(3)} kWh/mi` },
+    { id: 'hybrid',  label: 'Niro Hybrid', monthly: hybridCost, cpm: d.gasRegular / d.hybridMpg,       detail1: `${d.hybridMpg} MPG combined`, detail2: `Regular gas` },
+    { id: 'phev',    label: 'Niro PHEV',   monthly: phevCost,   cpm: phevCost / d.miles,               detail1: `${d.phevEvRange}mi EV + gas`, detail2: `Mixed mode` },
+    { id: 'gasonly', label: d.gasName,      monthly: gasCost,    cpm: gasPrice / d.gasBlendMpg,         detail1: `${d.gasBlendMpg.toFixed(1)} MPG blend`, detail2: `${gradeLabel} · ${d.gasCityMpg}c/${d.gasHwyMpg}h MPG` },
+  ];
+
+  const minCost = Math.min(...costs.map(c => c.monthly));
+
+  // CARDS
+  const cardsEl = document.getElementById('cost-cards');
+  cardsEl.innerHTML = costs.map(c => `
+    <div class="cost-card ${c.id} ${c.monthly === minCost ? 'best-value' : ''}">
+      ${c.monthly === minCost ? '<div class="best-tag">Best Value</div>' : ''}
+      <div class="card-model ${c.id}">${c.label}</div>
+      <div class="card-cost">${fmt(c.monthly, 0)}</div>
+      <div class="card-period">per month (${Number(d.miles).toLocaleString()} mi)</div>
+      <div class="card-details">
+        <div class="card-detail"><span>${c.detail1}</span><span class="val">${(c.cpm*100).toFixed(1)}¢/mi</span></div>
+        <div class="card-detail"><span>Annual</span><span class="val">${fmt(c.monthly*12, 0)}</span></div>
+        <div class="card-detail">
+          <span>${c.id !== 'ev' ? 'vs EV' : 'Cheapest by'}</span>
+          <span class="val" style="color:${c.id !== 'ev' ? (c.monthly > evCost ? 'var(--danger)' : 'var(--ev-color)') : 'var(--muted)'}">
+            ${c.id !== 'ev' ? (c.monthly >= evCost ? '+' : '') + fmt(c.monthly - evCost, 0)+'/mo' : '—'}
+          </span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // BAR CHART
+  const maxCost = Math.max(...costs.map(c => c.monthly)) * 1.08;
+  const colorMap = { ev: 'ev', hybrid: 'hybrid', phev: 'phev', gasonly: 'gas' };
+  const barEl = document.getElementById('bar-chart');
+  barEl.innerHTML = costs.map(c => `
+    <div class="bar-row">
+      <div class="bar-label" style="font-size:11px; color:var(--muted);">${c.id === 'gasonly' ? (c.label.length > 10 ? c.label.slice(0,10)+'…' : c.label) : c.label.replace('Niro ','')}</div>
+      <div class="bar-track">
+        <div class="bar-fill ${c.id}" style="width:${(c.monthly/maxCost*100).toFixed(1)}%">
+          ${fmt(c.monthly, 0)}
+        </div>
+      </div>
+      <div class="bar-value" style="color:var(--${colorMap[c.id]}-color)">
+        ${(c.cpm*100).toFixed(1)}¢/mi
+      </div>
+    </div>
+  `).join('');
+
+  // CHARGING TABLE
+  const chargeEl = document.getElementById('charge-table');
+  const kwhPerMile = d.evBattery / d.evRange;
+  const fullChargeKwh = d.evBattery;
+  const chargeRows = [
+    { level: 'L1', name: 'Level 1', volts: '120V AC', power: '1.4 kW', speed: '~4–5 mi/hr', fullTime: `~${Math.ceil(fullChargeKwh/1.4)} hrs`, costFull: fullChargeKwh * d.elecHome, cpm: kwhPerMile * d.elecHome },
+    { level: 'L2', name: 'Level 2', volts: '240V AC', power: '11 kW',  speed: '~25–30 mi/hr', fullTime: `~${(fullChargeKwh/11).toFixed(1)} hrs`, costFull: fullChargeKwh * d.elecHome, cpm: kwhPerMile * d.elecHome },
+    { level: 'L3', name: 'Level 3 DC', volts: '400–480V DC', power: 'Up to 85 kW', speed: '~150+ mi/30min', fullTime: '~43 min (10→80%)', costFull: fullChargeKwh * d.elecL3, cpm: kwhPerMile * d.elecL3 },
+  ];
+  chargeEl.innerHTML = `
+    <thead><tr>
+      <th>Charger</th><th>Voltage</th><th>Power</th><th>Speed</th><th>Full Charge Time</th><th>Cost/Full Charge</th><th>Cost/Mile</th>
+    </tr></thead>
+    <tbody>
+      ${chargeRows.map(r => `<tr>
+        <td><span class="charge-badge ${r.level.toLowerCase()}">${r.name}</span></td>
+        <td>${r.volts}</td><td>${r.power}</td><td>${r.speed}</td><td>${r.fullTime}</td>
+        <td class="${r.level==='L3'?'phev-col':'ev-col'}">${fmt(r.costFull)}</td>
+        <td class="${r.level==='L3'?'phev-col':'ev-col'}">${(r.cpm*100).toFixed(2)}¢</td>
+      </tr>`).join('')}
+    </tbody>
+  `;
+
+  // MAIN COMPARISON TABLE
+  const step = 0.50;
+  const prices = [];
+  for (let p = d.tableMin; p <= d.tableMax + 0.001; p += step) {
+    prices.push(Math.round(p * 100) / 100);
+  }
+
+  // Ensure today's regular price is in the list
+  if (!prices.some(p => Math.abs(p - d.gasRegular) < 0.01)) {
+    prices.push(d.gasRegular);
+    prices.sort((a,b) => a-b);
+  }
+
+  const mainEl = document.getElementById('main-table');
+  mainEl.innerHTML = `
+    <thead><tr>
+      <th>Gas Price</th>
+      <th style="color:var(--hybrid-color)">Niro Hybrid</th>
+      <th style="color:var(--phev-color)">Niro PHEV</th>
+      <th style="color:var(--ev-color)">Niro EV (${chargerLevel})</th>
+      <th style="color:var(--gas-color)">${d.gasName}</th>
+      <th>Gas Car vs EV</th>
+      <th>Annual EV Save</th>
+    </tr></thead>
+    <tbody>
+      ${prices.map(price => {
+        const isToday = Math.abs(price - d.gasRegular) < 0.01;
+        const hCost = calcHybrid(d.miles, price, d.hybridMpg);
+        const pCost = calcPHEV(d.miles, price, d.elecHome, d.phevEvRange, d.phevMpg, d.phevBattery);
+        const eCost = calcEV(d.miles, evRate, d.evBattery, d.evRange);
+        // For gas vehicle in table, scale from the selected grade price proportionally
+        const gPrice = gasGrade === 'regular' ? price : gasGrade === 'midgrade' ? price * (d.gasMidgrade/d.gasRegular) : price * (d.gasPremium/d.gasRegular);
+        const gCost  = calcGasOnly(d.miles, gPrice, d.gasBlendMpg);
+        const save   = gCost - eCost;
+        return `<tr class="${isToday ? 'today-row' : ''}">
+          <td class="gas-price">${fmt(price)}${isToday ? '<span class="today-marker">TODAY</span>' : ''}</td>
+          <td class="hybrid-col">${fmt(hCost, 0)}/mo</td>
+          <td class="phev-col">${fmt(pCost, 0)}/mo</td>
+          <td class="ev-col">${fmt(eCost, 0)}/mo</td>
+          <td class="gas-col">${fmt(gCost, 0)}/mo</td>
+          <td style="color:${save>0?'var(--ev-color)':'var(--danger)'}">${save>0?'+':''}${fmt(save, 0)}</td>
+          <td style="color:${save>0?'var(--accent)':'var(--muted)'}">${save>0 ? fmt(save*12, 0) : '—'}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  `;
+}
+
+buildPresets();
+recalc();
+</script>
+</body>
+</html>

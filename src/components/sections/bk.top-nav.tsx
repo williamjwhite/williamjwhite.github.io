@@ -14,6 +14,19 @@ function NavButton({ label, onClick }: { label: string; onClick: () => void }) {
   );
 }
 
+function NavLink({ label, href }: { label: string; href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="px-3 py-2 text-sm font-semibold transition rounded-xl text-foreground/80 hover:bg-muted hover:text-foreground"
+    >
+      {label}
+    </a>
+  );
+}
+
 export function TopNav({
   isDark,
   onToggleTheme,
@@ -42,17 +55,21 @@ export function TopNav({
           </div>
         </button>
 
-        {/* Nav — all items use onNavJump to switch tabs */}
+        {/* Nav — tab jumps use onNavJump; external links use NavLink */}
         <nav className="items-center hidden gap-1 md:flex">
-          <NavButton label="About"        onClick={() => onNavJump("about")} />
-          <NavButton label="Experience"   onClick={() => onNavJump("experience")} />
-          <NavButton label="Projects"     onClick={() => onNavJump("projects")} />
-          <NavButton label="Connect"      onClick={() => onNavJump("connect")} />
-          <NavButton label="Docs"         onClick={() => onNavJump("docs")} />
-          <NavButton
-            label="Cheatsheets"
-            onClick={() => onNavJump("cheatsheets")}
-          />
+          <NavButton label="About"      onClick={() => onNavJump("about")} />
+          <NavButton label="Experience" onClick={() => onNavJump("experience")} />
+          <NavButton label="Projects"   onClick={() => onNavJump("projects")} />
+          <NavButton label="Connect"    onClick={() => onNavJump("connect")} />
+          <NavLink   label="Docs"       href={LINKS.docs} />
+          {/* Cheatsheets — subpath on same domain */}
+          <a
+            href="/cheatsheets/"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition rounded-xl text-foreground/80 hover:bg-muted hover:text-foreground"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            Cheatsheets
+          </a>
         </nav>
 
         {/* Right actions */}

@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{ts,tsx}",
+    // Cheatsheets content — needed so Tailwind doesn't purge prose-cheat styles
+    "./content/**/*.md",
+  ],
   theme: {
     extend: {
       keyframes: {

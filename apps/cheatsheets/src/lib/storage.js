@@ -234,7 +234,11 @@ export function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-export function getPin()  { return localStorage.getItem(PIN_KEY) ?? '1234' }
+export function getPin()  {
+  return localStorage.getItem(PIN_KEY)
+      ?? import.meta.env.VITE_EDITOR_PIN
+      ?? '1234'
+}
 export function setPin(p) { localStorage.setItem(PIN_KEY, p) }
 export function isAuthenticated() { return sessionStorage.getItem(SESSION_KEY) === 'true' }
 export function authenticate(pin) {

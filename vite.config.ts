@@ -10,7 +10,6 @@ function logServerInfo(): Plugin {
       server.httpServer?.once("listening", () => {
         const address = server.httpServer?.address();
         const port = typeof address === "object" ? address?.port : address;
-
         console.log("");
         console.log("Dev server connection info:");
         console.log(`  Local:   http://localhost:${port}`);
@@ -28,14 +27,28 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Allow importing .md files as raw strings (used by cheatsheets glob)
+  assetsInclude: ["**/*.md"],
   build: {
     outDir: "dist",
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Cheatsheets feature — only loaded when that tab is visited
+          "feature-cheatsheets-md": [
+            "react-markdown",
+            "remark-gfm",
+            "rehype-highlight",
+            "rehype-slug",
+          ],
+        },
+      },
+    },
   },
   server: {
-    // host: true,
     port: 5173,
-    strictPort: false, // allow fallback ports
+    strictPort: false,
     open: true,
   },
 });

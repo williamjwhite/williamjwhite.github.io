@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 
 import {
   BookOpen, Briefcase, Code2, FileText, Globe, Layers3, Mail,
@@ -7,6 +7,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { useThemeToggle } from "@/hooks/use-theme-toggle";
 import { scrollToId } from "@/lib/utils";
@@ -28,15 +29,29 @@ import { Footer } from "@/components/sections/footer";
 import { ResumeModal } from "@/components/shared/resume-modal";
 import { ProjectCard } from "@/components/shared/project-docs-modal";
 import { DocTile } from "@/components/shared/doc-tile";
-
 import { AdminPage } from "@/components/sections/admin-page";
 
+// Lazy-loaded — only bundled when the Cheatsheets tab is first visited
+const CheatsheetApp = lazy(() => import("@/features/cheatsheets"));
+
+function CheatsheetsSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 py-4">
+      <Skeleton className="h-8 w-48" />
+      <Skeleton className="h-4 w-72" />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
+        {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-36 rounded-[var(--radius)]" />)}
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
-    // Simple client-side route — no React Router needed
+  // Simple client-side route — no React Router needed
   if (window.location.pathname === "/admin") {
     return <AdminPage />;
   }
+
   const { isDark, toggle } = useThemeToggle();
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
@@ -50,7 +65,6 @@ export default function App() {
     <div className="min-h-dvh">
       <TopNav isDark={isDark} onToggleTheme={toggle} onNavJump={navJump} />
 
-      {/* <main className="w-full max-w-6xl px-4 pb-16 mx-auto"> */}
       <main className="w-full max-w-6xl px-4 sm:px-8 md:px-12 lg:px-16 pb-16 mx-auto">
         <IntroHeader />
 
@@ -68,6 +82,9 @@ export default function App() {
               </TabsTrigger>
               <TabsTrigger className="shrink-0 whitespace-nowrap" value="projects">
                 <Code2 className="w-4 h-4" /> Projects
+              </TabsTrigger>
+              <TabsTrigger className="shrink-0 whitespace-nowrap" value="cheatsheets">
+                <BookOpen className="w-4 h-4" /> Cheatsheets
               </TabsTrigger>
               <TabsTrigger className="shrink-0 whitespace-nowrap" value="docs">
                 <BookOpen className="w-4 h-4" /> Docs
@@ -90,14 +107,10 @@ export default function App() {
             </TabsList>
           </div>
 
-          <TabsContent value="overview">
-            <OverviewTab />
-          </TabsContent>
+          <TabsContent value="overview"><OverviewTab /></TabsContent>
 
           <TabsContent value="about">
-            <div id="about" className="scroll-mt-24">
-              <AboutSection />
-            </div>
+            <div id="about" className="scroll-mt-24"><AboutSection /></div>
           </TabsContent>
 
           <TabsContent value="experience">
@@ -117,6 +130,13 @@ export default function App() {
             </div>
           </TabsContent>
 
+          {/* Lazy-loaded cheatsheets feature */}
+          <TabsContent value="cheatsheets">
+            <Suspense fallback={<CheatsheetsSkeleton />}>
+              <CheatsheetApp />
+            </Suspense>
+          </TabsContent>
+
           <TabsContent value="docs">
             <Card>
               <CardHeader>
@@ -133,38 +153,23 @@ export default function App() {
           </TabsContent>
 
           <TabsContent value="connect">
-            <div id="connect" className="scroll-mt-24">
-              <ConnectSection />
-            </div>
+            <div id="connect" className="scroll-mt-24"><ConnectSection /></div>
           </TabsContent>
-
           <TabsContent value="services">
-            <div id="services" className="scroll-mt-24">
-              <ServicesTab />
-            </div>
+            <div id="services" className="scroll-mt-24"><ServicesTab /></div>
           </TabsContent>
-
           <TabsContent value="case-study">
-            <div id="case-study" className="scroll-mt-24">
-              <CaseStudyTab />
-            </div>
+            <div id="case-study" className="scroll-mt-24"><CaseStudyTab /></div>
           </TabsContent>
-
           <TabsContent value="cloud">
-            <div id="cloud" className="scroll-mt-24">
-              <CloudTab />
-            </div>
+            <div id="cloud" className="scroll-mt-24"><CloudTab /></div>
           </TabsContent>
-
           <TabsContent value="ai">
-            <div id="ai" className="scroll-mt-24">
-              <AiTab />
-            </div>
+            <div id="ai" className="scroll-mt-24"><AiTab /></div>
           </TabsContent>
         </Tabs>
 
         <ResumeModal open={showResumeModal} onOpenChange={setShowResumeModal} />
-
         <Separator className="my-10" />
         <HighlightsCards onJump={navJump} />
         <Separator className="my-10" />

@@ -71,7 +71,20 @@ jobs:
           print(f"  → {synced} sheet(s) synced from Gist")
           PYEOF
 
-      # ── Single unified build ──────────────────────────────────
+      # ── Build anatomy sub-app ─────────────────────────────────
+      - name: Build anatomy app
+        run: |
+          cd projects/anatomy
+          npm install
+          npm run build
+
+      # ── Copy anatomy build into main dist ────────────────────
+      - name: Copy anatomy build into dist
+        run: |
+          mkdir -p dist/projects/anatomy
+          cp -r projects/anatomy/dist/* dist/projects/anatomy/
+
+      # ── Main site build ───────────────────────────────────────
       - name: Install
         run: npm ci
 

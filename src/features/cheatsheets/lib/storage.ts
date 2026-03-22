@@ -1,4 +1,5 @@
 import { buildFileSheets, type Sheet } from './sheets'
+export type { Sheet }
 
 const DRAFTS_KEY  = 'wjw_cs_drafts'
 const PIN_KEY     = 'wjw_cs_pin'

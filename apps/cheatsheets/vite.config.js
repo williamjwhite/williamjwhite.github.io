@@ -14,4 +14,25 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Markdown rendering
+          'vendor-markdown': ['react-markdown', 'remark-gfm', 'rehype-highlight', 'rehype-slug'],
+          // Radix UI primitives
+          'vendor-radix': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-separator',
+            '@radix-ui/react-slot',
+            '@radix-ui/react-tooltip',
+            '@radix-ui/react-scroll-area',
+          ],
+        },
+      },
+    },
+  },
 })

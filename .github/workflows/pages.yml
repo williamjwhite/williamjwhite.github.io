@@ -41,7 +41,52 @@ jobs:
           VITE_GIST_ID:     ${{ secrets.VITE_GIST_ID }}
           VITE_GIST_TOKEN:  ${{ secrets.VITE_GIST_TOKEN }}
 
-      # ── Cheatsheets app ──────────────────────────────────────
+      # ── Cheatsheets — sync Gist → content/ before build ─────
+      # Pulls any .md files saved via the editor (Gist mode) into
+      # content/ so Vite glob-imports them at build time.
+      # Skipped silently if secrets are not yet configured.
+      - name: Sync cheatsheets from Gist
+        env:
+          VITE_CS_GIST_TOKEN: ${{ secrets.VITE_CS_GIST_TOKEN }}
+          VITE_CS_GIST_ID:    ${{ secrets.VITE_CS_GIST_ID }}
+        run: |
+          if [ -z "$VITE_CS_GIST_TOKEN" ] || [ -z "$VITE_CS_GIST_ID" ]; then
+            echo "  ⚠ VITE_CS_GIST_TOKEN or VITE_CS_GIST_ID not set — skipping Gist sync"
+            exit 0
+          fi
+
+          mkdir -p apps/cheatsheets/content
+
+          curl -s \
+            -H "Authorization: Bearer $VITE_CS_GIST_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/gists/$VITE_CS_GIST_ID" \
+          | python3 - << 'PYEOF'
+          import sys, json, os, urllib.request
+
+          data  = json.load(sys.stdin)
+          token = os.environ["VITE_CS_GIST_TOKEN"]
+          dest  = "apps/cheatsheets/content"
+
+          synced = 0
+          for name, meta in data.get("files", {}).items():
+              if not name.endswith(".md"):
+                  continue
+              req     = urllib.request.Request(
+                  meta["raw_url"],
+                  headers={"Authorization": f"Bearer {token}"}
+              )
+              content = urllib.request.urlopen(req).read()
+              path    = os.path.join(dest, name)
+              with open(path, "wb") as f:
+                  f.write(content)
+              print(f"  ✓ synced {name}")
+              synced += 1
+
+          print(f"  → {synced} sheet(s) synced from Gist")
+          PYEOF
+
+      # ── Cheatsheets — build ──────────────────────────────────
       - name: Install (cheatsheets)
         working-directory: apps/cheatsheets
         run: npm ci
@@ -49,8 +94,11 @@ jobs:
       - name: Build (cheatsheets)
         working-directory: apps/cheatsheets
         run: npm run build
-        # vite.config.js already sets base: '/cheatsheets/'
-        # so all assets are correctly prefixed — no env vars needed yet
+        env:
+          # Baked into the bundle — editor works without manual token entry
+          # Deliberately uses VITE_CS_* to avoid collision with admin VITE_GIST_*
+          VITE_CS_GIST_TOKEN: ${{ secrets.VITE_CS_GIST_TOKEN }}
+          VITE_CS_GIST_ID:    ${{ secrets.VITE_CS_GIST_ID }}
 
       - name: Copy cheatsheets into dist
         run: cp -r apps/cheatsheets/dist/. dist/cheatsheets/

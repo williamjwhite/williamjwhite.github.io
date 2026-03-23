@@ -1,0 +1,9 @@
+{
+  "title": "EV Charging Stations",
+  "description": "Smart charging finder for the Kia Niro EV. Cost warnings, charge-to-mile estimates, and PWA install support.",
+  "icon": "⚡",
+  "color": "#00d4ff",
+  "status": "live",
+  "tags": ["PWA", "EV", "Tools"],
+  "type": "demo"
+}

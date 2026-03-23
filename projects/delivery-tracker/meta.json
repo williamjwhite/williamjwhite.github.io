@@ -1,0 +1,9 @@
+{
+  "title": "Delivery Tracker",
+  "description": "Real-time package tracking dashboard with multi-carrier support, status timelines, and notification management.",
+  "icon": "📦",
+  "color": "#f59e0b",
+  "status": "live",
+  "tags": ["Logistics", "Dashboard", "Tracking"],
+  "type": "demo"
+}

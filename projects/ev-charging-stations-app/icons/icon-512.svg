@@ -1,0 +1,5 @@
+<svg xmlns='http://www.w3.org/5000/svg' viewBox='0 0 512 512'>
+  <rect width='512' height='512' rx='80' fill='%230a0f1a'/>
+  <rect x='50' y='50' width='412' height='412' rx='60' fill='%230d1550'/>
+  <text x='256' y='340' font-family='Arial' font-weight='bold' font-size='240' text-anchor='middle' fill='%2300d4ff'>⚡</text>
+</svg>

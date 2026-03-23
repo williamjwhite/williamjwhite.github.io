@@ -1,0 +1,9 @@
+{
+  "title": "Anatomy App",
+  "description": "Interactive anatomical reference with layered body systems, region-based navigation, and clinical notes.",
+  "icon": "🫀",
+  "color": "#ff6b6b",
+  "status": "live",
+  "tags": ["Medical", "Interactive", "PWA"],
+  "type": "demo"
+}

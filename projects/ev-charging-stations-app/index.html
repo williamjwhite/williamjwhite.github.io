@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NiroCharge – EV Charging for Kia Niro EV</title>
 <meta name="description" content="Find nearby EV charging stations optimized for your Kia Niro EV Wind">
-<meta name="theme-color" content="#0a0f1a">
+<meta name="theme-color" content="#0a0514">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="NiroCharge">
@@ -14,536 +14,269 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #080d16;
-    --bg2: #0d1520;
-    --bg3: #121c2e;
-    --card: #0f1829;
-    --card2: #152035;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --accent: #00d4ff;
-    --accent2: #0099cc;
-    --green: #00e87a;
-    --green2: #00b85e;
-    --orange: #ff8c00;
-    --red: #ff3b5c;
-    --yellow: #ffe500;
-    --text: #e8f4ff;
-    --text2: #7a9ab8;
-    --text3: #4a6a88;
-    --kia-red: #bb162b;
-    --radius: 16px;
-    --radius-sm: 10px;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
+/* ═══════════════════════════════════════════
+   TOKENS — Kia neon-purple cockpit theme
+═══════════════════════════════════════════ */
+:root {
+  --bg:          #080612;
+  --bg2:         #0e0a1e;
+  --bg3:         #130f26;
+  --card:        #110d22;
+  --card2:       #1a1535;
+  --border:      rgba(176,96,255,0.10);
+  --border2:     rgba(176,96,255,0.20);
+  --accent:      #b060ff;
+  --accent2:     #7a20cc;
+  --accent-glow: rgba(176,96,255,0.28);
+  --accent-rgb:  176,96,255;
+  --green:       #00f090;
+  --green2:      #00b86a;
+  --orange:      #ff8c00;
+  --red:         #ff3060;
+  --yellow:      #ffe040;
+  --waste:       #ff2050;
+  --text:        #f0e8ff;
+  --text2:       #9980bb;
+  --text3:       #5a4480;
+  --kia-red:     #cc1030;
+  --radius:      16px;
+  --radius-sm:   10px;
+  --safe-top:    env(safe-area-inset-top,0px);
+  --safe-bottom: env(safe-area-inset-bottom,0px);
+}
+[data-theme="light"] {
+  --bg:          #f5f0ff;
+  --bg2:         #ede6ff;
+  --bg3:         #e2d8f8;
+  --card:        #ffffff;
+  --card2:       #f9f5ff;
+  --border:      rgba(120,50,200,0.12);
+  --border2:     rgba(120,50,200,0.24);
+  --accent:      #7020d0;
+  --accent2:     #5010a8;
+  --accent-glow: rgba(112,32,208,0.18);
+  --accent-rgb:  112,32,208;
+  --green:       #009850;
+  --green2:      #007038;
+  --orange:      #b05800;
+  --red:         #c01040;
+  --yellow:      #906000;
+  --waste:       #c00030;
+  --text:        #180838;
+  --text2:       #5838a0;
+  --text3:       #9070c0;
+  --kia-red:     #bb162b;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* ═══ RESET ═══════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;transition:background .3s,color .3s}
 
-  html, body {
-    height: 100%; width: 100%; overflow: hidden;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-  }
+/* scanlines (dark only) */
+[data-theme="dark"] body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(176,96,255,.025) 2px,rgba(176,96,255,.025) 4px);opacity:.7}
 
-  /* APP SHELL */
-  #app {
-    display: flex; flex-direction: column;
-    height: 100%; width: 100%;
-    padding-top: var(--safe-top);
-  }
+#app{display:flex;flex-direction:column;height:100%;width:100%;position:relative;z-index:1;padding-top:var(--safe-top)}
 
-  /* HEADER */
-  .header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 20px 10px;
-    background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
-    position: relative; z-index: 10;
-    border-bottom: 1px solid var(--border);
-  }
-  .header-logo {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent) 0%, #0066aa 100%);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: 14px; color: var(--bg);
-  }
-  .logo-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; }
-  .logo-text span { color: var(--accent); }
+/* ═══ HEADER ══════════════════════════════ */
+.header{display:flex;align-items:center;justify-content:space-between;padding:11px 15px 9px;background:var(--bg);border-bottom:1px solid var(--border);position:relative;z-index:10}
+.header-logo{display:flex;align-items:center;gap:9px}
+.logo-icon{width:33px;height:33px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 14px var(--accent-glow)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.3px}
+.logo-text span{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:7px}
+.hbtn{width:33px;height:33px;background:var(--card);border:1px solid var(--border2);border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+.hbtn:hover{border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.battery-pill{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--green);cursor:pointer;box-shadow:0 0 8px rgba(0,240,144,.1)}
 
-  .header-right { display: flex; align-items: center; gap: 10px; }
-  .battery-pill {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--card); border: 1px solid var(--border2);
-    border-radius: 20px; padding: 5px 12px;
-    font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
-    color: var(--green);
-    cursor: pointer;
-  }
-  .battery-icon { font-size: 16px; }
-  .settings-btn {
-    width: 36px; height: 36px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; transition: background 0.2s;
-  }
-  .settings-btn:hover { background: var(--card2); }
+/* ═══ VEHICLE BANNER ══════════════════════ */
+.vehicle-banner{margin:9px 13px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:11px 13px;display:flex;align-items:center;gap:11px;position:relative;overflow:hidden;cursor:pointer}
+.vehicle-banner::after{content:'';position:absolute;top:0;right:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 12px var(--accent-glow)}
+.vehicle-badge{background:linear-gradient(135deg,var(--kia-red),#880018);border-radius:7px;padding:6px 10px;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;letter-spacing:1px;color:white;flex-shrink:0}
+.vehicle-info{flex:1;min-width:0}
+.vehicle-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text)}
+.vehicle-vin{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);margin-top:1px}
+.vehicle-specs{display:flex;gap:10px;margin-top:4px}
+.vspec{display:flex;flex-direction:column}
+.vspec-val{font-family:'DM Mono',monospace;font-weight:500;font-size:11px;color:var(--accent)}
+.vspec-lbl{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.vehicle-edit{font-size:15px;color:var(--text3);flex-shrink:0}
 
-  /* VEHICLE BANNER */
-  .vehicle-banner {
-    margin: 0 16px 0;
-    background: linear-gradient(135deg, var(--card) 0%, var(--bg3) 100%);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    display: flex; align-items: center; gap: 14px;
-    position: relative; overflow: hidden;
-    cursor: pointer;
-  }
-  .vehicle-banner::before {
-    content: '';
-    position: absolute; top: 0; right: 0;
-    width: 140px; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.04));
-    pointer-events: none;
-  }
-  .vehicle-badge {
-    background: linear-gradient(135deg, var(--kia-red), #880000);
-    border-radius: 8px; padding: 8px 12px;
-    font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: 16px; letter-spacing: 1px; color: white;
-    white-space: nowrap;
-  }
-  .vehicle-info { flex: 1; }
-  .vehicle-name {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
-    color: var(--text);
-  }
-  .vehicle-vin {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--text3); margin-top: 2px;
-  }
-  .vehicle-specs {
-    display: flex; gap: 12px; margin-top: 6px;
-  }
-  .vspec {
-    display: flex; flex-direction: column;
-  }
-  .vspec-val {
-    font-family: 'DM Mono', monospace; font-weight: 500; font-size: 13px;
-    color: var(--accent);
-  }
-  .vspec-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-  .vehicle-edit {
-    font-size: 18px; color: var(--text3);
-  }
+/* ═══ SOC BAR ═════════════════════════════ */
+.soc-bar-wrap{margin:7px 13px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:9px 13px}
+.soc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.soc-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.soc-value{font-family:'DM Mono',monospace;font-weight:500;font-size:11px;color:var(--green)}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.soc-track{width:100%;height:7px;background:var(--bg2);border-radius:4px;overflow:visible;position:relative}
+.soc-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green2),var(--green));transition:width .5s ease;position:relative;box-shadow:0 0 8px rgba(0,240,144,.3)}
+.soc-fill::after{content:'';position:absolute;right:-3px;top:-3px;width:13px;height:13px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green)}
+.soc-stats{display:flex;justify-content:space-between;margin-top:6px}
+.soc-stat{font-size:9px;color:var(--text3)}
+.soc-stat b{color:var(--text2);font-weight:500}
 
-  /* SOC / RANGE METER */
-  .soc-bar-wrap {
-    margin: 10px 16px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-  }
-  .soc-row {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 8px;
-  }
-  .soc-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-  .soc-value { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--green); }
-  .soc-track {
-    width: 100%; height: 8px;
-    background: var(--bg2); border-radius: 4px; overflow: hidden;
-    position: relative;
-  }
-  .soc-fill {
-    height: 100%; border-radius: 4px;
-    background: linear-gradient(90deg, var(--green2), var(--green));
-    transition: width 0.5s ease;
-    position: relative;
-  }
-  .soc-fill::after {
-    content: '';
-    position: absolute; right: -1px; top: -2px;
-    width: 12px; height: 12px;
-    background: var(--green);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--green);
-  }
-  .soc-stats {
-    display: flex; justify-content: space-between; margin-top: 8px;
-  }
-  .soc-stat { font-size: 11px; color: var(--text3); }
-  .soc-stat b { color: var(--text2); font-weight: 500; }
+/* ═══ TABS ════════════════════════════════ */
+.tabs{display:flex;margin:7px 13px 0;background:var(--card);border-radius:var(--radius-sm);padding:3px;gap:2px;border:1px solid var(--border)}
+.tab{flex:1;padding:6px;text-align:center;border-radius:7px;cursor:pointer;font-size:11px;font-weight:500;color:var(--text3);transition:all .2s;font-family:'DM Sans',sans-serif}
+.tab.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:white;box-shadow:0 0 12px var(--accent-glow)}
 
-  /* TABS */
-  .tabs {
-    display: flex; margin: 10px 16px 0;
-    background: var(--card); border-radius: var(--radius-sm);
-    padding: 3px; gap: 2px;
-  }
-  .tab {
-    flex: 1; padding: 8px; text-align: center;
-    border-radius: 8px; cursor: pointer;
-    font-size: 12px; font-weight: 500;
-    color: var(--text3); transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .tab.active {
-    background: var(--accent2); color: white;
-  }
+/* ═══ FILTERS ═════════════════════════════ */
+.filters{display:flex;gap:6px;padding:7px 13px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filter-chip{display:flex;align-items:center;gap:4px;white-space:nowrap;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:10px;cursor:pointer;transition:all .2s;color:var(--text2)}
+.filter-chip.active{background:rgba(var(--accent-rgb),.15);border-color:var(--accent);color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.filter-chip.free.active{background:rgba(0,240,144,.1);border-color:var(--green);color:var(--green)}
 
-  /* FILTERS */
-  .filters {
-    display: flex; gap: 8px;
-    padding: 10px 16px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .filters::-webkit-scrollbar { display: none; }
-  .filter-chip {
-    display: flex; align-items: center; gap: 5px;
-    white-space: nowrap;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 20px; padding: 6px 12px;
-    font-size: 12px; cursor: pointer;
-    transition: all 0.2s; color: var(--text2);
-  }
-  .filter-chip.active {
-    background: rgba(0,212,255,0.15);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .filter-chip.free.active {
-    background: rgba(0,232,122,0.15);
-    border-color: var(--green);
-    color: var(--green);
-  }
+/* ═══ SORT ════════════════════════════════ */
+.sort-row{display:flex;align-items:center;justify-content:space-between;padding:0 13px 6px}
+.sort-label{font-size:10px;color:var(--text3)}
+.sort-select{background:var(--card);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:4px 8px;font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none}
 
-  /* SORT CONTROL */
-  .sort-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 16px 8px;
-  }
-  .sort-label { font-size: 12px; color: var(--text3); }
-  .sort-select {
-    background: var(--card); border: 1px solid var(--border);
-    color: var(--text2); border-radius: 8px; padding: 5px 10px;
-    font-size: 12px; font-family: 'DM Sans', sans-serif;
-    cursor: pointer; outline: none;
-  }
+/* ═══ STATION LIST ════════════════════════ */
+.station-list{flex:1;overflow-y:auto;padding:0 13px;padding-bottom:calc(66px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
+.station-list::-webkit-scrollbar{width:3px}
+.station-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-  /* STATION LIST */
-  .station-list {
-    flex: 1; overflow-y: auto; padding: 0 16px;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(70px + var(--safe-bottom));
-  }
-  .station-list::-webkit-scrollbar { width: 3px; }
-  .station-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+/* ═══ STATION CARD ════════════════════════ */
+.station-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .15s;cursor:pointer}
+.station-card:active{transform:scale(.99)}
+.station-card.selected{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
+.station-card.overpay-card{border-left:3px solid var(--waste)}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;padding:11px 12px 7px;gap:8px}
+.card-header-left{flex:1;min-width:0}
+.station-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.station-addr{font-size:10px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.station-meta{display:flex;align-items:center;gap:6px;margin-top:4px}
+.distance-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);background:var(--bg2);padding:2px 6px;border-radius:4px}
+.network-badge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
+.network-ea{background:#0044cc;color:white}
+.network-chargepoint{background:#004e8c;color:white}
+.network-blink{background:#0a5c2a;color:white}
+.network-evgo{background:#5a1a9a;color:white}
+.network-free{background:rgba(0,240,144,.1);color:var(--green);border:1px solid var(--green2)}
+.card-header-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.avail-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:9px}
+.avail-pill.open{background:rgba(0,240,144,.12);color:var(--green)}
+.avail-pill.busy{background:rgba(255,140,0,.12);color:var(--orange)}
+.avail-pill.full{background:rgba(255,48,96,.12);color:var(--red)}
+.avail-count{font-size:9px;color:var(--text3)}
 
-  /* STATION CARD */
-  .station-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 10px;
-    overflow: hidden;
-    transition: border-color 0.2s, transform 0.15s;
-    cursor: pointer;
-  }
-  .station-card:active { transform: scale(0.99); }
-  .station-card.selected {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(0,212,255,0.1);
-  }
+/* ═══ CHARGER TYPE PILLS ══════════════════ */
+.charger-types{display:flex;gap:5px;padding:0 12px 8px;flex-wrap:wrap}
+.charger-type{display:flex;flex-direction:column;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:5px 8px;min-width:68px}
+.charger-type.compatible{border-color:rgba(var(--accent-rgb),.3);background:rgba(var(--accent-rgb),.05)}
+.charger-type.warning{border-color:rgba(255,32,80,.4);background:rgba(255,32,80,.06)}
+.ct-power{font-family:'DM Mono',monospace;font-weight:500;font-size:12px;color:var(--accent)}
+.ct-type{font-size:9px;color:var(--text3);margin-top:1px}
+.ct-level{font-size:8px;color:var(--text3)}
+.ct-cost{font-family:'DM Mono',monospace;font-size:9px;color:var(--text2);margin-top:1px}
+.ct-warn{font-size:8px;color:var(--waste);margin-top:2px;font-weight:700}
 
-  .card-header {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    padding: 14px 14px 10px;
-    gap: 10px;
-  }
-  .card-header-left { flex: 1; min-width: 0; }
-  .station-name {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
-    color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .station-addr {
-    font-size: 11px; color: var(--text3); margin-top: 2px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .station-meta {
-    display: flex; align-items: center; gap: 8px; margin-top: 5px;
-  }
-  .distance-badge {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--text2); background: var(--bg2);
-    padding: 2px 7px; border-radius: 4px;
-  }
-  .network-badge {
-    font-size: 10px; padding: 2px 7px; border-radius: 4px;
-    font-weight: 600; letter-spacing: 0.3px;
-  }
-  .network-tesla { background: #cc3333; color: white; }
-  .network-ea { background: #0066ff; color: white; }
-  .network-chargepoint { background: #005f9e; color: white; }
-  .network-blink { background: #1a7a3a; color: white; }
-  .network-evgo { background: #7b2fbe; color: white; }
-  .network-free { background: #004422; color: var(--green); border: 1px solid var(--green2); }
+/* ═══ OVERPAY BANNER ══════════════════════ */
+.overpay-banner{margin:0 12px 9px;background:rgba(255,32,80,.07);border:1px solid rgba(255,32,80,.32);border-radius:var(--radius-sm);overflow:hidden}
+.overpay-header{display:flex;align-items:flex-start;gap:8px;padding:8px 11px 6px;border-bottom:1px solid rgba(255,32,80,.18)}
+.overpay-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.overpay-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--waste)}
+.overpay-subtitle{font-size:9px;color:var(--text3);margin-top:1px;line-height:1.4}
+.overpay-money{display:grid;grid-template-columns:1fr 1fr 1fr}
+.om-item{display:flex;flex-direction:column;align-items:center;padding:7px 5px;border-right:1px solid rgba(255,32,80,.12)}
+.om-item:last-child{border-right:none}
+.om-val{font-family:'DM Mono',monospace;font-weight:700;font-size:14px}
+.om-val.red{color:var(--waste)}
+.om-val.dim{color:var(--text2)}
+.om-val.grn{color:var(--green)}
+.om-lbl{font-size:9px;color:var(--text3);margin-top:2px;text-align:center;line-height:1.3}
+.overpay-tip{padding:5px 11px 7px;font-size:10px;color:var(--orange);line-height:1.5;background:rgba(255,140,0,.05)}
 
-  .card-header-right {
-    display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
-  }
-  .avail-pill {
-    font-size: 11px; font-weight: 600; padding: 3px 9px;
-    border-radius: 10px;
-  }
-  .avail-pill.open { background: rgba(0,232,122,0.15); color: var(--green); }
-  .avail-pill.busy { background: rgba(255,140,0,0.15); color: var(--orange); }
-  .avail-pill.full { background: rgba(255,59,92,0.15); color: var(--red); }
-  .avail-count { font-size: 10px; color: var(--text3); }
+/* ═══ CHARGE ESTIMATE ═════════════════════ */
+.charge-est{margin:0 12px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px}
+.ce-title{font-size:9px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.ce-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.ce-item{display:flex;flex-direction:column;align-items:center}
+.ce-val{font-family:'DM Mono',monospace;font-weight:500;font-size:14px}
+.ce-val.miles{color:var(--green)}
+.ce-val.time{color:var(--accent)}
+.ce-val.cost{color:var(--orange)}
+.ce-val.free{color:var(--green)}
+.ce-lbl{font-size:8px;color:var(--text3);margin-top:2px}
 
-  /* CHARGER TYPES */
-  .charger-types {
-    display: flex; gap: 6px; padding: 0 14px 10px; flex-wrap: wrap;
-  }
-  .charger-type {
-    display: flex; flex-direction: column; align-items: center;
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 7px 10px;
-    min-width: 72px;
-  }
-  .charger-type.compatible {
-    border-color: rgba(0,212,255,0.3);
-    background: rgba(0,212,255,0.05);
-  }
-  .charger-type.warning {
-    border-color: rgba(255,229,0,0.3);
-    background: rgba(255,229,0,0.05);
-  }
-  .ct-power {
-    font-family: 'DM Mono', monospace; font-weight: 500; font-size: 13px;
-    color: var(--accent);
-  }
-  .ct-type { font-size: 10px; color: var(--text3); margin-top: 1px; }
-  .ct-level { font-size: 9px; color: var(--text3); }
-  .ct-warn {
-    font-size: 9px; color: var(--yellow); margin-top: 2px;
-    display: flex; align-items: center; gap: 2px;
-  }
-  .ct-cost { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text2); margin-top: 2px; }
+/* ═══ CARD ACTIONS ════════════════════════ */
+.card-actions{display:none;padding:0 12px 9px;gap:6px}
+.station-card.selected .card-actions{display:flex}
+.btn{flex:1;padding:8px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:white;box-shadow:0 0 10px var(--accent-glow)}
+.btn-secondary{background:var(--bg2);border:1px solid var(--border2);color:var(--text2)}
 
-  /* CHARGE ESTIMATE */
-  .charge-est {
-    margin: 0 14px 12px;
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 10px 12px;
-  }
-  .ce-title { font-size: 11px; color: var(--text3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .ce-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-  }
-  .ce-item {
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .ce-val {
-    font-family: 'DM Mono', monospace; font-weight: 500; font-size: 16px;
-  }
-  .ce-val.miles { color: var(--green); }
-  .ce-val.time { color: var(--accent); }
-  .ce-val.cost { color: var(--orange); }
-  .ce-val.free { color: var(--green); }
-  .ce-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+/* ═══ BOTTOM NAV ══════════════════════════ */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--border2);padding:7px 0 calc(7px + var(--safe-bottom));z-index:100;box-shadow:0 -6px 20px rgba(var(--accent-rgb),.07)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:3px;transition:color .2s;color:var(--text3)}
+.nav-item.active{color:var(--accent)}
+.nav-icon{font-size:18px}
+.nav-label{font-size:9px;font-weight:500}
 
-  /* WARNING BANNER */
-  .warn-banner {
-    margin: 0 14px 10px;
-    background: rgba(255,229,0,0.08);
-    border: 1px solid rgba(255,229,0,0.3);
-    border-radius: var(--radius-sm);
-    padding: 8px 10px;
-    display: flex; align-items: flex-start; gap: 7px;
-    font-size: 11px; color: var(--yellow); line-height: 1.4;
-  }
-  .warn-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+/* ═══ MODALS ══════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal-sheet{width:100%;background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;border-top:1px solid var(--border2);padding:0 0 calc(14px + var(--safe-bottom));max-height:88vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);box-shadow:0 -10px 36px rgba(var(--accent-rgb),.14)}
+.modal-overlay.show .modal-sheet{transform:translateY(0)}
+.modal-drag{width:34px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 12px}
+.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;padding:0 17px 12px;color:var(--text)}
 
-  /* ACTION BUTTONS */
-  .card-actions {
-    display: none; padding: 0 14px 12px; gap: 8px;
-  }
-  .station-card.selected .card-actions { display: flex; }
-  .btn {
-    flex: 1; padding: 10px; border-radius: var(--radius-sm);
-    border: none; cursor: pointer; font-size: 13px; font-weight: 600;
-    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent2), #005588);
-    color: white;
-  }
-  .btn-secondary {
-    background: var(--bg2); border: 1px solid var(--border2);
-    color: var(--text2);
-  }
+/* ═══ MODAL CONTENT ═══════════════════════ */
+.calc-section{padding:0 17px 12px}
+.calc-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.calc-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 11px;color:var(--text);font-size:14px;font-family:'DM Mono',monospace;outline:none;-webkit-appearance:none}
+.calc-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
+.calc-slider{width:100%;accent-color:var(--accent);margin-top:4px}
+.calc-result{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px;margin-top:8px}
+.cr-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cr-item{display:flex;flex-direction:column}
+.cr-val{font-family:'DM Mono',monospace;font-weight:500;font-size:19px}
+.cr-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+.form-group{padding:0 17px 11px}
+.form-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.form-input,.form-select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 11px;color:var(--text);font-size:14px;outline:none;font-family:'DM Sans',sans-serif;-webkit-appearance:none;appearance:none;cursor:pointer}
+.form-input:focus{border-color:var(--accent)}
+.btn-full{width:calc(100% - 34px);margin:0 17px;padding:12px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:var(--radius-sm);color:white;font-size:14px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;box-shadow:0 0 14px var(--accent-glow)}
 
-  /* BOTTOM NAV */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    display: flex; background: var(--card);
-    border-top: 1px solid var(--border2);
-    padding: 10px 0 calc(10px + var(--safe-bottom));
-    z-index: 100;
-  }
-  .nav-item {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    gap: 3px; cursor: pointer; padding: 4px;
-    transition: color 0.2s;
-    color: var(--text3);
-  }
-  .nav-item.active { color: var(--accent); }
-  .nav-icon { font-size: 20px; }
-  .nav-label { font-size: 10px; font-weight: 500; }
+/* ═══ CALC OVERPAY BOX ════════════════════ */
+.calc-overpay-box{margin-top:9px;background:rgba(255,32,80,.07);border:1px solid rgba(255,32,80,.3);border-radius:var(--radius-sm);overflow:hidden;display:none}
+.calc-overpay-box.show{display:block}
+.cop-title{padding:7px 11px 5px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--waste);border-bottom:1px solid rgba(255,32,80,.16)}
+.cop-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.cop-item{display:flex;flex-direction:column;align-items:center;padding:7px 4px;border-right:1px solid rgba(255,32,80,.12)}
+.cop-item:last-child{border-right:none}
+.cop-val{font-family:'DM Mono',monospace;font-weight:700;font-size:13px}
+.cop-val.red{color:var(--waste)}
+.cop-val.grn{color:var(--green)}
+.cop-val.dim{color:var(--text2)}
+.cop-lbl{font-size:9px;color:var(--text3);margin-top:2px;text-align:center;line-height:1.3}
+.cop-tip{padding:5px 11px 7px;font-size:10px;color:var(--orange);line-height:1.5}
 
-  /* MODAL OVERLAY */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    z-index: 200; display: flex; align-items: flex-end;
-    opacity: 0; pointer-events: none; transition: opacity 0.25s;
-  }
-  .modal-overlay.show { opacity: 1; pointer-events: all; }
-  .modal-sheet {
-    width: 100%; background: var(--bg2);
-    border-radius: var(--radius) var(--radius) 0 0;
-    border-top: 1px solid var(--border2);
-    padding: 0 0 calc(16px + var(--safe-bottom));
-    max-height: 85vh; overflow-y: auto;
-    transform: translateY(100%); transition: transform 0.3s ease;
-  }
-  .modal-overlay.show .modal-sheet { transform: translateY(0); }
-  .modal-drag {
-    width: 40px; height: 4px; background: var(--border2);
-    border-radius: 2px; margin: 12px auto 16px;
-  }
-  .modal-title {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
-    padding: 0 20px 16px; color: var(--text);
-  }
+/* ═══ INSTALL + MISC ══════════════════════ */
+.install-banner{margin:7px 13px 0;background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.2);border-radius:var(--radius-sm);padding:8px 11px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.install-text strong{font-size:11px;color:var(--accent);display:block}
+.install-text span{font-size:9px;color:var(--text3)}
+.install-close{font-size:15px;color:var(--text3);cursor:pointer;padding:3px;margin-left:auto}
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:10px;color:var(--text3)}
+.spinner{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:10px;text-align:center}
+.empty-icon{font-size:42px}
+.empty-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px}
+.empty-sub{color:var(--text3);font-size:11px;line-height:1.5}
+.free-bg{background:rgba(0,240,144,.025)!important}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-  /* CALCULATOR */
-  .calc-section { padding: 0 20px 16px; }
-  .calc-label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
-  .calc-input {
-    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: var(--radius-sm); padding: 10px 14px;
-    color: var(--text); font-size: 14px; font-family: 'DM Mono', monospace;
-    outline: none;
-    -webkit-appearance: none;
-  }
-  .calc-input:focus { border-color: var(--accent); }
-  .calc-slider { width: 100%; accent-color: var(--accent); margin-top: 6px; }
-  .calc-result {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 14px;
-    margin-top: 12px;
-  }
-  .cr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .cr-item { display: flex; flex-direction: column; }
-  .cr-val { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 20px; }
-  .cr-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-  /* VEHICLE FORM */
-  .form-group { padding: 0 20px 14px; }
-  .form-label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
-  .form-input {
-    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: var(--radius-sm); padding: 10px 14px;
-    color: var(--text); font-size: 14px; outline: none;
-    font-family: 'DM Sans', sans-serif;
-    -webkit-appearance: none;
-  }
-  .form-input:focus { border-color: var(--accent); }
-  .form-select {
-    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: var(--radius-sm); padding: 10px 14px;
-    color: var(--text); font-size: 14px; outline: none;
-    font-family: 'DM Sans', sans-serif; cursor: pointer;
-    -webkit-appearance: none; appearance: none;
-  }
-  .btn-full {
-    width: calc(100% - 40px); margin: 0 20px;
-    padding: 14px; background: linear-gradient(135deg, var(--accent2), #005588);
-    border: none; border-radius: var(--radius-sm); color: white;
-    font-size: 14px; font-weight: 700; font-family: 'Syne', sans-serif;
-    cursor: pointer;
-  }
-
-  /* INSTALL BANNER */
-  .install-banner {
-    margin: 10px 16px 0;
-    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,100,160,0.1));
-    border: 1px solid rgba(0,212,255,0.2);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    display: flex; align-items: center; gap: 10px;
-    cursor: pointer;
-  }
-  .install-text { flex: 1; }
-  .install-text strong { font-size: 13px; color: var(--accent); display: block; }
-  .install-text span { font-size: 11px; color: var(--text3); }
-  .install-close { font-size: 18px; color: var(--text3); cursor: pointer; padding: 4px; }
-
-  /* LOADING */
-  .loading-wrap {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; padding: 40px 20px; gap: 12px;
-    color: var(--text3);
-  }
-  .spinner {
-    width: 32px; height: 32px; border: 3px solid var(--border);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* NETWORK COLORS */
-  .free-bg { background: rgba(0,232,122,0.08) !important; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-  /* EMPTY STATE */
-  .empty-state {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; padding: 50px 20px; gap: 12px; text-align: center;
-  }
-  .empty-icon { font-size: 48px; }
-  .empty-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; }
-  .empty-sub { color: var(--text3); font-size: 13px; line-height: 1.5; }
-
-  /* CONNECTION INDICATOR */
-  .conn-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--green); display: inline-block;
-    margin-right: 5px; animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+/* neon glow pulse on dark */
+[data-theme="dark"] .tab.active,[data-theme="dark"] .btn-primary,[data-theme="dark"] .btn-full{animation:gpulse 3s ease-in-out infinite}
+@keyframes gpulse{0%,100%{box-shadow:0 0 10px var(--accent-glow)}50%{box-shadow:0 0 22px rgba(var(--accent-rgb),.45)}}
 </style>
 </head>
 <body>
-
 <div id="app">
+
   <!-- HEADER -->
   <div class="header">
     <div class="header-logo">
@@ -551,25 +284,23 @@
       <div class="logo-text">Niro<span>Charge</span></div>
     </div>
     <div class="header-right">
-      <div class="battery-pill" onclick="openSOCEditor()">
-        <span class="battery-icon">🔋</span>
-        <span id="soc-display">72%</span>
-      </div>
-      <div class="settings-btn" onclick="openSettings()">⚙️</div>
+      <div class="battery-pill" onclick="openSOCEditor()">🔋 <span id="soc-display">72%</span></div>
+      <div class="hbtn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</div>
+      <div class="hbtn" onclick="openSettings()">⚙️</div>
     </div>
   </div>
 
   <!-- VEHICLE BANNER -->
   <div class="vehicle-banner" onclick="openVehicleEditor()">
-    <div class="vehicle-badge" id="veh-badge">KIA</div>
+    <div class="vehicle-badge">KIA</div>
     <div class="vehicle-info">
-      <div class="vehicle-name" id="veh-name">Niro EV Wind</div>
-      <div class="vehicle-vin" id="veh-vin">VIN: KNDC3DLD8P5———— (tap to edit)</div>
+      <div class="vehicle-name" id="veh-name">2024 Niro EV Wind</div>
+      <div class="vehicle-vin" id="veh-vin">VIN: KNDC3DLD8P5———— · tap to edit</div>
       <div class="vehicle-specs">
-        <div class="vspec"><span class="vspec-val" id="veh-range">253mi</span><span class="vspec-lbl">Range</span></div>
-        <div class="vspec"><span class="vspec-val" id="veh-bat">64.8kWh</span><span class="vspec-lbl">Battery</span></div>
+        <div class="vspec"><span class="vspec-val">253mi</span><span class="vspec-lbl">Range</span></div>
+        <div class="vspec"><span class="vspec-val">64.8kWh</span><span class="vspec-lbl">Battery</span></div>
         <div class="vspec"><span class="vspec-val">85kW</span><span class="vspec-lbl">Max DC</span></div>
-        <div class="vspec"><span class="vspec-val" id="veh-ac">11kW</span><span class="vspec-lbl">Max AC</span></div>
+        <div class="vspec"><span class="vspec-val">11kW</span><span class="vspec-lbl">Max AC</span></div>
       </div>
     </div>
     <div class="vehicle-edit">✏️</div>
@@ -579,24 +310,21 @@
   <div class="soc-bar-wrap">
     <div class="soc-row">
       <span class="soc-label"><span class="conn-dot"></span>State of Charge</span>
-      <span class="soc-value" id="soc-val-display">72% · <span id="range-remain">182 mi remaining</span></span>
+      <span class="soc-value" id="soc-val-display">72% · 182 mi remaining</span>
     </div>
     <div class="soc-track"><div class="soc-fill" id="soc-bar" style="width:72%"></div></div>
     <div class="soc-stats">
       <span class="soc-stat">Empty</span>
       <span class="soc-stat">Target: <b id="target-soc-display">80%</b></span>
-      <span class="soc-stat">Full: <b id="full-range-display">253 mi</b></span>
+      <span class="soc-stat">Full: <b>253 mi</b></span>
     </div>
   </div>
 
   <!-- INSTALL BANNER -->
   <div class="install-banner" id="install-banner" style="display:none" onclick="installPWA()">
     <span>📲</span>
-    <div class="install-text">
-      <strong>Add to Home Screen</strong>
-      <span>Install for offline access & GPS charging</span>
-    </div>
-    <span class="install-close" onclick="event.stopPropagation();document.getElementById('install-banner').style.display='none'">✕</span>
+    <div class="install-text"><strong>Add to Home Screen</strong><span>Install for offline use</span></div>
+    <span class="install-close" onclick="event.stopPropagation();this.parentElement.style.display='none'">✕</span>
   </div>
 
   <!-- TABS -->
@@ -607,9 +335,9 @@
   </div>
 
   <!-- FILTERS -->
-  <div class="filters" id="filter-row">
+  <div class="filters">
     <div class="filter-chip active" data-filter="all" onclick="toggleFilter(this)">⚡ All</div>
-    <div class="filter-chip" data-filter="dc-fast" onclick="toggleFilter(this)">🚀 DC Fast (L3)</div>
+    <div class="filter-chip" data-filter="dc-fast" onclick="toggleFilter(this)">🚀 DC Fast</div>
     <div class="filter-chip" data-filter="level2" onclick="toggleFilter(this)">🔌 Level 2</div>
     <div class="filter-chip free" data-filter="free" onclick="toggleFilter(this)">🟢 Free</div>
     <div class="filter-chip" data-filter="chargepoint" onclick="toggleFilter(this)">ChargePoint</div>
@@ -618,125 +346,50 @@
     <div class="filter-chip" data-filter="evgo" onclick="toggleFilter(this)">EVgo</div>
   </div>
 
-  <!-- SORT ROW -->
+  <!-- SORT -->
   <div class="sort-row">
-    <span class="sort-label">Showing <b id="station-count">12</b> stations</span>
-    <select class="sort-select" id="sort-select" onchange="sortStations(this.value)">
-      <option value="distance">Sort: Distance</option>
-      <option value="cost">Sort: Cost</option>
-      <option value="speed">Sort: Speed</option>
-      <option value="available">Sort: Available</option>
+    <span class="sort-label">Showing <b id="station-count">—</b> stations</span>
+    <select class="sort-select" onchange="sortStations(this.value)">
+      <option value="distance">Distance</option>
+      <option value="cost">Cost</option>
+      <option value="speed">Speed</option>
+      <option value="available">Available</option>
     </select>
   </div>
 
   <!-- STATION LIST -->
   <div class="station-list" id="station-list">
-    <div class="loading-wrap">
-      <div class="spinner"></div>
-      <span>Fetching nearby stations…</span>
-    </div>
+    <div class="loading-wrap"><div class="spinner"></div><span>Locating stations…</span></div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="setTab('nearby',null)">
-    <span class="nav-icon">📍</span>
-    <span class="nav-label">Nearby</span>
-  </div>
-  <div class="nav-item" onclick="setTab('enroute',null)">
-    <span class="nav-icon">🗺</span>
-    <span class="nav-label">Route</span>
-  </div>
-  <div class="nav-item" onclick="openCalc()">
-    <span class="nav-icon">⚡</span>
-    <span class="nav-label">Calc</span>
-  </div>
-  <div class="nav-item" onclick="openSettings()">
-    <span class="nav-icon">👤</span>
-    <span class="nav-label">Profile</span>
-  </div>
+  <div class="nav-item active" onclick="setTab('nearby',null)"><span class="nav-icon">📍</span><span class="nav-label">Nearby</span></div>
+  <div class="nav-item" onclick="setTab('enroute',null)"><span class="nav-icon">🗺</span><span class="nav-label">Route</span></div>
+  <div class="nav-item" onclick="openCalc()"><span class="nav-icon">⚡</span><span class="nav-label">Calc</span></div>
+  <div class="nav-item" onclick="openSettings()"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></div>
 </div>
 
-<!-- VEHICLE EDITOR MODAL -->
-<div class="modal-overlay" id="vehicle-modal">
-  <div class="modal-sheet">
-    <div class="modal-drag"></div>
-    <div class="modal-title">🚗 Vehicle Settings</div>
-    <div class="form-group">
-      <div class="form-label">VIN (optional — auto-fills color & specs)</div>
-      <input class="form-input" type="text" id="vin-input" placeholder="e.g. KNDC3DLD8P5000001" style="font-family:'DM Mono',monospace; letter-spacing:1px;" maxlength="17" oninput="onVINInput(this.value)">
-    </div>
-    <div class="form-group">
-      <div class="form-label">Model Year</div>
-      <select class="form-select" id="model-year">
-        <option value="2023">2023 Kia Niro EV</option>
-        <option value="2024" selected>2024 Kia Niro EV</option>
-        <option value="2025">2025 Kia Niro EV</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Trim</div>
-      <select class="form-select" id="veh-trim" onchange="updateVehicleSpecs()">
-        <option value="wind" selected>Wind (64.8 kWh · 253mi)</option>
-        <option value="wave">Wave (64.8 kWh · 253mi)</option>
-        <option value="ex">EX (64.8 kWh · 253mi)</option>
-        <option value="ex-premium">EX Premium (64.8 kWh · 253mi)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Exterior Color</div>
-      <select class="form-select" id="veh-color">
-        <option value="snow">Snow White Pearl</option>
-        <option value="steel" selected>Steel Gray</option>
-        <option value="ocean">Ocean Blue</option>
-        <option value="aurora">Aurora Black Pearl</option>
-        <option value="runway">Runway Red</option>
-        <option value="surf">Surf</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Charging Port</div>
-      <select class="form-select" id="port-type">
-        <option value="ccs" selected>CCS1 (Combined Charging System)</option>
-        <option value="j1772">J1772 (Level 2 only)</option>
-      </select>
-    </div>
-    <button class="btn-full" onclick="saveVehicle()" style="margin-bottom:16px">Save Vehicle</button>
-  </div>
-</div>
-
-<!-- SOC EDITOR MODAL -->
+<!-- SOC MODAL -->
 <div class="modal-overlay" id="soc-modal">
   <div class="modal-sheet">
     <div class="modal-drag"></div>
     <div class="modal-title">🔋 Battery State</div>
     <div class="calc-section">
-      <div class="calc-label">Current State of Charge: <b id="soc-slider-val" style="color:var(--green)">72%</b></div>
+      <div class="calc-label">Current Charge: <b id="soc-slider-val" style="color:var(--green);font-family:'DM Mono',monospace">72%</b></div>
       <input type="range" class="calc-slider" id="soc-slider" min="0" max="100" value="72" oninput="updateSOC(this.value)">
-      <div class="calc-label" style="margin-top:16px">Charge Target: <b id="target-soc-val" style="color:var(--accent)">80%</b></div>
+      <div class="calc-label" style="margin-top:13px">Charge Target: <b id="target-soc-val" style="color:var(--accent);font-family:'DM Mono',monospace">80%</b></div>
       <input type="range" class="calc-slider" id="target-slider" min="50" max="100" value="80" oninput="updateTarget(this.value)">
-      <div class="calc-result" style="margin-top:16px">
+      <div class="calc-result" style="margin-top:12px">
         <div class="cr-grid">
-          <div class="cr-item">
-            <span class="cr-val" id="modal-range-remain" style="color:var(--green)">182 mi</span>
-            <span class="cr-lbl">Current Range</span>
-          </div>
-          <div class="cr-item">
-            <span class="cr-val" id="modal-range-at-target" style="color:var(--accent)">202 mi</span>
-            <span class="cr-lbl">Range at Target</span>
-          </div>
-          <div class="cr-item">
-            <span class="cr-val" id="modal-kwh-needed" style="color:var(--orange)">5.2 kWh</span>
-            <span class="cr-lbl">kWh to Add</span>
-          </div>
-          <div class="cr-item">
-            <span class="cr-val" id="modal-time-l3" style="color:var(--accent)">~5 min</span>
-            <span class="cr-lbl">Time at 85kW DC</span>
-          </div>
+          <div class="cr-item"><span class="cr-val" id="modal-range-remain" style="color:var(--green)">182 mi</span><span class="cr-lbl">Current Range</span></div>
+          <div class="cr-item"><span class="cr-val" id="modal-range-target" style="color:var(--accent)">202 mi</span><span class="cr-lbl">Range at Target</span></div>
+          <div class="cr-item"><span class="cr-val" id="modal-kwh-needed" style="color:var(--orange)">5.2 kWh</span><span class="cr-lbl">kWh Needed</span></div>
+          <div class="cr-item"><span class="cr-val" id="modal-time-l3" style="color:var(--accent)">~4 min</span><span class="cr-lbl">Time @ 85kW DC</span></div>
         </div>
       </div>
-      <button class="btn-full" onclick="closeModal('soc-modal')" style="margin: 12px 0 0 0">Done</button>
+      <button class="btn-full" onclick="closeModal('soc-modal')" style="margin-top:11px">Done</button>
     </div>
   </div>
 </div>
@@ -747,47 +400,75 @@
     <div class="modal-drag"></div>
     <div class="modal-title">⚡ Charge Calculator</div>
     <div class="calc-section">
-      <div class="calc-label">Charging Power (kW)</div>
+      <div class="calc-label">Station Power: <b id="calc-power-val" style="color:var(--accent);font-family:'DM Mono',monospace">85 kW</b></div>
       <input type="range" class="calc-slider" id="calc-power" min="3.3" max="350" value="85" step="1" oninput="recalculate()">
-      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
-        <span style="font-size:11px;color:var(--text3)">3.3kW (L1)</span>
-        <span id="calc-power-val" style="font-family:'DM Mono',monospace;font-size:14px;color:var(--accent);font-weight:500">85 kW</span>
-        <span style="font-size:11px;color:var(--text3)">350kW (HPC)</span>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-bottom:11px">
+        <span>3.3kW (L1)</span><span>350kW (HPC)</span>
       </div>
-
-      <div class="calc-label">Charging Duration (minutes)</div>
+      <div class="calc-label">Duration: <b id="calc-min-val" style="color:var(--accent);font-family:'DM Mono',monospace">30 min</b></div>
       <input type="range" class="calc-slider" id="calc-minutes" min="5" max="120" value="30" oninput="recalculate()">
-      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
-        <span style="font-size:11px;color:var(--text3)">5 min</span>
-        <span id="calc-min-val" style="font-family:'DM Mono',monospace;font-size:14px;color:var(--accent);font-weight:500">30 min</span>
-        <span style="font-size:11px;color:var(--text3)">120 min</span>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-bottom:11px">
+        <span>5 min</span><span>120 min</span>
       </div>
-
-      <div class="calc-label">Cost Rate (¢/kWh — enter 0 for free)</div>
-      <input type="number" class="calc-input" id="calc-rate" value="0.43" step="0.01" min="0" max="2" oninput="recalculate()" style="margin-bottom:12px">
-
-      <div class="calc-result" id="calc-result-box">
+      <div class="calc-label">Rate ($/kWh — 0 = free)</div>
+      <input type="number" class="calc-input" id="calc-rate" value="0.43" step="0.01" min="0" max="2" oninput="recalculate()" style="margin-bottom:10px">
+      <div class="calc-result">
         <div class="cr-grid">
-          <div class="cr-item">
-            <span class="cr-val" id="cr-miles" style="color:var(--green)">— mi</span>
-            <span class="cr-lbl">Miles Added</span>
-          </div>
-          <div class="cr-item">
-            <span class="cr-val" id="cr-kwh" style="color:var(--accent)">— kWh</span>
-            <span class="cr-lbl">Energy Added</span>
-          </div>
-          <div class="cr-item">
-            <span class="cr-val" id="cr-cost" style="color:var(--orange)">$—</span>
-            <span class="cr-lbl">Total Cost</span>
-          </div>
-          <div class="cr-item">
-            <span class="cr-val" id="cr-permile" style="color:var(--text2)">—¢/mi</span>
-            <span class="cr-lbl">Cost per Mile</span>
-          </div>
+          <div class="cr-item"><span class="cr-val" id="cr-miles" style="color:var(--green)">— mi</span><span class="cr-lbl">Miles Added</span></div>
+          <div class="cr-item"><span class="cr-val" id="cr-kwh" style="color:var(--accent)">— kWh</span><span class="cr-lbl">Energy Added</span></div>
+          <div class="cr-item"><span class="cr-val" id="cr-cost" style="color:var(--orange)">$—</span><span class="cr-lbl">Total Cost</span></div>
+          <div class="cr-item"><span class="cr-val" id="cr-permile" style="color:var(--text2)">—¢/mi</span><span class="cr-lbl">Cost/Mile</span></div>
         </div>
-        <div id="calc-warning" style="display:none;margin-top:10px;padding:8px;background:rgba(255,229,0,0.08);border:1px solid rgba(255,229,0,0.3);border-radius:8px;font-size:11px;color:var(--yellow)"></div>
+      </div>
+      <!-- OVERPAY BOX -->
+      <div class="calc-overpay-box" id="calc-overpay">
+        <div class="cop-title">⚠️⚠️ Overpay Alert — Wasted Spend Breakdown</div>
+        <div class="cop-grid">
+          <div class="cop-item"><span class="cop-val red" id="cop-wasted">$—</span><span class="cop-lbl">Premium vs optimal</span></div>
+          <div class="cop-item"><span class="cop-val dim" id="cop-cap">85 kW</span><span class="cop-lbl">Your actual rate</span></div>
+          <div class="cop-item"><span class="cop-val grn" id="cop-save">$—</span><span class="cop-lbl">Savings w/ 85kW</span></div>
+        </div>
+        <div class="cop-tip" id="cop-tip"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- VEHICLE EDITOR MODAL -->
+<div class="modal-overlay" id="vehicle-modal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-title">🚗 Vehicle Settings</div>
+    <div class="form-group">
+      <div class="form-label">VIN (auto-detects year)</div>
+      <input class="form-input" type="text" id="vin-input" placeholder="KNDC3DLD8P5000001" style="font-family:'DM Mono',monospace;letter-spacing:1px" maxlength="17" oninput="onVINInput(this.value)">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Year</div>
+      <select class="form-select" id="model-year"><option>2023</option><option selected>2024</option><option>2025</option></select>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Trim</div>
+      <select class="form-select" id="veh-trim">
+        <option value="wind" selected>Wind · 64.8 kWh · 253mi</option>
+        <option value="wave">Wave · 64.8 kWh · 253mi</option>
+        <option value="ex">EX · 64.8 kWh · 253mi</option>
+        <option value="ex-premium">EX Premium</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Color</div>
+      <select class="form-select" id="veh-color">
+        <option>Snow White Pearl</option><option selected>Steel Gray</option>
+        <option>Ocean Blue</option><option>Aurora Black Pearl</option>
+        <option>Runway Red</option><option>Surf</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Port</div>
+      <select class="form-select" id="port-type"><option value="ccs" selected>CCS1 (DC Fast + L2)</option><option value="j1772">J1772 (L2 only)</option></select>
+    </div>
+    <button class="btn-full" onclick="saveVehicle()" style="margin-bottom:12px">Save Vehicle</button>
   </div>
 </div>
 
@@ -795,555 +476,354 @@
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-sheet">
     <div class="modal-drag"></div>
-    <div class="modal-title">⚙️ Settings & Profile</div>
-    <div class="form-group">
-      <div class="form-label">Max Spend per Session ($)</div>
-      <input class="form-input" type="number" id="max-spend" value="20" min="1" max="200">
+    <div class="modal-title">⚙️ Settings</div>
+    <div class="form-group"><div class="form-label">Max Session Spend ($)</div><input class="form-input" type="number" id="max-spend" value="20" min="1"></div>
+    <div class="form-group"><div class="form-label">Search Radius</div>
+      <select class="form-select"><option>5 mi</option><option selected>10 mi</option><option>25 mi</option><option>50 mi</option></select>
     </div>
     <div class="form-group">
-      <div class="form-label">Search Radius</div>
-      <select class="form-select" id="search-radius">
-        <option value="5">5 miles</option>
-        <option value="10" selected>10 miles</option>
-        <option value="25">25 miles</option>
-        <option value="50">50 miles</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Preferred Networks</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="pref-networks">
-        <div class="filter-chip active" onclick="this.classList.toggle('active')">ChargePoint</div>
-        <div class="filter-chip active" onclick="this.classList.toggle('active')">Electrify America</div>
-        <div class="filter-chip active" onclick="this.classList.toggle('active')">Blink</div>
-        <div class="filter-chip active" onclick="this.classList.toggle('active')">EVgo</div>
-        <div class="filter-chip free active" onclick="this.classList.toggle('active')">Free Stations</div>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Default Charge Target (%)</div>
+      <div class="form-label">Default Charge Target: <b id="def-target-val" style="color:var(--accent);font-family:'DM Mono',monospace">80%</b></div>
       <input type="range" class="calc-slider" id="def-target" min="50" max="100" value="80" oninput="document.getElementById('def-target-val').textContent=this.value+'%'">
-      <div style="text-align:right;font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);margin-top:4px" id="def-target-val">80%</div>
     </div>
-    <div style="padding:0 20px;font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6">
-      <b style="color:var(--text2)">About NiroCharge:</b><br>
-      Optimized for Kia Niro EV (64.8 kWh, 85kW max DC, CCS1 port).<br>
-      Charging data via NREL/DOE AFDC & PlugShare APIs. Live availability requires internet connection.
+    <div style="padding:0 17px 12px;font-size:10px;color:var(--text3);line-height:1.7">
+      <b style="color:var(--text2)">NiroCharge v2.0</b> — Kia Niro EV 2023–2025<br>
+      64.8 kWh · 85kW DC max · CCS1 · 253mi EPA<br>
+      Overpay alerts fire when station kW &gt; vehicle DC cap.
     </div>
-    <button class="btn-full" onclick="closeModal('settings-modal')" style="margin-bottom:12px">Save Settings</button>
+    <button class="btn-full" onclick="closeModal('settings-modal')" style="margin-bottom:12px">Save</button>
   </div>
 </div>
 
 <script>
-// ==================== STATE ====================
-let state = {
-  soc: 72,
-  target: 80,
-  batteryKwh: 64.8,
-  rangeFullMi: 253,
-  maxDcKw: 85,
-  maxAcKw: 11,
-  portType: 'ccs',
-  trim: 'wind',
-  vin: '',
-  color: 'steel',
-  year: 2024,
-  activeTab: 'nearby',
-  activeFilter: 'all',
-  sortBy: 'distance',
-  selectedStation: null,
+// ══════════════ STATE
+const S = {
+  soc:72, target:80,
+  bat:64.8, rangeMi:253,
+  maxDc:85, maxAc:11,
+  port:'ccs', trim:'wind',
+  filter:'all', sort:'distance',
+  selected:null, theme:'dark',
 };
+const fmt$ = n => '$' + n.toFixed(2);
+const rAt  = p => Math.round((p/100)*S.rangeMi);
+const kwhN = (a,b) => Math.max(0,((b-a)/100)*S.bat);
+const effKw = kw => Math.min(kw, kw>20 ? S.maxDc : S.maxAc);
 
-const MOCK_STATIONS = [
-  {
-    id: 1, name: "Electrify America – Walmart Albany", addr: "725 Central Ave, Albany NY",
-    network: "electrify-america", networkLabel: "Electrify America",
-    distance: 1.2, available: 3, total: 6, status: "open",
-    chargers: [
-      { type: "CCS1", level: "DC Fast", kw: 150, cost: 0.43, costUnit: "kWh", connector: "CCS1" },
-      { type: "CCS1", level: "DC Fast", kw: 350, cost: 0.43, costUnit: "kWh", connector: "CCS1" },
-      { type: "CHAdeMO", level: "DC Fast", kw: 50, cost: 0.43, costUnit: "kWh", connector: "CHAdeMO" },
-    ]
-  },
-  {
-    id: 2, name: "ChargePoint – Crossgates Mall", addr: "1 Crossgates Mall Rd, Albany NY",
-    network: "chargepoint", networkLabel: "ChargePoint",
-    distance: 2.4, available: 8, total: 12, status: "open",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 7.2, cost: 0.25, costUnit: "kWh", connector: "J1772" },
-      { type: "J1772", level: "Level 2", kw: 11, cost: 0.25, costUnit: "kWh", connector: "J1772" },
-    ]
-  },
-  {
-    id: 3, name: "Blink – Stuyvesant Plaza", addr: "1475 Western Ave, Albany NY",
-    network: "blink", networkLabel: "Blink",
-    distance: 2.9, available: 1, total: 4, status: "busy",
-    chargers: [
-      { type: "CCS1", level: "DC Fast", kw: 50, cost: 0.39, costUnit: "kWh", connector: "CCS1" },
-      { type: "J1772", level: "Level 2", kw: 7.2, cost: 0.04, costUnit: "min", connector: "J1772" },
-    ]
-  },
-  {
-    id: 4, name: "EVgo – Colonie Center", addr: "131 Colonie Center, Albany NY",
-    network: "evgo", networkLabel: "EVgo",
-    distance: 3.6, available: 2, total: 4, status: "open",
-    chargers: [
-      { type: "CCS1", level: "DC Fast", kw: 100, cost: 0.35, costUnit: "kWh", connector: "CCS1" },
-      { type: "CCS1", level: "DC Fast", kw: 200, cost: 0.35, costUnit: "kWh", connector: "CCS1" },
-    ]
-  },
-  {
-    id: 5, name: "FREE – Albany City Hall Garage", addr: "24 Eagle St, Albany NY",
-    network: "free", networkLabel: "Free",
-    distance: 4.1, available: 4, total: 4, status: "open",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 6.6, cost: 0, costUnit: "free", connector: "J1772" },
-    ]
-  },
-  {
-    id: 6, name: "ChargePoint – Albany Med Center", addr: "43 New Scotland Ave, Albany NY",
-    network: "chargepoint", networkLabel: "ChargePoint",
-    distance: 4.8, available: 6, total: 8, status: "open",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 11, cost: 0.28, costUnit: "kWh", connector: "J1772" },
-      { type: "CCS1", level: "DC Fast", kw: 62, cost: 0.31, costUnit: "kWh", connector: "CCS1" },
-    ]
-  },
-  {
-    id: 7, name: "Electrify America – Target Latham", addr: "579 Troy-Schenectady Rd, Latham NY",
-    network: "electrify-america", networkLabel: "Electrify America",
-    distance: 5.3, available: 4, total: 6, status: "open",
-    chargers: [
-      { type: "CCS1", level: "DC Fast", kw: 150, cost: 0.43, costUnit: "kWh", connector: "CCS1" },
-      { type: "CCS1", level: "DC Fast", kw: 350, cost: 0.43, costUnit: "kWh", connector: "CCS1" },
-    ]
-  },
-  {
-    id: 8, name: "FREE – SUNY Albany Lot 7", addr: "1400 Washington Ave, Albany NY",
-    network: "free", networkLabel: "Free",
-    distance: 5.9, available: 2, total: 2, status: "open",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 7.2, cost: 0, costUnit: "free", connector: "J1772" },
-    ]
-  },
-  {
-    id: 9, name: "Blink – Hannaford Guilderland", addr: "1440 Western Ave, Guilderland NY",
-    network: "blink", networkLabel: "Blink",
-    distance: 6.4, available: 0, total: 2, status: "full",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 7.2, cost: 0.04, costUnit: "min", connector: "J1772" },
-    ]
-  },
-  {
-    id: 10, name: "ChargePoint – Saratoga Casino", addr: "342 Jefferson St, Saratoga Springs NY",
-    network: "chargepoint", networkLabel: "ChargePoint",
-    distance: 7.2, available: 3, total: 4, status: "open",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 7.2, cost: 0.27, costUnit: "kWh", connector: "J1772" },
-      { type: "CCS1", level: "DC Fast", kw: 50, cost: 0.31, costUnit: "kWh", connector: "CCS1" },
-    ]
-  },
-  {
-    id: 11, name: "Electrify America – Niskayuna", addr: "440 Balltown Rd, Niskayuna NY",
-    network: "electrify-america", networkLabel: "Electrify America",
-    distance: 9.1, available: 2, total: 4, status: "open",
-    chargers: [
-      { type: "CCS1", level: "DC Fast", kw: 150, cost: 0.43, costUnit: "kWh", connector: "CCS1" },
-    ]
-  },
-  {
-    id: 12, name: "FREE – Price Chopper Troy", addr: "545 River St, Troy NY",
-    network: "free", networkLabel: "Free",
-    distance: 10.5, available: 1, total: 2, status: "open",
-    chargers: [
-      { type: "J1772", level: "Level 2", kw: 6.6, cost: 0, costUnit: "free", connector: "J1772" },
-    ]
-  },
+// ══════════════ THEME
+function toggleTheme(){
+  S.theme = S.theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',S.theme);
+  document.getElementById('theme-btn').textContent = S.theme==='dark'?'🌙':'☀️';
+  try{localStorage.setItem('nc-theme',S.theme);}catch(e){}
+}
+function initTheme(){
+  try{
+    const t=localStorage.getItem('nc-theme');
+    if(t){S.theme=t;document.documentElement.setAttribute('data-theme',t);
+      document.getElementById('theme-btn').textContent=t==='dark'?'🌙':'☀️';}
+  }catch(e){}
+}
+
+// ══════════════ DATA
+const STATIONS=[
+  {id:1,name:"Electrify America – Walmart Albany",addr:"725 Central Ave, Albany NY",network:"electrify-america",label:"Electrify America",dist:1.2,avail:3,total:6,status:"open",
+   chargers:[{kw:150,cost:.43,cu:"kWh",conn:"CCS1",lvl:"DC Fast"},{kw:350,cost:.43,cu:"kWh",conn:"CCS1",lvl:"DC Fast"}]},
+  {id:2,name:"ChargePoint – Crossgates Mall",addr:"1 Crossgates Mall Rd, Albany NY",network:"chargepoint",label:"ChargePoint",dist:2.4,avail:8,total:12,status:"open",
+   chargers:[{kw:7.2,cost:.25,cu:"kWh",conn:"J1772",lvl:"Level 2"},{kw:11,cost:.25,cu:"kWh",conn:"J1772",lvl:"Level 2"}]},
+  {id:3,name:"Blink – Stuyvesant Plaza",addr:"1475 Western Ave, Albany NY",network:"blink",label:"Blink",dist:2.9,avail:1,total:4,status:"busy",
+   chargers:[{kw:50,cost:.39,cu:"kWh",conn:"CCS1",lvl:"DC Fast"},{kw:7.2,cost:.04,cu:"min",conn:"J1772",lvl:"Level 2"}]},
+  {id:4,name:"EVgo – Colonie Center",addr:"131 Colonie Center, Albany NY",network:"evgo",label:"EVgo",dist:3.6,avail:2,total:4,status:"open",
+   chargers:[{kw:100,cost:.35,cu:"kWh",conn:"CCS1",lvl:"DC Fast"},{kw:200,cost:.35,cu:"kWh",conn:"CCS1",lvl:"DC Fast"}]},
+  {id:5,name:"FREE – Albany City Hall Garage",addr:"24 Eagle St, Albany NY",network:"free",label:"Free",dist:4.1,avail:4,total:4,status:"open",
+   chargers:[{kw:6.6,cost:0,cu:"free",conn:"J1772",lvl:"Level 2"}]},
+  {id:6,name:"ChargePoint – Albany Med Center",addr:"43 New Scotland Ave, Albany NY",network:"chargepoint",label:"ChargePoint",dist:4.8,avail:6,total:8,status:"open",
+   chargers:[{kw:11,cost:.28,cu:"kWh",conn:"J1772",lvl:"Level 2"},{kw:62,cost:.31,cu:"kWh",conn:"CCS1",lvl:"DC Fast"}]},
+  {id:7,name:"Electrify America – Target Latham",addr:"579 Troy-Schenectady Rd, Latham NY",network:"electrify-america",label:"Electrify America",dist:5.3,avail:4,total:6,status:"open",
+   chargers:[{kw:150,cost:.43,cu:"kWh",conn:"CCS1",lvl:"DC Fast"},{kw:350,cost:.43,cu:"kWh",conn:"CCS1",lvl:"DC Fast"}]},
+  {id:8,name:"FREE – SUNY Albany Lot 7",addr:"1400 Washington Ave, Albany NY",network:"free",label:"Free",dist:5.9,avail:2,total:2,status:"open",
+   chargers:[{kw:7.2,cost:0,cu:"free",conn:"J1772",lvl:"Level 2"}]},
+  {id:9,name:"Blink – Hannaford Guilderland",addr:"1440 Western Ave, Guilderland NY",network:"blink",label:"Blink",dist:6.4,avail:0,total:2,status:"full",
+   chargers:[{kw:7.2,cost:.04,cu:"min",conn:"J1772",lvl:"Level 2"}]},
+  {id:10,name:"ChargePoint – Saratoga Casino",addr:"342 Jefferson St, Saratoga Springs NY",network:"chargepoint",label:"ChargePoint",dist:7.2,avail:3,total:4,status:"open",
+   chargers:[{kw:7.2,cost:.27,cu:"kWh",conn:"J1772",lvl:"Level 2"},{kw:50,cost:.31,cu:"kWh",conn:"CCS1",lvl:"DC Fast"}]},
+  {id:11,name:"Electrify America – Niskayuna",addr:"440 Balltown Rd, Niskayuna NY",network:"electrify-america",label:"Electrify America",dist:9.1,avail:2,total:4,status:"open",
+   chargers:[{kw:150,cost:.43,cu:"kWh",conn:"CCS1",lvl:"DC Fast"}]},
+  {id:12,name:"FREE – Price Chopper Troy",addr:"545 River St, Troy NY",network:"free",label:"Free",dist:10.5,avail:1,total:2,status:"open",
+   chargers:[{kw:6.6,cost:0,cu:"free",conn:"J1772",lvl:"Level 2"}]},
 ];
 
-// ==================== HELPERS ====================
-function rangeRemaining() {
-  return Math.round((state.soc / 100) * state.rangeFullMi);
-}
+// ══════════════ OVERPAY CALC
+// Returns null (no issue) or detailed overpay object
+function calcOverpay(c, fromSoc, toSoc){
+  const cap = c.kw > 20 ? S.maxDc : S.maxAc;
+  if(c.kw <= cap) return null;
 
-function rangeAtSoc(soc) {
-  return Math.round((soc / 100) * state.rangeFullMi);
-}
+  const kwh     = kwhN(fromSoc, toSoc);
+  const eff     = effKw(c.kw);
+  const ratio   = (c.kw / cap).toFixed(1);
 
-function kwhNeeded(fromSoc, toSoc) {
-  return Math.max(0, ((toSoc - fromSoc) / 100) * state.batteryKwh);
-}
+  // DOLLAR waste:
+  // Per-kWh: same energy delivered, but EA 150/350kW costs $0.43 vs ~$0.31 at a 50kW station
+  // Per-minute: Niro charges slower (85kW) than station kW → takes longer → you pay more minutes
+  let wasted = 0, savings = 0, tipText = '';
 
-function effectiveChargeKw(stationKw) {
-  // Kia Niro EV caps at 85kW DC, 11kW AC
-  return Math.min(stationKw, stationKw > 20 ? state.maxDcKw : state.maxAcKw);
-}
-
-function estimateCharge(charger, fromSoc, toSoc) {
-  const kwNeeded = kwhNeeded(fromSoc, toSoc);
-  const effKw = effectiveChargeKw(charger.kw);
-  const timeMin = Math.round((kwNeeded / effKw) * 60);
-  let cost;
-  if (charger.costUnit === 'free') {
-    cost = 0;
-  } else if (charger.costUnit === 'kWh') {
-    cost = kwNeeded * charger.cost;
-  } else {
-    // per minute
-    cost = timeMin * charger.cost;
-  }
-  const milesAdded = rangeAtSoc(toSoc) - rangeAtSoc(fromSoc);
-  return { timeMin, cost, milesAdded, kwNeeded, effKw };
-}
-
-function getBestCharger(station) {
-  // Find best compatible charger
-  const compatible = station.chargers.filter(c => {
-    if (state.portType === 'ccs') return ['CCS1','J1772','CHAdeMO'].includes(c.connector);
-    return c.connector === 'J1772';
-  });
-  if (!compatible.length) return station.chargers[0];
-  return compatible.reduce((best, c) => effectiveChargeKw(c.kw) > effectiveChargeKw(best.kw) ? c : best);
-}
-
-function isOverpriced(charger) {
-  // Warn if paying for power the Niro can't use (>85kW DC)
-  if (charger.kw > 100 && charger.kw > state.maxDcKw) {
-    return { warn: true, msg: `⚠️ This ${charger.kw}kW charger exceeds your Niro EV's 85kW DC cap — you'll pay for ${charger.kw}kW but only charge at 85kW. Choose a 50–100kW charger to save money.` };
-  }
-  if (charger.costUnit === 'min' && charger.kw < 10) {
-    return { warn: true, msg: `⚠️ Per-minute billing at only ${charger.kw}kW is expensive (~${(charger.cost*60/charger.kw*0.3).toFixed(2)}¢/mi equiv). Seek kWh pricing if available.` };
-  }
-  return { warn: false };
-}
-
-// ==================== RENDER ====================
-function renderStations() {
-  let stations = [...MOCK_STATIONS];
-
-  // Filter
-  if (state.activeFilter !== 'all') {
-    if (state.activeFilter === 'dc-fast') {
-      stations = stations.filter(s => s.chargers.some(c => c.level === 'DC Fast'));
-    } else if (state.activeFilter === 'level2') {
-      stations = stations.filter(s => s.chargers.some(c => c.level === 'Level 2'));
-    } else if (state.activeFilter === 'free') {
-      stations = stations.filter(s => s.chargers.some(c => c.costUnit === 'free'));
-    } else {
-      stations = stations.filter(s => s.network === state.activeFilter);
-    }
+  if(c.cu === 'kWh'){
+    const cheapRate = 0.31;                                   // typical 50–85kW DC rate
+    wasted   = kwh * Math.max(0, c.cost - cheapRate);
+    savings  = wasted;
+    tipText  = `⚡ You're charged $${c.cost}/kWh at this ${c.kw}kW station — the same rate as a 350kW plug. A 50–85kW charger (ChargePoint / Blink) typically costs $0.31–0.34/kWh. On ${kwh.toFixed(1)} kWh that saves you ~${fmt$(savings)}.`;
+  } else if(c.cu === 'min'){
+    // Time at actual speed vs time if car could use full station kW
+    const timeActual = kwh / eff * 60;
+    const timeIdeal  = kwh / c.kw * 60;
+    wasted  = (timeActual - timeIdeal) * c.cost;
+    savings = wasted;
+    tipText = `⚡ Per-minute billing: your Niro caps at ${cap}kW so it takes ${timeActual.toFixed(0)} min instead of ${timeIdeal.toFixed(0)} min — you pay ~${fmt$(Math.max(0,wasted))} extra. Switch to a kWh-priced station to pay only for energy delivered.`;
   }
 
-  // Sort
-  if (state.sortBy === 'cost') {
-    stations.sort((a, b) => {
-      const bestA = getBestCharger(a);
-      const bestB = getBestCharger(b);
-      const costA = bestA.costUnit === 'free' ? -1 : bestA.cost;
-      const costB = bestB.costUnit === 'free' ? -1 : bestB.cost;
-      return costA - costB;
-    });
-  } else if (state.sortBy === 'speed') {
-    stations.sort((a, b) => effectiveChargeKw(getBestCharger(b).kw) - effectiveChargeKw(getBestCharger(a).kw));
-  } else if (state.sortBy === 'available') {
-    stations.sort((a, b) => b.available - a.available);
-  } else {
-    stations.sort((a, b) => a.distance - b.distance);
-  }
-
-  document.getElementById('station-count').textContent = stations.length;
-
-  if (!stations.length) {
-    document.getElementById('station-list').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🔌</div>
-        <div class="empty-title">No stations found</div>
-        <div class="empty-sub">Try adjusting your filters or expanding your search radius.</div>
-      </div>`;
-    return;
-  }
-
-  const html = stations.map(s => renderCard(s)).join('');
-  document.getElementById('station-list').innerHTML = html;
+  return {
+    stKw: c.kw, cap, eff, ratio,
+    wasted: Math.max(0, wasted),
+    savings: Math.max(0, savings),
+    tip: tipText,
+  };
 }
 
-function renderCard(s) {
-  const bestCharger = getBestCharger(s);
-  const est = estimateCharge(bestCharger, state.soc, state.target);
-  const overpay = isOverpriced(bestCharger);
-  const isFree = bestCharger.costUnit === 'free';
-  const isSelected = state.selectedStation === s.id;
-  const effKw = effectiveChargeKw(bestCharger.kw);
+function bestCharger(station){
+  const pool = station.chargers.filter(c =>
+    S.port==='ccs' ? ['CCS1','J1772','CHAdeMO'].includes(c.conn) : c.conn==='J1772'
+  );
+  const src = pool.length ? pool : station.chargers;
+  return src.reduce((b,c) => effKw(c.kw)>effKw(b.kw)?c:b);
+}
 
-  const statusClass = s.status === 'open' ? 'open' : s.status === 'busy' ? 'busy' : 'full';
-  const statusLabel = s.status === 'open' ? '● Open' : s.status === 'busy' ? '◑ Busy' : '○ Full';
+function estCharge(c, fromSoc, toSoc){
+  const kwh   = kwhN(fromSoc, toSoc);
+  const eff   = effKw(c.kw);
+  const tMin  = eff>0 ? Math.round((kwh/eff)*60) : 0;
+  const cost  = c.cu==='kWh' ? kwh*c.cost : c.cu==='min' ? tMin*c.cost : 0;
+  return {tMin, cost, miles: rAt(toSoc)-rAt(fromSoc), kwh, eff};
+}
 
-  const networkClass = `network-${s.network === 'free' ? 'free' : s.network.replace('-','').includes('electrify') ? 'ea' : s.network}`;
+// ══════════════ RENDER STATIONS
+function render(){
+  let list=[...STATIONS];
+  if(S.filter==='dc-fast')  list=list.filter(s=>s.chargers.some(c=>c.lvl==='DC Fast'));
+  else if(S.filter==='level2') list=list.filter(s=>s.chargers.some(c=>c.lvl==='Level 2'));
+  else if(S.filter==='free')   list=list.filter(s=>s.chargers.some(c=>c.cu==='free'));
+  else if(S.filter!=='all')    list=list.filter(s=>s.network===S.filter);
 
-  // Render charger type pills
-  const chargerTypePills = s.chargers.map(c => {
-    const eff = effectiveChargeKw(c.kw);
-    const cappedt = eff < c.kw;
-    const compatible = state.portType === 'ccs' ? ['CCS1','J1772','CHAdeMO'].includes(c.connector) : c.connector === 'J1772';
-    const warn = isOverpriced(c);
-    let costTxt = c.costUnit === 'free' ? 'FREE' : c.costUnit === 'kWh' ? `$${c.cost}/kWh` : `$${c.cost}/min`;
-    return `<div class="charger-type ${compatible ? 'compatible' : ''} ${warn.warn ? 'warning' : ''}">
-      <span class="ct-power">${cappedt ? `${eff}kW` : `${c.kw}kW`}</span>
-      <span class="ct-type">${c.connector}</span>
-      <span class="ct-level">${c.level}</span>
-      <span class="ct-cost">${costTxt}</span>
-      ${cappedt ? `<span class="ct-warn">⚠️ Capped@${state.maxDcKw}kW</span>` : ''}
+  if(S.sort==='cost') list.sort((a,b)=>(bestCharger(a).cu==='free'?-1:bestCharger(a).cost)-(bestCharger(b).cu==='free'?-1:bestCharger(b).cost));
+  else if(S.sort==='speed')    list.sort((a,b)=>effKw(bestCharger(b).kw)-effKw(bestCharger(a).kw));
+  else if(S.sort==='available')list.sort((a,b)=>b.avail-a.avail);
+  else list.sort((a,b)=>a.dist-b.dist);
+
+  document.getElementById('station-count').textContent=list.length;
+  if(!list.length){document.getElementById('station-list').innerHTML=`<div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-title">No stations</div><div class="empty-sub">Try adjusting filters or radius.</div></div>`;return;}
+  document.getElementById('station-list').innerHTML=list.map(renderCard).join('');
+}
+
+function renderCard(s){
+  const best=bestCharger(s);
+  const est=estCharge(best,S.soc,S.target);
+  const op=calcOverpay(best,S.soc,S.target);
+  const isFree=best.cu==='free';
+  const isSel=S.selected===s.id;
+  const eff=effKw(best.kw);
+  const stClass=s.status==='open'?'open':s.status==='busy'?'busy':'full';
+  const stLabel=s.status==='open'?'● Open':s.status==='busy'?'◑ Busy':'○ Full';
+  const netKey=s.network==='electrify-america'?'ea':s.network==='free'?'free':s.network;
+
+  const pills=s.chargers.map(c=>{
+    const e=effKw(c.kw),capped=e<c.kw;
+    const compat=S.port==='ccs'?['CCS1','J1772','CHAdeMO'].includes(c.conn):c.conn==='J1772';
+    const cop=calcOverpay(c,S.soc,S.target);
+    const ct=c.cu==='free'?'FREE':c.cu==='kWh'?`$${c.cost}/kWh`:`$${c.cost}/min`;
+    return `<div class="charger-type ${compat?'compatible':''} ${cop?'warning':''}">
+      <span class="ct-power">${capped?e+'kW':c.kw+'kW'}</span>
+      <span class="ct-type">${c.conn}</span><span class="ct-level">${c.lvl}</span>
+      <span class="ct-cost">${ct}</span>
+      ${capped?`<span class="ct-warn">⚠️ CAP@${S.maxDc}kW</span>`:''}
     </div>`;
   }).join('');
 
-  const warnHtml = overpay.warn ? `
-    <div class="warn-banner">
-      <span class="warn-icon">⚠️</span>
-      <span>${overpay.msg}</span>
-    </div>` : '';
+  let opHtml='';
+  if(op){
+    opHtml=`<div class="overpay-banner">
+      <div class="overpay-header">
+        <span class="overpay-icon">⚠️⚠️</span>
+        <div>
+          <div class="overpay-title">Overpaying — Station Exceeds Your ${op.cap}kW DC Cap</div>
+          <div class="overpay-subtitle">${op.stKw}kW station · ${op.ratio}× your max · charging at ${op.eff}kW regardless</div>
+        </div>
+      </div>
+      <div class="overpay-money">
+        <div class="om-item"><span class="om-val red">${fmt$(op.wasted)}</span><span class="om-lbl">Premium vs optimal station</span></div>
+        <div class="om-item"><span class="om-val dim">${op.eff}kW</span><span class="om-lbl">Actual charge rate</span></div>
+        <div class="om-item"><span class="om-val grn">${fmt$(op.savings)}</span><span class="om-lbl">Potential savings</span></div>
+      </div>
+      <div class="overpay-tip">${op.tip}</div>
+    </div>`;
+  }
 
-  const costDisplay = isFree
-    ? `<span class="ce-val free">FREE</span>`
-    : `<span class="ce-val cost">$${est.cost.toFixed(2)}</span>`;
-
-  return `<div class="station-card ${isFree ? 'free-bg' : ''} ${isSelected ? 'selected' : ''}" onclick="selectStation(${s.id})">
+  return `<div class="station-card ${isFree?'free-bg':''} ${op?'overpay-card':''} ${isSel?'selected':''}" onclick="selectStation(${s.id})">
     <div class="card-header">
       <div class="card-header-left">
         <div class="station-name">${s.name}</div>
         <div class="station-addr">📍 ${s.addr}</div>
         <div class="station-meta">
-          <span class="distance-badge">${s.distance} mi</span>
-          <span class="network-badge ${networkClass}">${s.networkLabel}</span>
+          <span class="distance-badge">${s.dist} mi</span>
+          <span class="network-badge network-${netKey}">${s.label}</span>
         </div>
       </div>
       <div class="card-header-right">
-        <span class="avail-pill ${statusClass}">${statusLabel}</span>
-        <span class="avail-count">${s.available}/${s.total} ports</span>
+        <span class="avail-pill ${stClass}">${stLabel}</span>
+        <span class="avail-count">${s.avail}/${s.total} ports</span>
       </div>
     </div>
-    <div class="charger-types">${chargerTypePills}</div>
-    ${warnHtml}
+    <div class="charger-types">${pills}</div>
+    ${opHtml}
     <div class="charge-est">
-      <div class="ce-title">Charge from ${state.soc}% → ${state.target}% (Best charger at ${effKw}kW)</div>
+      <div class="ce-title">Charge ${S.soc}%→${S.target}% at effective ${eff}kW</div>
       <div class="ce-grid">
-        <div class="ce-item">
-          <span class="ce-val miles">+${est.milesAdded} mi</span>
-          <span class="ce-lbl">Miles Added</span>
-        </div>
-        <div class="ce-item">
-          <span class="ce-val time">${est.timeMin} min</span>
-          <span class="ce-lbl">Charge Time</span>
-        </div>
-        <div class="ce-item">
-          ${costDisplay}
-          <span class="ce-lbl">Total Cost</span>
-        </div>
+        <div class="ce-item"><span class="ce-val miles">+${est.miles} mi</span><span class="ce-lbl">Miles Added</span></div>
+        <div class="ce-item"><span class="ce-val time">${est.tMin} min</span><span class="ce-lbl">Charge Time</span></div>
+        <div class="ce-item">${isFree?'<span class="ce-val free">FREE</span>':'<span class="ce-val cost">'+fmt$(est.cost)+'</span>'}<span class="ce-lbl">Total Cost</span></div>
       </div>
     </div>
     <div class="card-actions">
       <button class="btn btn-primary" onclick="event.stopPropagation();navigate(${s.id})">🗺 Navigate</button>
-      <button class="btn btn-secondary" onclick="event.stopPropagation();openCalcForStation(${s.id})">⚡ Calc</button>
+      <button class="btn btn-secondary" onclick="event.stopPropagation();loadCalcStation(${s.id})">⚡ Calc</button>
     </div>
   </div>`;
 }
 
-// ==================== INTERACTIONS ====================
-function selectStation(id) {
-  state.selectedStation = state.selectedStation === id ? null : id;
-  renderStations();
-}
+// ══════════════ CALCULATOR
+function recalculate(){
+  const kw=parseFloat(document.getElementById('calc-power').value);
+  const min=parseInt(document.getElementById('calc-minutes').value);
+  const rate=parseFloat(document.getElementById('calc-rate').value)||0;
+  document.getElementById('calc-power-val').textContent=kw+' kW';
+  document.getElementById('calc-min-val').textContent=min+' min';
+  const eff=effKw(kw);
+  const kwh=Math.min(eff*(min/60), S.bat*((100-S.soc)/100));
+  const miles=Math.round((kwh/S.bat)*S.rangeMi);
+  const cost=rate*kwh;
+  const cpm=miles>0?(cost/miles*100):0;
+  document.getElementById('cr-miles').textContent='+'+miles+' mi';
+  document.getElementById('cr-kwh').textContent=kwh.toFixed(1)+' kWh';
+  document.getElementById('cr-cost').textContent=rate===0?'FREE':fmt$(cost);
+  document.getElementById('cr-cost').style.color=rate===0?'var(--green)':'var(--orange)';
+  document.getElementById('cr-permile').textContent=rate===0?'FREE':cpm.toFixed(1)+'¢/mi';
 
-function navigate(id) {
-  const s = MOCK_STATIONS.find(x => x.id === id);
-  if (!s) return;
-  const q = encodeURIComponent(s.addr);
-  window.open(`https://maps.apple.com/?q=${q}`, '_blank');
-}
+  const box=document.getElementById('calc-overpay');
+  const isHPC=kw>S.maxDc && kw>20;
+  const isExpensive=rate>0 && cpm>6;
 
-function setTab(tab, el) {
-  state.activeTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-  if (el) el.classList.add('active');
-
-  if (tab === 'calc') { openCalc(); return; }
-  renderStations();
-}
-
-function toggleFilter(el) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  state.activeFilter = el.dataset.filter;
-  renderStations();
-}
-
-function sortStations(val) {
-  state.sortBy = val;
-  renderStations();
-}
-
-function updateSOC(val) {
-  state.soc = parseInt(val);
-  document.getElementById('soc-slider-val').textContent = val + '%';
-  document.getElementById('soc-display').textContent = val + '%';
-  document.getElementById('soc-val-display').innerHTML = `${val}% · <span id="range-remain">${rangeRemaining()} mi remaining</span>`;
-  document.getElementById('soc-bar').style.width = val + '%';
-  const kwNeeded = kwhNeeded(state.soc, state.target);
-  document.getElementById('modal-range-remain').textContent = rangeRemaining() + ' mi';
-  document.getElementById('modal-kwh-needed').textContent = kwNeeded.toFixed(1) + ' kWh';
-  const timeL3 = Math.round((kwNeeded / state.maxDcKw) * 60);
-  document.getElementById('modal-time-l3').textContent = `~${timeL3} min`;
-  renderStations();
-}
-
-function updateTarget(val) {
-  state.target = parseInt(val);
-  document.getElementById('target-soc-val').textContent = val + '%';
-  document.getElementById('target-soc-display').textContent = val + '%';
-  document.getElementById('modal-range-at-target').textContent = rangeAtSoc(state.target) + ' mi';
-  const kwNeeded = kwhNeeded(state.soc, state.target);
-  document.getElementById('modal-kwh-needed').textContent = kwNeeded.toFixed(1) + ' kWh';
-  const timeL3 = Math.round((kwNeeded / state.maxDcKw) * 60);
-  document.getElementById('modal-time-l3').textContent = `~${timeL3} min`;
-  renderStations();
-}
-
-// ==================== MODALS ====================
-function openModal(id) {
-  document.getElementById(id).classList.add('show');
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
-}
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
-});
-
-function openSOCEditor() { openModal('soc-modal'); }
-function openSettings() { openModal('settings-modal'); }
-function openVehicleEditor() { openModal('vehicle-modal'); }
-function openCalc() {
-  recalculate();
-  openModal('calc-modal');
-}
-
-function openCalcForStation(id) {
-  const s = MOCK_STATIONS.find(x => x.id === id);
-  if (!s) return;
-  const best = getBestCharger(s);
-  const effKw = effectiveChargeKw(best.kw);
-  document.getElementById('calc-power').value = effKw;
-  document.getElementById('calc-rate').value = best.costUnit === 'kWh' ? best.cost : (best.costUnit === 'free' ? 0 : best.cost * 60 / effKw);
-  recalculate();
-  openModal('calc-modal');
-}
-
-function recalculate() {
-  const kw = parseFloat(document.getElementById('calc-power').value);
-  const minutes = parseInt(document.getElementById('calc-minutes').value);
-  const rate = parseFloat(document.getElementById('calc-rate').value) || 0;
-  document.getElementById('calc-power-val').textContent = kw + ' kW';
-  document.getElementById('calc-min-val').textContent = minutes + ' min';
-  const effKw = effectiveChargeKw(kw);
-  const kwhAdded = Math.min(effKw * (minutes / 60), state.batteryKwh * ((100 - state.soc) / 100));
-  const milesAdded = Math.round((kwhAdded / state.batteryKwh) * state.rangeFullMi);
-  const cost = rate * kwhAdded;
-  const costPerMile = milesAdded > 0 ? (cost / milesAdded * 100) : 0;
-  document.getElementById('cr-miles').textContent = '+' + milesAdded + ' mi';
-  document.getElementById('cr-kwh').textContent = kwhAdded.toFixed(1) + ' kWh';
-  document.getElementById('cr-cost').textContent = rate === 0 ? 'FREE' : '$' + cost.toFixed(2);
-  document.getElementById('cr-cost').style.color = rate === 0 ? 'var(--green)' : 'var(--orange)';
-  document.getElementById('cr-permile').textContent = rate === 0 ? 'FREE' : costPerMile.toFixed(1) + '¢/mi';
-
-  // Warning logic
-  const warnEl = document.getElementById('calc-warning');
-  if (kw > state.maxDcKw) {
-    warnEl.style.display = 'block';
-    warnEl.textContent = `⚠️ Overpaying Alert: This ${kw}kW charger exceeds the Niro EV's ${state.maxDcKw}kW DC max. You're being billed for ${kw}kW but only receiving ${state.maxDcKw}kW. Use a 50–100kW charger for best value per dollar.`;
-  } else if (costPerMile > 6 && rate > 0) {
-    warnEl.style.display = 'block';
-    warnEl.textContent = `⚠️ High Cost Warning: At ${costPerMile.toFixed(1)}¢/mile this session is significantly above average EV charging costs (~3-5¢/mi). Consider a lower-cost network or charging at home.`;
+  if(isHPC){
+    const kwh2=kwh, cheapRate=0.31;
+    const wasted=rate>0 ? kwh2*Math.max(0,rate-cheapRate) : 0;
+    document.getElementById('cop-wasted').textContent=fmt$(wasted);
+    document.getElementById('cop-cap').textContent=S.maxDc+' kW';
+    document.getElementById('cop-save').textContent=fmt$(wasted);
+    document.getElementById('cop-tip').textContent=
+      `⚠️⚠️ This ${kw}kW charger exceeds your Niro EV's ${S.maxDc}kW DC cap — you'll pay for ${kw}kW but only charge at ${S.maxDc}kW. `+
+      (rate>0?`At $${rate}/kWh you're paying a ${kw}kW premium rate. A 50–85kW station at ~$0.31/kWh saves you ~${fmt$(wasted)} on this session.`:`Choose a 50–100kW charger to avoid overpaying on per-kWh or per-minute plans.`);
+    box.classList.add('show');
+  } else if(isExpensive){
+    const ovr=Math.max(0,cost-kwh*0.32);
+    document.getElementById('cop-wasted').textContent=fmt$(ovr);
+    document.getElementById('cop-cap').textContent=eff+' kW';
+    document.getElementById('cop-save').textContent=fmt$(ovr);
+    document.getElementById('cop-tip').textContent=
+      `⚠️ High cost: ${cpm.toFixed(1)}¢/mi is above the 3–5¢/mi EV average. Check for kWh-priced stations or charge at home ($0.12–0.18/kWh).`;
+    box.classList.add('show');
   } else {
-    warnEl.style.display = 'none';
+    box.classList.remove('show');
   }
 }
 
-// ==================== VEHICLE ====================
-function onVINInput(vin) {
-  if (vin.length === 17) {
-    // Decode model year from position 9
-    const yearChar = vin[9].toUpperCase();
-    const yearMap = {'P':2023,'R':2024,'S':2025};
-    if (yearMap[yearChar]) {
-      document.getElementById('model-year').value = yearMap[yearChar];
-    }
-    document.getElementById('veh-vin').textContent = 'VIN: ' + vin.substring(0,11) + '————';
-  }
+// ══════════════ INTERACTIONS
+function selectStation(id){S.selected=S.selected===id?null:id;render();}
+function navigate(id){const s=STATIONS.find(x=>x.id===id);if(s)window.open(`https://maps.apple.com/?q=${encodeURIComponent(s.addr)}`,'_blank');}
+function setTab(t,el){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(t==='calc'){openCalc();return;}
+  render();
+}
+function toggleFilter(el){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');S.filter=el.dataset.filter;render();
+}
+function sortStations(v){S.sort=v;render();}
+function updateSOC(v){
+  S.soc=parseInt(v);
+  document.getElementById('soc-slider-val').textContent=v+'%';
+  document.getElementById('soc-display').textContent=v+'%';
+  document.getElementById('soc-val-display').textContent=`${v}% · ${rAt(S.soc)} mi remaining`;
+  document.getElementById('soc-bar').style.width=v+'%';
+  document.getElementById('modal-range-remain').textContent=rAt(S.soc)+' mi';
+  const k=kwhN(S.soc,S.target);
+  document.getElementById('modal-kwh-needed').textContent=k.toFixed(1)+' kWh';
+  document.getElementById('modal-time-l3').textContent='~'+Math.round((k/S.maxDc)*60)+' min';
+  render();
+}
+function updateTarget(v){
+  S.target=parseInt(v);
+  document.getElementById('target-soc-val').textContent=v+'%';
+  document.getElementById('target-soc-display').textContent=v+'%';
+  document.getElementById('modal-range-target').textContent=rAt(S.target)+' mi';
+  const k=kwhN(S.soc,S.target);
+  document.getElementById('modal-kwh-needed').textContent=k.toFixed(1)+' kWh';
+  document.getElementById('modal-time-l3').textContent='~'+Math.round((k/S.maxDc)*60)+' min';
+  render();
 }
 
-function updateVehicleSpecs() {
-  const trim = document.getElementById('veh-trim').value;
-  // All Niro EV trims same battery/range
-  state.trim = trim;
+// ══════════════ MODALS
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');}));
+const openSOCEditor=()=>openModal('soc-modal');
+const openSettings=()=>openModal('settings-modal');
+const openVehicleEditor=()=>openModal('vehicle-modal');
+function openCalc(){recalculate();openModal('calc-modal');}
+function loadCalcStation(id){
+  const s=STATIONS.find(x=>x.id===id);if(!s)return;
+  const b=bestCharger(s);
+  document.getElementById('calc-power').value=effKw(b.kw);
+  document.getElementById('calc-rate').value=b.cu==='free'?0:b.cu==='kWh'?b.cost:(b.cost*60/b.kw).toFixed(3);
+  recalculate();openModal('calc-modal');
+}
+function onVINInput(v){
+  if(v.length===17){const y={'P':2023,'R':2024,'S':2025}[v[9].toUpperCase()];if(y)document.getElementById('model-year').value=y;document.getElementById('veh-vin').textContent='VIN: '+v.substring(0,11)+'————';}
+}
+function saveVehicle(){
+  const trim=document.getElementById('veh-trim').value;
+  const year=document.getElementById('model-year').value;
+  const labels={wind:'Wind',wave:'Wave',ex:'EX','ex-premium':'EX Premium'};
+  S.port=document.getElementById('port-type').value;
+  document.getElementById('veh-name').textContent=`${year} Niro EV ${labels[trim]||trim}`;
+  const vin=document.getElementById('vin-input').value;
+  if(vin)document.getElementById('veh-vin').textContent='VIN: '+vin.substring(0,11)+'————';
+  closeModal('vehicle-modal');render();
 }
 
-function saveVehicle() {
-  const trim = document.getElementById('veh-trim').value;
-  const color = document.getElementById('veh-color').value;
-  const year = document.getElementById('model-year').value;
-  const port = document.getElementById('port-type').value;
-  const vin = document.getElementById('vin-input').value;
-  state.trim = trim;
-  state.color = color;
-  state.year = year;
-  state.portType = port;
-  state.vin = vin;
-  const trimLabels = { wind:'Wind', wave:'Wave', ex:'EX', 'ex-premium':'EX Premium' };
-  document.getElementById('veh-name').textContent = `${year} Niro EV ${trimLabels[trim]}`;
-  if (vin) document.getElementById('veh-vin').textContent = `VIN: ${vin.substring(0,11)}————`;
-  closeModal('vehicle-modal');
-  renderStations();
+// ══════════════ PWA
+let dp=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;document.getElementById('install-banner').style.display='flex';});
+function installPWA(){
+  if(dp){dp.prompt();dp.userChoice.then(()=>{dp=null;document.getElementById('install-banner').style.display='none';});}
+  else alert('iPhone: tap Share → Add to Home Screen\nAndroid: tap ⋮ → Install App');
 }
 
-// ==================== PWA ====================
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('install-banner').style.display = 'flex';
-});
-
-function installPWA() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-      document.getElementById('install-banner').style.display = 'none';
-    });
-  } else {
-    // iOS instructions
-    alert('To install on iPhone: tap the Share button (□↑) then "Add to Home Screen".\n\nTo install on Android: tap the browser menu (⋮) then "Add to Home Screen" or "Install App".');
-  }
-}
-
-// ==================== INIT ====================
-window.addEventListener('load', () => {
-  // Simulate GPS / location load
-  setTimeout(() => {
-    renderStations();
-  }, 900);
-
-  // Register service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
-
-  // Show install hint after 3s if no prompt event
-  setTimeout(() => {
-    const banner = document.getElementById('install-banner');
-    if (banner.style.display === 'none' || !banner.style.display) {
-      banner.style.display = 'flex';
-    }
-  }, 3000);
+// ══════════════ INIT
+window.addEventListener('load',()=>{
+  initTheme();
+  setTimeout(render,700);
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+  setTimeout(()=>{const b=document.getElementById('install-banner');if(!b.style.display||b.style.display==='none')b.style.display='flex';},4000);
 });
 </script>
 </body>

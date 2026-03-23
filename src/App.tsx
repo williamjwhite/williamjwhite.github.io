@@ -31,6 +31,8 @@ import { ProjectCard } from "@/components/shared/project-docs-modal";
 import { DocTile } from "@/components/shared/doc-tile";
 import { AdminPage } from "@/components/sections/admin-page";
 
+import { DemoGrid } from "@/components/shared/demo-grid";
+
 // Lazy-loaded — only bundled when the Cheatsheets tab is first visited
 const CheatsheetApp = lazy(() => import("@/features/cheatsheets"));
 
@@ -119,7 +121,86 @@ export default function App() {
             </div>
           </TabsContent>
 
-          <TabsContent value="projects">
+<TabsContent value="projects">
+  <div className="flex flex-col gap-8">
+
+    {/* ── PUBLIC DEMOS ─────────────────────────────────────────────────── */}
+    <section>
+      <div className="flex items-center gap-3 mb-4">
+        <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-widest">
+          Interactive Demos
+        </h2>
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-[10px] font-mono text-muted-foreground border border-border rounded-full px-2 py-0.5">
+          Public
+        </span>
+      </div>
+      <p className="text-sm text-muted-foreground mb-5 max-w-prose">
+        Standalone tools and apps — open directly in your browser, installable as PWAs where supported.
+      </p>
+
+      {/* DemoGrid auto-reads /projects/projects.json — add slugs there to surface new demos */}
+      <DemoGrid />
+    </section>
+
+    {/* ── CASE STUDIES / LOCKED DOCS ───────────────────────────────────── */}
+    <section>
+      <div className="flex items-center gap-3 mb-4">
+        <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-widest">
+          Case Studies
+        </h2>
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-[10px] font-mono text-muted-foreground border border-border rounded-full px-2 py-0.5">
+          Docs
+        </span>
+      </div>
+      <p className="text-sm text-muted-foreground mb-5 max-w-prose">
+        In-depth technical documentation for production systems — available on request.
+      </p>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <ProjectCard
+          title="Digital Mortgage Workflow"
+          desc="DocuSign + eOriginal integration with automated routing, eVaulting, and audit‑grade lifecycle tracking."
+          href={`${LINKS.docs}/projects/digital-mortgage`}
+          tags={["DocuSign", "eOriginal", "AWS", "Automation"]}
+        />
+        <ProjectCard
+          title="AI Document Processing"
+          desc="LLM‑powered classification, extraction, and workflow routing for enterprise document pipelines."
+          href={`${LINKS.docs}/projects/ai-docs`}
+          tags={["AI/ML", "Python", "FastAPI", "OpenAI"]}
+        />
+        <ProjectCard
+          title="Cloud‑Native Platform"
+          desc="Multi‑service architecture deployed on AWS with Docker, ECS, CI/CD, and observability."
+          href={`${LINKS.docs}/projects/cloud-platform`}
+          tags={["AWS", "Docker", "CI/CD", "Architecture"]}
+        />
+        <ProjectCard
+          title="Workflow Automation Suite"
+          desc="Full‑stack automation tools for internal operations, approvals, and document lifecycle management."
+          href={`${LINKS.docs}/projects/workflow-automation`}
+          tags={["React", "Node", "Automation", "DX"]}
+        />
+        <ProjectCard
+          title="TrakTeam"
+          desc="Multi-platform operational tooling for crew workflows and commissary ordering."
+          href={`${LINKS.docs}/projects/trakteam/overview`}
+          tags={["SwiftUI", "Operations", "Inventory"]}
+        />
+        <ProjectCard
+          title="CodeVault"
+          desc="Multi-platform snippet management, formatting, and future cloud sync."
+          href={`${LINKS.docs}/projects/codevault/overview`}
+          tags={["SwiftUI", "DevTools", "Productivity"]}
+        />
+      </div>
+    </section>
+
+  </div>
+</TabsContent>
+{/*           <TabsContent value="projects">
             <div className="grid gap-4 md:grid-cols-2">
               <ProjectCard title="Digital Mortgage Workflow" desc="DocuSign + eOriginal integration with automated routing, eVaulting, and audit‑grade lifecycle tracking." href={`${LINKS.docs}/projects/digital-mortgage`} tags={["DocuSign", "eOriginal", "AWS", "Automation"]} />
               <ProjectCard title="AI Document Processing" desc="LLM‑powered classification, extraction, and workflow routing for enterprise document pipelines." href={`${LINKS.docs}/projects/ai-docs`} tags={["AI/ML", "Python", "FastAPI", "OpenAI"]} />
@@ -128,7 +209,7 @@ export default function App() {
               <ProjectCard title="TrakTeam" desc="Multi-platform operational tooling for crew workflows and commissary ordering." href={`${LINKS.docs}/projects/trakteam/overview`} tags={["SwiftUI", "Operations", "Inventory"]} />
               <ProjectCard title="CodeVault" desc="Multi-platform snippet management, formatting, and future cloud sync." href={`${LINKS.docs}/projects/codevault/overview`} tags={["SwiftUI", "DevTools", "Productivity"]} />
             </div>
-          </TabsContent>
+          </TabsContent> */}
 
           {/* Lazy-loaded cheatsheets feature */}
           <TabsContent value="cheatsheets">

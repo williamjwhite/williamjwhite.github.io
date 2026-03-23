@@ -1,0 +1,44 @@
+{
+  "name": "NiroCharge – Kia Niro EV Charging",
+  "short_name": "NiroCharge",
+  "description": "Find optimal EV charging stations for your Kia Niro EV Wind with smart cost warnings and charge estimates",
+  "start_url": "/projects/ev-charging-stations-app/",
+  "scope": "/projects/ev-charging-stations-app/",
+  "display": "standalone",
+  "background_color": "#080d16",
+  "theme_color": "#0a0f1a",
+  "orientation": "portrait",
+  "categories": ["navigation", "utilities", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nearby Chargers",
+      "short_name": "Nearby",
+      "description": "Find charging stations near you",
+      "url": "/?tab=nearby",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Charge Calculator",
+      "short_name": "Calc",
+      "description": "Calculate charge time and cost",
+      "url": "/?tab=calc",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

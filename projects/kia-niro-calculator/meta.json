@@ -1,0 +1,9 @@
+{
+  "title": "Kia Niro Calculator",
+  "description": "Total cost of ownership calculator comparing financing, charging costs, incentives, and savings vs ICE vehicles.",
+  "icon": "🚗",
+  "color": "#8b5cf6",
+  "status": "live",
+  "tags": ["EV", "Finance", "Calculator"],
+  "type": "demo"
+}

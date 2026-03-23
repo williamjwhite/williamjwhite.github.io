@@ -1,0 +1,9 @@
+{
+  "title": "Accounting App",
+  "description": "Lightweight financial management with transaction tracking, categorization, and cash flow visualization.",
+  "icon": "📊",
+  "color": "#10b981",
+  "status": "live",
+  "tags": ["Finance", "Dashboard", "Tools"],
+  "type": "demo"
+}

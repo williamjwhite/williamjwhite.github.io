@@ -91,7 +91,7 @@ export function DemoCard({ slug }: DemoCardProps) {
       className="group flex flex-col justify-between h-full transition-all duration-200
                  hover:shadow-[0_0_0_1px_var(--card-accent-color)] hover:-translate-y-0.5 cursor-pointer"
       style={{ "--card-accent-color": meta.color } as React.CSSProperties}
-      onClick={() => window.location.href = url}
+      onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}
     >
       <CardHeader className="pb-3">
         {/* Icon + status row */}
@@ -138,7 +138,7 @@ export function DemoCard({ slug }: DemoCardProps) {
           className="w-full gap-2 group-hover:border-[var(--card-accent-color)]
                      group-hover:text-[var(--card-accent-color)] transition-colors"
           style={{ "--card-accent-color": meta.color } as React.CSSProperties}
-          onClick={e => { e.stopPropagation(); window.location.href = url; }}
+          onClick={e => { e.stopPropagation(); window.open(url, '_blank', 'noopener,noreferrer'); }}
         >
           <ExternalLink className="w-3.5 h-3.5" />
           Launch Demo

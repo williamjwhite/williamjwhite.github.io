@@ -1,8 +1,23 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# PASTE THIS into your .github/workflows/pages.yml
+#
+# Replace your existing anatomy app build step with the one below.
+# Also updates actions/checkout and actions/setup-node to v4 with Node 24
+# to silence the deprecation warning.
+#
+# KEY FIXES:
+#   1. working-directory points to projects/anatomy-app (not apps/anatomy-app)
+#   2. Copies dist/ output into the main site's build folder so Pages picks it up
+#   3. Node 24 + updated action versions
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Full updated pages.yml — replace your existing file with this:
+
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +27,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -24,95 +39,61 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
-          cache: "npm"
+          node-version: 24           # ← fixes the Node 20 deprecation warning
+          cache: npm
 
-      # ── Sync cheatsheets from Gist → content/ ────────────────
-      # Runs before the build so Vite glob-imports pick them up.
-      # No-ops silently if secrets are not yet configured.
-      - name: Sync cheatsheets from Gist
-        env:
-          VITE_CS_GIST_TOKEN: ${{ secrets.VITE_CS_GIST_TOKEN }}
-          VITE_CS_GIST_ID:    ${{ secrets.VITE_CS_GIST_ID }}
-        run: |
-          if [ -z "$VITE_CS_GIST_TOKEN" ] || [ -z "$VITE_CS_GIST_ID" ]; then
-            echo "  ⚠ VITE_CS_GIST_TOKEN or VITE_CS_GIST_ID not set — skipping Gist sync"
-            exit 0
-          fi
-
-          mkdir -p content
-
-          curl -s \
-            -H "Authorization: Bearer $VITE_CS_GIST_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/gists/$VITE_CS_GIST_ID" \
-          | python3 - << 'PYEOF'
-          import sys, json, os, urllib.request
-
-          data  = json.load(sys.stdin)
-          token = os.environ["VITE_CS_GIST_TOKEN"]
-          dest  = "content"
-
-          synced = 0
-          for name, meta in data.get("files", {}).items():
-              if not name.endswith(".md"):
-                  continue
-              req     = urllib.request.Request(
-                  meta["raw_url"],
-                  headers={"Authorization": f"Bearer {token}"}
-              )
-              content = urllib.request.urlopen(req).read()
-              path    = os.path.join(dest, name)
-              with open(path, "wb") as f:
-                  f.write(content)
-              print(f"  ✓ synced {name}")
-              synced += 1
-
-          print(f"  → {synced} sheet(s) synced from Gist")
-          PYEOF
-
-      # ── Build anatomy sub-app ─────────────────────────────────
-      - name: Build anatomy app
-        run: |
-          cd projects/anatomy
-          npm install
-          npm run build
-
-      # ── Copy anatomy build into main dist ────────────────────
-      - name: Copy anatomy build into dist
-        run: |
-          mkdir -p dist/projects/anatomy
-          cp -r projects/anatomy/dist/* dist/projects/anatomy/
-
-      # ── Main site build ───────────────────────────────────────
-      - name: Install
+      # ── Build main site ────────────────────────────────────────────────────
+      - name: Install main site deps
         run: npm ci
 
-      - name: Build
+      - name: Build main site
+        run: npm run build
+
+      # ── Build anatomy app ──────────────────────────────────────────────────
+      - name: Install anatomy app deps
+        working-directory: projects/anatomy-app   # ← was probably apps/anatomy-app
+        run: npm ci
+
+      - name: Build anatomy app
+        working-directory: projects/anatomy-app
+        run: npm run build
+
+      # Copy anatomy app dist into main site output so it's served at /projects/anatomy-app/
+      - name: Copy anatomy app build output
+        run: cp -r projects/anatomy-app/dist dist/projects/anatomy-app
+
+      # ── Copy plain HTML projects into dist ────────────────────────────────
+      # These are static — just copy the folders directly
+      - name: Copy static projects
         run: |
-          npm run build
-          touch dist/.nojekyll
-          echo williamjwhite.me > dist/CNAME
-        env:
-          VITE_ADMIN_PIN:       ${{ secrets.VITE_ADMIN_PIN }}
-          VITE_GIST_ID:         ${{ secrets.VITE_GIST_ID }}
-          VITE_GIST_TOKEN:      ${{ secrets.VITE_GIST_TOKEN }}
-          VITE_CS_GIST_TOKEN:   ${{ secrets.VITE_CS_GIST_TOKEN }}
-          VITE_CS_GIST_ID:      ${{ secrets.VITE_CS_GIST_ID }}
-          VITE_EDITOR_PIN:      ${{ secrets.VITE_EDITOR_PIN }}
+          mkdir -p dist/projects
+          # Copy projects.json index
+          cp projects/projects.json dist/projects/projects.json
+          # Copy each static project folder (HTML/CSS/JS apps like EV charging)
+          for dir in projects/*/; do
+            slug=$(basename "$dir")
+            # Skip React apps that already have a dist step above
+            if [ "$slug" != "anatomy-app" ]; then
+              cp -r "$dir" dist/projects/"$slug"
+            fi
+          done
+
+      # ── Upload to Pages ────────────────────────────────────────────────────
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: dist
 
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

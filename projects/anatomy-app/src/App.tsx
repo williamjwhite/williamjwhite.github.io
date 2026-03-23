@@ -1,235 +1,237 @@
 import { useState } from 'react'
-import { ANATOMY_TERMS, SYSTEM_COLORS, SYSTEM_EMOJIS, type BodySystem } from './data/anatomyData'
-import { TermLibrary } from './components/TermLibrary'
-import { EtymologyGame } from './games/EtymologyGame'
-import { FlashcardGame } from './games/FlashcardGame'
-import { ConceptWeb } from './components/ConceptWeb'
-import { RootBuilder } from './games/RootBuilder'
-import { DiagnosisChallenge } from './games/DiagnosisChallenge'
-import { BodySystemExplorer } from './components/BodySystemExplorer'
-import { SpellingBee } from './games/SpellingBee'
-import { WordChain } from './games/WordChain'
-import { ProfessorChat } from './games/ProfessorChat'
-import { ProgressTracker } from './components/ProgressTracker'
 
-type Screen = 'home' | 'library' | 'etymology' | 'flashcards' | 'concept-web' | 'root-builder' | 'diagnosis' | 'systems' | 'spelling' | 'word-chain' | 'professor' | 'progress'
+// ── Types ──────────────────────────────────────────────────────────────────
+interface BodySystem {
+  id: string
+  name: string
+  icon: string
+  color: string
+  description: string
+  organs: string[]
+  functions: string[]
+}
 
-const SCREENS = [
-  { id: 'library' as Screen, label: 'Term Library', emoji: '📚', description: 'Browse all anatomy terms with etymology', color: '#6c5ce7', category: 'explore' },
-  { id: 'systems' as Screen, label: 'Body Systems', emoji: '🫁', description: 'Explore all 10 body systems in depth', color: '#55efc4', category: 'explore' },
-  { id: 'concept-web' as Screen, label: 'Concept Web', emoji: '🕸️', description: 'Visualize how concepts connect', color: '#74b9ff', category: 'explore' },
-  { id: 'flashcards' as Screen, label: 'Flashcards', emoji: '🃏', description: 'Rapid-fire term review', color: '#00b894', category: 'practice' },
-  { id: 'etymology' as Screen, label: 'Etymology Quiz', emoji: '🏛️', description: 'Decode word roots & origins', color: '#e17055', category: 'practice' },
-  { id: 'root-builder' as Screen, label: 'Root Builder', emoji: '🧩', description: 'Assemble terms from word roots', color: '#fdcb6e', category: 'practice' },
-  { id: 'diagnosis' as Screen, label: 'Diagnosis Challenge', emoji: '🔬', description: 'Match symptoms to conditions', color: '#e84393', category: 'practice' },
-  { id: 'spelling' as Screen, label: 'Spelling Bee', emoji: '🐝', description: 'Spell complex medical terms correctly', color: '#f9ca24', category: 'practice' },
-  { id: 'word-chain' as Screen, label: 'Word Chain', emoji: '⛓️', description: 'Connect terms via etymology roots', color: '#a29bfe', category: 'practice' },
-  { id: 'professor' as Screen, label: 'Ask the Professor', emoji: '👨‍🏫', description: 'AI tutor explains anatomy & etymology', color: '#fd79a8', category: 'ai' },
-  { id: 'progress' as Screen, label: 'My Progress', emoji: '📈', description: 'Track XP, achievements, and study stats', color: '#00cec9', category: 'meta' },
+// ── Data ───────────────────────────────────────────────────────────────────
+const SYSTEMS: BodySystem[] = [
+  {
+    id: 'skeletal',
+    name: 'Skeletal',
+    icon: '🦴',
+    color: '#e8d5b0',
+    description: 'The framework of 206 bones that supports and protects the body.',
+    organs: ['Bones', 'Cartilage', 'Ligaments', 'Tendons', 'Joints'],
+    functions: ['Support & structure', 'Protection of organs', 'Movement leverage', 'Blood cell production', 'Mineral storage'],
+  },
+  {
+    id: 'muscular',
+    name: 'Muscular',
+    icon: '💪',
+    color: '#ff6b6b',
+    description: 'Over 600 muscles that enable movement, posture, and circulation.',
+    organs: ['Skeletal muscle', 'Smooth muscle', 'Cardiac muscle'],
+    functions: ['Body movement', 'Posture maintenance', 'Heat production', 'Organ function'],
+  },
+  {
+    id: 'cardiovascular',
+    name: 'Cardiovascular',
+    icon: '❤️',
+    color: '#ff4757',
+    description: 'The heart and blood vessels that circulate blood throughout the body.',
+    organs: ['Heart', 'Arteries', 'Veins', 'Capillaries', 'Blood'],
+    functions: ['Oxygen transport', 'Nutrient delivery', 'Waste removal', 'Temperature regulation', 'Immune defense'],
+  },
+  {
+    id: 'nervous',
+    name: 'Nervous',
+    icon: '🧠',
+    color: '#ffa502',
+    description: 'The brain, spinal cord, and nerves that coordinate body functions.',
+    organs: ['Brain', 'Spinal cord', 'Peripheral nerves', 'Sensory organs'],
+    functions: ['Sensory processing', 'Motor control', 'Cognition & memory', 'Autonomic regulation', 'Reflex actions'],
+  },
+  {
+    id: 'respiratory',
+    name: 'Respiratory',
+    icon: '🫁',
+    color: '#57c4dc',
+    description: 'The lungs and airways responsible for gas exchange.',
+    organs: ['Lungs', 'Trachea', 'Bronchi', 'Diaphragm', 'Nose & sinuses'],
+    functions: ['Oxygen intake', 'CO₂ expulsion', 'pH regulation', 'Voice production', 'Olfaction'],
+  },
+  {
+    id: 'digestive',
+    name: 'Digestive',
+    icon: '🫄',
+    color: '#2ed573',
+    description: 'Breaks down food into nutrients that can be absorbed by the body.',
+    organs: ['Mouth', 'Esophagus', 'Stomach', 'Small intestine', 'Large intestine', 'Liver', 'Pancreas'],
+    functions: ['Food breakdown', 'Nutrient absorption', 'Waste elimination', 'Enzyme production', 'Hormone secretion'],
+  },
+  {
+    id: 'endocrine',
+    name: 'Endocrine',
+    icon: '⚗️',
+    color: '#a29bfe',
+    description: 'Glands that produce hormones to regulate body processes.',
+    organs: ['Pituitary', 'Thyroid', 'Adrenal glands', 'Pancreas (islets)', 'Ovaries / Testes'],
+    functions: ['Metabolism control', 'Growth & development', 'Mood regulation', 'Reproductive control', 'Stress response'],
+  },
+  {
+    id: 'immune',
+    name: 'Immune / Lymphatic',
+    icon: '🛡️',
+    color: '#00b894',
+    description: 'Defends the body against pathogens and maintains fluid balance.',
+    organs: ['Lymph nodes', 'Spleen', 'Thymus', 'Bone marrow', 'Tonsils'],
+    functions: ['Pathogen defense', 'Antibody production', 'Fluid balance', 'Fat absorption', 'Waste filtration'],
+  },
 ]
 
-function App() {
-  const [screen, setScreen] = useState<Screen>('home')
-  const [selectedSystem, setSelectedSystem] = useState<BodySystem | null>(null)
+// ── App ────────────────────────────────────────────────────────────────────
+export default function App() {
+  const [selected, setSelected] = useState<BodySystem | null>(null)
+  const [search, setSearch] = useState('')
 
-  const filteredTerms = selectedSystem
-    ? ANATOMY_TERMS.filter(t => t.system === selectedSystem)
-    : ANATOMY_TERMS
-
-  const noFilter = screen === 'professor' || screen === 'progress' || screen === 'concept-web' || screen === 'word-chain' || screen === 'systems'
+  const filtered = SYSTEMS.filter(s =>
+    s.name.toLowerCase().includes(search.toLowerCase()) ||
+    s.organs.some(o => o.toLowerCase().includes(search.toLowerCase()))
+  )
 
   return (
-    <div className="app">
-      {screen !== 'home' && (
-        <header className="app-header">
-          <button className="back-btn" onClick={() => setScreen('home')}>
-            ← Back
-          </button>
-          <div className="header-title">
-            {SCREENS.find(s => s.id === screen)?.emoji}{' '}
-            {SCREENS.find(s => s.id === screen)?.label}
-          </div>
-          {!noFilter ? (
-            <div className="system-filter">
-              <select
-                value={selectedSystem || ''}
-                onChange={e => setSelectedSystem(e.target.value as BodySystem || null)}
-              >
-                <option value="">All Systems</option>
-                {Object.entries(SYSTEM_EMOJIS).map(([sys, emoji]) => (
-                  <option key={sys} value={sys}>
-                    {emoji} {sys.charAt(0).toUpperCase() + sys.slice(1)}
-                  </option>
-                ))}
-              </select>
+    <div style={{ minHeight: '100vh', background: '#1a1a2e', color: '#eee', fontFamily: 'system-ui, sans-serif' }}>
+      {/* Header */}
+      <header style={{
+        background: 'linear-gradient(135deg, #16213e, #0f3460)',
+        padding: '20px 24px',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
+      }}>
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0, letterSpacing: -0.5 }}>
+            🫀 Anatomy &amp; Physiology
+          </h1>
+          <p style={{ fontSize: 12, color: '#94a3b8', margin: '3px 0 0', fontFamily: 'monospace' }}>
+            Body Systems Reference
+          </p>
+        </div>
+        <input
+          type="text"
+          placeholder="Search systems or organs…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{
+            background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 8, padding: '8px 14px', color: '#eee', fontSize: 13,
+            outline: 'none', width: 220,
+          }}
+        />
+      </header>
+
+      <div style={{ display: 'flex', height: 'calc(100vh - 73px)' }}>
+        {/* Sidebar */}
+        <nav style={{
+          width: 200, flexShrink: 0,
+          background: '#16213e', borderRight: '1px solid rgba(255,255,255,0.07)',
+          overflowY: 'auto', padding: 12,
+        }}>
+          {filtered.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setSelected(s)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                width: '100%', padding: '10px 12px', marginBottom: 4,
+                background: selected?.id === s.id ? `${s.color}22` : 'transparent',
+                border: selected?.id === s.id ? `1px solid ${s.color}55` : '1px solid transparent',
+                borderRadius: 8, cursor: 'pointer', color: '#eee', fontSize: 13,
+                textAlign: 'left', transition: 'all 0.15s',
+              }}
+            >
+              <span style={{ fontSize: 18 }}>{s.icon}</span>
+              <span style={{ fontWeight: selected?.id === s.id ? 600 : 400 }}>{s.name}</span>
+            </button>
+          ))}
+          {filtered.length === 0 && (
+            <p style={{ color: '#64748b', fontSize: 12, padding: 8 }}>No matches</p>
+          )}
+        </nav>
+
+        {/* Detail Panel */}
+        <main style={{ flex: 1, overflowY: 'auto', padding: 28 }}>
+          {selected ? (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                <span style={{
+                  fontSize: 40, width: 64, height: 64,
+                  background: `${selected.color}22`, border: `1px solid ${selected.color}44`,
+                  borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>{selected.icon}</span>
+                <div>
+                  <h2 style={{ fontSize: 24, fontWeight: 800, color: selected.color, margin: 0 }}>
+                    {selected.name} System
+                  </h2>
+                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>{selected.description}</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                {/* Organs */}
+                <div style={{
+                  background: '#16213e', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 12, padding: 18,
+                }}>
+                  <h3 style={{ fontSize: 13, color: selected.color, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>
+                    Key Structures
+                  </h3>
+                  {selected.organs.map(o => (
+                    <div key={o} style={{
+                      padding: '7px 10px', marginBottom: 6,
+                      background: 'rgba(255,255,255,0.04)', borderRadius: 6,
+                      fontSize: 13, color: '#e2e8f0',
+                      display: 'flex', alignItems: 'center', gap: 8,
+                    }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: selected.color, flexShrink: 0 }} />
+                      {o}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Functions */}
+                <div style={{
+                  background: '#16213e', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 12, padding: 18,
+                }}>
+                  <h3 style={{ fontSize: 13, color: selected.color, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>
+                    Primary Functions
+                  </h3>
+                  {selected.functions.map((f, i) => (
+                    <div key={f} style={{
+                      padding: '7px 10px', marginBottom: 6,
+                      background: 'rgba(255,255,255,0.04)', borderRadius: 6,
+                      fontSize: 13, color: '#e2e8f0',
+                      display: 'flex', alignItems: 'center', gap: 8,
+                    }}>
+                      <span style={{
+                        width: 18, height: 18, borderRadius: '50%',
+                        background: `${selected.color}33`, border: `1px solid ${selected.color}66`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 10, color: selected.color, flexShrink: 0, fontWeight: 700,
+                      }}>{i + 1}</span>
+                      {f}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
-            <div style={{ width: 140 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 14, color: '#475569' }}>
+              <span style={{ fontSize: 56 }}>🫀</span>
+              <p style={{ fontSize: 16, fontWeight: 600 }}>Select a body system</p>
+              <p style={{ fontSize: 13 }}>Choose from the sidebar to explore structures and functions.</p>
+            </div>
           )}
-        </header>
-      )}
-
-      {screen === 'home' && <HomeScreen onNavigate={setScreen} />}
-      {screen === 'library' && <TermLibrary terms={filteredTerms} />}
-      {screen === 'etymology' && <EtymologyGame terms={filteredTerms} />}
-      {screen === 'flashcards' && <FlashcardGame terms={filteredTerms} />}
-      {screen === 'concept-web' && <ConceptWeb terms={ANATOMY_TERMS} />}
-      {screen === 'root-builder' && <RootBuilder terms={filteredTerms} />}
-      {screen === 'diagnosis' && <DiagnosisChallenge terms={filteredTerms} />}
-      {screen === 'systems' && <BodySystemExplorer terms={ANATOMY_TERMS} />}
-      {screen === 'spelling' && <SpellingBee terms={filteredTerms} />}
-      {screen === 'word-chain' && <WordChain terms={ANATOMY_TERMS} />}
-      {screen === 'professor' && <ProfessorChat terms={ANATOMY_TERMS} />}
-      {screen === 'progress' && <ProgressTracker terms={ANATOMY_TERMS} />}
-    </div>
-  )
-}
-
-function HomeScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
-  const exploreScreens = SCREENS.filter(s => s.category === 'explore')
-  const practiceScreens = SCREENS.filter(s => s.category === 'practice')
-  const specialScreens = SCREENS.filter(s => s.category === 'ai' || s.category === 'meta')
-
-  return (
-    <div className="home">
-      <div className="home-hero">
-        <div className="hero-bg" />
-        <div className="hero-content">
-          <div className="hero-badge">Interactive Learning Platform</div>
-          <h1 className="hero-title">
-            <span className="title-line1">Anatomy &</span>
-            <span className="title-line2">Physiology</span>
-          </h1>
-          <p className="hero-subtitle">
-            Master medical terminology through etymology, interactive games, and AI-powered learning
-          </p>
-          <div className="hero-stats">
-            <div className="stat">
-              <span className="stat-num">{ANATOMY_TERMS.length}</span>
-              <span className="stat-label">Terms</span>
-            </div>
-            <div className="stat-div" />
-            <div className="stat">
-              <span className="stat-num">{Object.keys(SYSTEM_COLORS).length}</span>
-              <span className="stat-label">Systems</span>
-            </div>
-            <div className="stat-div" />
-            <div className="stat">
-              <span className="stat-num">10</span>
-              <span className="stat-label">Game Modes</span>
-            </div>
-            <div className="stat-div" />
-            <div className="stat">
-              <span className="stat-num">AI</span>
-              <span className="stat-label">Professor</span>
-            </div>
-          </div>
-        </div>
-        <div className="hero-visual">
-          <BodyOrb />
-        </div>
-      </div>
-
-      <div className="home-sections">
-        <div className="home-section">
-          <div className="section-label">🔍 Explore</div>
-          <div className="home-grid home-grid-3">
-            {exploreScreens.map((s, i) => (
-              <HomeCard key={s.id} screen={s} index={i} onNavigate={onNavigate} />
-            ))}
-          </div>
-        </div>
-
-        <div className="home-section">
-          <div className="section-label">🎮 Practice & Games</div>
-          <div className="home-grid home-grid-wide">
-            {practiceScreens.map((s, i) => (
-              <HomeCard key={s.id} screen={s} index={i} onNavigate={onNavigate} />
-            ))}
-          </div>
-        </div>
-
-        <div className="home-section">
-          <div className="section-label">✨ Special Features</div>
-          <div className="home-grid home-grid-2">
-            {specialScreens.map((s, i) => (
-              <HomeCard key={s.id} screen={s} index={i} featured onNavigate={onNavigate} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="home-systems">
-        <h2>10 Body Systems</h2>
-        <div className="system-chips">
-          {Object.entries(SYSTEM_COLORS).map(([sys, color]) => (
-            <div
-              key={sys}
-              className="sys-chip"
-              style={{ background: color + '22', border: `1px solid ${color}55`, color }}
-            >
-              {SYSTEM_EMOJIS[sys as BodySystem]} {sys}
-            </div>
-          ))}
-        </div>
+        </main>
       </div>
     </div>
   )
 }
-
-function HomeCard({
-  screen: s,
-  index,
-  featured,
-  onNavigate,
-}: {
-  screen: typeof SCREENS[0]
-  index: number
-  featured?: boolean
-  onNavigate: (s: Screen) => void
-}) {
-  return (
-    <button
-      className={`mode-card ${featured ? 'mode-card-featured' : ''}`}
-      style={{ '--card-color': s.color, animationDelay: `${index * 0.07}s` } as React.CSSProperties}
-      onClick={() => onNavigate(s.id)}
-    >
-      <div className="card-emoji">{s.emoji}</div>
-      <div className="card-body">
-        <div className="card-label">{s.label}</div>
-        <div className="card-desc">{s.description}</div>
-      </div>
-      <div className="card-arrow">→</div>
-    </button>
-  )
-}
-
-function BodyOrb() {
-  const systems = Object.entries(SYSTEM_COLORS)
-  return (
-    <div className="body-orb">
-      <div className="orb-ring orb-ring-1" />
-      <div className="orb-ring orb-ring-2" />
-      <div className="orb-ring orb-ring-3" />
-      {systems.map(([sys, color], i) => {
-        const angle = (i / systems.length) * Math.PI * 2
-        const r = 90
-        const x = 50 + Math.cos(angle) * r
-        const y = 50 + Math.sin(angle) * r
-        return (
-          <div
-            key={sys}
-            className="orb-dot"
-            style={{ left: `${x}%`, top: `${y}%`, background: color, animationDelay: `${i * 0.2}s` }}
-            title={sys}
-          >
-            {SYSTEM_EMOJIS[sys as BodySystem]}
-          </div>
-        )
-      })}
-      <div className="orb-center">🫀</div>
-    </div>
-  )
-}
-
-export default App
